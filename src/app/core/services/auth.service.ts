@@ -18,9 +18,11 @@ export class AuthService {
   login(email: string, password: string): Observable<any>{
     return this.httpClient.post<any>(environment.urlHostSchool.concat(environment.serviceRestLoginPath), {email, password}).pipe(
       tap(response => {
-        if(response.token){
-          console.log(response.token);
-          this.setToken(response.token);
+        if(response.access_token){
+          console.log(response.access_token);
+          this.setToken(response.access_token);
+          console.log('Se obtiene el token de localStorage');
+          console.log(localStorage.getItem(this.tokenKey));
           //this.setRefreshToken(response.refreshToken)
           //this.autoRefreshToken();
         }
@@ -84,7 +86,9 @@ export class AuthService {
 
 
   isAuthenticated(): boolean {
+    console.log('Service isAuthenticated init')
     const token = this.getToken();
+    console.log(token)
     if(!token){
       return false;
     }

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-//import { AuthGuard } from './core/guards/auth.guard';
+import { AuthGuard } from './core/guards/auth.guard';
 import { AuthenticatedGuard } from './core/guards/authenticated.guard';
 
 export const routes: Routes = [
@@ -10,17 +10,17 @@ export const routes: Routes = [
             {
                 path: 'dashboard',
                 loadComponent: () => import('./business/dashboard/dashboard.component'),
-                //canActivate: [AuthGuard]
+                canActivate: [AuthGuard]
             },
             {
                 path: 'profile',
                 loadComponent: () => import('./business/profile/profile.component'),
-                //canActivate: [AuthGuard]
+                canActivate: [AuthGuard]
             },
             {
                 path: 'tables',
                 loadComponent: () => import('./business/tables/tables.component'),
-                //canActivate: [AuthGuard]
+                canActivate: [AuthGuard]
             },
             {
                 path: '',
@@ -33,7 +33,7 @@ export const routes: Routes = [
     {
         path: 'login',
         loadComponent: ()=> import('./business/authentication/login/login.component'),
-        //canActivate: [AuthenticatedGuard]
+        canActivate: [AuthenticatedGuard]
     },
     {
         path: '**',
