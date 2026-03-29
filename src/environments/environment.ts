@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   urlHostSchool:'http://localhost:8080/school_hermanos_grimm/',
   urlApi: 'http://localhost:8080/api/v1/',
-  serviceLoginPath: 'auth/login',
+  serviceRestLoginPath: 'auth/login',
   userId:1,
 
   navigate_path_login: '/login',

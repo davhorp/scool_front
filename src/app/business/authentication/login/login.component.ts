@@ -1,8 +1,8 @@
+
 import { Component } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { environment } from '../../../../environments/environment';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -13,19 +13,30 @@ import { CommonModule } from '@angular/common';
   styleUrl: './login.component.css'
 })
 export default class LoginComponent {
-
   email: string = '';
   password: string = '';
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ){}
+  constructor(private authService: AuthService, private router: Router){
+
+  }
 
   login(): void {
     this.authService.login(this.email, this.password).subscribe({
-      next: () => this.router.navigate([environment.navigate_path_dashborad]),
-      error: (err) => console.log('Error: Datos incorrectos', err)
-    });
+      next: (response)=> {
+        const token = response.access_token;
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        console.log(payload);
+        //const role = payload.role;
+        //console.log(role);
+       // if(role === 'admin') {
+          this.router.navigate(['/dashboard'])
+          console.log('Ya deberiamos estar en el dash')
+       // }else {
+        //  this.router.navigate(['/profile'])
+       // }
+      },
+      error: (err) => console.error('Login failed', err)
+    })
   }
+
 }
