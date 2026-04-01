@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { IdleServiceService } from './core/services/idle-service.service';
 import { AuthService } from './core/services/auth.service';
 
 @Component({
@@ -10,9 +11,13 @@ import { AuthService } from './core/services/auth.service';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit{
+
   title = 'ng-menu-dashboard';
 
-  constructor( private authService: AuthService) {
+  constructor(
+    public idleService: IdleServiceService,
+    private authService: AuthService
+  ) {
 
   }
 
@@ -20,5 +25,14 @@ export class AppComponent implements OnInit{
    if(this.authService.isAuthenticated()) {
     this.authService.autoRefreshToken()
    }
+  }
+
+  // Escucha clics, pulsaciones de teclas y scroll
+  @HostListener('window:mousemove')
+  @HostListener('window:keypress')
+  @HostListener('window:click')
+  @HostListener('window:scroll')
+  refreshUserState() {
+    this.idleService.onUserActivity();
   }
 }
