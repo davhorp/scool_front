@@ -23,14 +23,11 @@ export default class LoginComponent {
   login(): void {
     this.authService.login(this.email, this.password).subscribe({
       next: (response)=> {
-        const token = response.access_token;
+        const token = response.accessToken;
         const payload = JSON.parse(atob(token.split('.')[1]));
-        console.log(payload);
-        //const role = payload.role;
-        //console.log(role);
+        const role = payload.role;
        // if(role === 'admin') {
           this.router.navigate(['/dashboard'])
-          console.log('Ya deberiamos estar en el dash')
        // }else {
         //  this.router.navigate(['/profile'])
        // }

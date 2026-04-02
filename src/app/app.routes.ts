@@ -9,17 +9,17 @@ export const routes: Routes = [
         children: [
             {
                 path: 'dashboard',
-                loadComponent: () => import('./business/dashboard/dashboard.component'),
+                loadComponent: () => import('./business/admin/dashboard/dashboard.component'),
                 canActivate: [AuthGuard]
             },
             {
                 path: 'profile',
-                loadComponent: () => import('./business/profile/profile.component'),
+                loadComponent: () => import('./business/admin/profile/profile.component'),
                 canActivate: [AuthGuard]
             },
             {
                 path: 'tables',
-                loadComponent: () => import('./business/tables/tables.component'),
+                loadComponent: () => import('./business/admin/tables/tables.component'),
                 canActivate: [AuthGuard]
             },
             {

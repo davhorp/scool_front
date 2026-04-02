@@ -8,7 +8,7 @@ import { switchMap, take, throttleTime } from 'rxjs/operators';
 })
 export class IdleServiceService {
 
-  private timeoutSeconds = 5;  // 1 minuto de gracia
+  private timeoutSeconds = 900;  // 1 minuto de gracia
 
   private userActivity$ = new Subject<void>();
   private idleSubscription?: Subscription;
@@ -70,7 +70,6 @@ export class IdleServiceService {
   }*/
 
   logoutUser() {
-    console.log('Sesión expirada por inactividad');
     // 1. Limpiar localStorage/Cookies
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.refreshTokenKey);
