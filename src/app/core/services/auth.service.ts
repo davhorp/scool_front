@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { UsuarioSesion } from '../../models/userSession.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +16,30 @@ export class AuthService {
 
   constructor(private httpClient: HttpClient, private router: Router) { }
 
+  //private userSignal = signal<UsuarioSesion | null>(this.getInvitedUser());
+
+  //public currentUser = this.userSignal.asReadonly();
+  //public isUserAuthenticated = computed(() => !!this.userSignal());
+  //public userRole = computed(() => this.userSignal()?.profile || 'GUEST');
+
+  // Intentar recuperar sesión del localStorage al cargar
+  getInvitedUser(): UsuarioSesion | null {
+    let data = null;
+    if(localStorage.getItem('miClave') !== null){
+      data = localStorage.getItem('user_session');
+      
+    }
+    return data ? JSON.parse(data) : null;
+  
+  }
+
   login(email: string, password: string): Observable<any>{
     return this.httpClient.post<any>(environment.urlHostSchool.concat(environment.serviceRestLoginPath), {email, password}).pipe(
       tap(response => {
+       // this.userSignal.set(response);
+        localStorage.setItem('user_session', JSON.stringify(response));
+        localStorage.setItem('nameFullUsr', response.nameFull);
+        localStorage.setItem('profileUsr', response.profile);
         if(response.accessToken){
           this.setToken(response.accessToken);
           //this.setRefreshToken(response.refreshToken)
@@ -94,6 +116,8 @@ export class AuthService {
   logout(): void{
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.refreshTokenKey);
+    //this.userSignal.set(null);
+    //localStorage.removeItem('user_session');
     this.router.navigate(['/login']);
   }
 }

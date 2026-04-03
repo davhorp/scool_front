@@ -2,3 +2,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*:root {
+  /* Modo Claro (Default) */
+ /* --bg-color: #ffffff;
+  --text-color: #333333;
+  --primary-color: #1976d2;
+} */
+
+/*[data-theme='dark'] {
+  /* Modo Oscuro */
+ /* --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --primary-color: #bb86fc;
+}*/
+
+/*body {
+/*  background-color: var(--bg-color);
+  color: var(--text-color);
+ /* transition: all 0.3s ease; /* Suaviza el cambio */
+/*}*/
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

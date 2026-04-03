@@ -13,7 +13,11 @@
           </li>
         </ol>
       </nav>
-      <h6 class="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-gray-900">home</h6>
+      <h6 class="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-gray-900">
+        <span class="material-symbols-outlined">
+          accessibility_new
+        </span>
+        Bienvenido: {{nameFullUsr}}, Perfil: {{profileUsr}}</h6>
     </div>
     <div class="flex items-center">
       <div class="mr-auto md:mr-4 md:w-56">
@@ -29,6 +33,35 @@
           </svg>
         </span>
       </button>
+      <!--<button (click)="themeService.toggleTheme()" class="theme-btn">
+        <span class="material-symbols-outlined">
+          {{ themeService.darkMode() ? 'light_mode' : 'dark_mode' }}
+        </span>
+      </button>-->
+      <!--@if (themeService.darkMode()) {
+        <span class="material-symbols-outlined">
+          dark_mode
+        </span>
+      } @else {
+        <span class="material-symbols-outlined">
+          light_mode
+        </span>
+      }-->
+      <!--<button matIconButton [mat-menu-trigger-for]="themeMenu" matTooltip="Choose your dark mode" matTooltipPosition="below">
+        <mat-icon>{{ themeService.selectedTheme()?.icon }}</mat-icon>
+      </button>
+      <mat-menu #themeMenu="matMenu">
+  @for (theme of themeService.getThemes(); track theme.name) {
+  <button
+    [class.selected-theme]="themeService.selectedTheme()?.name === theme.name"
+    mat-menu-item
+    (click)="themeService.setTheme(theme.name)"
+  >
+    <mat-icon>{{ theme.icon }}</mat-icon>
+    <span>{{ theme.name | titlecase }}</span>
+  </button>
+  }
+</mat-menu>-->
       <a>
         <button (click)="logout()" class="middle none font-sans font-bold center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30 hidden items-center gap-1 px-4 xl:flex" type="button">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="h-5 w-5 text-blue-gray-500">

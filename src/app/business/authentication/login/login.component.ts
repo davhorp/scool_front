@@ -23,12 +23,14 @@ export default class LoginComponent {
   login(): void {
     this.authService.login(this.email, this.password).subscribe({
       next: (response)=> {
+        localStorage.setItem('emailUsr', this.email);
         const token = response.accessToken;
         const payload = JSON.parse(atob(token.split('.')[1]));
         const role = payload.role;
-       // if(role === 'admin') {
+        if(role === 'ADMIN') {
           this.router.navigate(['/dashboard'])
-       // }else {
+        }
+        //else {
         //  this.router.navigate(['/profile'])
        // }
       },
