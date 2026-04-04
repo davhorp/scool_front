@@ -8,6 +8,8 @@ export const environment = {
   urlApi: 'http://localhost:8080/api/v1/',
   serviceRestLoginPath: '/login',
   urlServiceActivateAccount: '/activate-account',
+  urlServiceChangedPassword: '/changed-password',
+  urlServiceResetPassword: '/reset-password',
   userId:1,
 
   navigate_path_login: '/login',

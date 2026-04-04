@@ -44,6 +44,10 @@ export const routes: Routes = [
         loadComponent: ()=> import('./business/authentication/forget-password/forget-password.component')
     },
     {
+        path: 'reset-password',
+        loadComponent: ()=> import('./business/authentication/reset-password/reset-password.component')
+    },
+    {
         path: '**',
         redirectTo: 'dashboard'
     }

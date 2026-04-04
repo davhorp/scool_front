@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 })
 export default class LoginComponent {
 
-  miFormulario: FormGroup;
+  formLoginApp: FormGroup;
   email: string = '';
   password: string = '';
 
@@ -22,17 +22,17 @@ export default class LoginComponent {
     private authService: AuthService, 
     private router: Router,
     private fb: FormBuilder){
-      this.miFormulario = this.fb.group({
+      this.formLoginApp = this.fb.group({
       email: ['', Validators.required],
       password: ['', Validators.required] 
     });
     }
 
   login(): void {
-    if (this.miFormulario.valid) {
+    if (this.formLoginApp.valid) {
       this.authService.login(
-        this.miFormulario.get('email')?.value, 
-        this.miFormulario.get('password')?.value).subscribe({
+        this.formLoginApp.get('email')?.value, 
+        this.formLoginApp.get('password')?.value).subscribe({
       next: (response)=> {
         localStorage.setItem('emailUsr', this.email);
         const token = response.accessToken;
@@ -48,14 +48,12 @@ export default class LoginComponent {
       error: (err) => console.error('Login failed', err)
     })
     } else {
-      this.miFormulario.markAllAsTouched(); // Muestra errores si intenta enviar
+      this.formLoginApp.markAllAsTouched(); // Muestra errores si intenta enviar
     }
   }
 
   forwardForgetPassword(): void {
-    console.log('Antes de ir a forget password');
     this.router.navigate(['/forget-password']);
-    console.log('Ya estamos en forget password');
   }
 
 }
