@@ -39,7 +39,7 @@ export class AuthService {
        // this.userSignal.set(response);
         localStorage.setItem('user_session', JSON.stringify(response));
         localStorage.setItem('nameFullUsr', response.nameFull);
-        localStorage.setItem('profileUsr', response.profile);
+        localStorage.setItem('profileUsr', response.profile.profile);
         if(response.accessToken){
           this.setToken(response.accessToken);
           //this.setRefreshToken(response.refreshToken)

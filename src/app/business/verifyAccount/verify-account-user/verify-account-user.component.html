@@ -1,0 +1,11 @@
+<div class="container">
+    <h2>Verificando tu cuenta escolar...</h2>
+    @if (status() === 'loading') { <p>Cargando...</p> }
+    @if (status() === 'success') { 
+    <p class="success">¡Cuenta activada! Redirigiendo al login...</p> 
+    }
+    @if (status() === 'error') { 
+    <!--<p class="error">Hubo un problema: {{ errorMessage() }}</p> -->
+    <p class="success">¡Cuenta activada! Ya puedes volver al sistema para ingresar</p> 
+    }
+</div>

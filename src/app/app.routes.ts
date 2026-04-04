@@ -36,6 +36,10 @@ export const routes: Routes = [
         canActivate: [AuthenticatedGuard]
     },
     {
+        path: 'verify-account-user',
+        loadComponent: ()=> import('./business/verifyAccount/verify-account-user/verify-account-user.component')
+    },
+    {
         path: '**',
         redirectTo: 'dashboard'
     }

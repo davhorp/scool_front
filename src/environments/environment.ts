@@ -4,9 +4,10 @@
 
 export const environment = {
   production: false,
-  urlHostSchool:'http://localhost:8080/school_hermanos_grimm/',
+  urlHostSchool:'http://localhost:8080/school_hermanos_grimm/auth',
   urlApi: 'http://localhost:8080/api/v1/',
-  serviceRestLoginPath: 'auth/login',
+  serviceRestLoginPath: '/login',
+  urlServiceActivateAccount: '/activate-account',
   userId:1,
 
   navigate_path_login: '/login',
