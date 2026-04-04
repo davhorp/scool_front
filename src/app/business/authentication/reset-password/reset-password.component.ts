@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ChangedPasswordService } from '../../../core/services/changed-password.service';
@@ -11,12 +11,16 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } 
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
 })
-export default class ResetPasswordComponent {
+export default class ResetPasswordComponent implements OnDestroy{
 
   formResetPassword: FormGroup;
   codeVerification: string = '';
   newPassword: string = '';
   emailChangedPasswordUser : string | null = localStorage.getItem('emailChangedPassword')
+
+  // Iniciamos el contador en 600 segundos (10 minutos)
+  tiempoRestante = signal(600);
+  intervalo: any;
 
   constructor(
       private router: Router, 
@@ -26,11 +30,26 @@ export default class ResetPasswordComponent {
           codeVerification: ['', Validators.required],
           newPassword: ['', Validators.required]
         });
+        this.iniciarContador();
       }
 
   forwardLogin(): void {
     this.router.navigate(['/login']);
   }
+
+  requestNewCode(): void {
+    if (this.emailChangedPasswordUser) {
+      this.resetPassServ.requestChangedPassword(this.emailChangedPasswordUser).subscribe({
+        next: (response) => {
+          console.log('Código de verificación reenviado:', response);
+          // Reiniciar el contador
+          this.tiempoRestante.set(600);
+          this.iniciarContador();
+        },
+        error: (err) => console.error('Error al reenviar el código de verificación', err)
+      });
+  }
+}
 
   resetPassword(): void{
     if (this.formResetPassword.valid) {
@@ -55,6 +74,31 @@ export default class ResetPasswordComponent {
     } else {
       this.formResetPassword.markAllAsTouched(); // Muestra errores si intenta enviar
     }
+  }
+
+  ngOnDestroy() {
+    this.detenerContador();
+  }
+
+  detenerContador() {
+    if (this.intervalo) clearInterval(this.intervalo);
+  }
+
+  // Transformar segundos a formato MM:SS
+  get tiempoFormateado() {
+    const minutos = Math.floor(this.tiempoRestante() / 60);
+    const segundos = this.tiempoRestante() % 60;
+    return `${minutos}:${segundos < 10 ? '0' : ''}${segundos}`;
+  }
+
+  iniciarContador() {
+    this.intervalo = setInterval(() => {
+      if (this.tiempoRestante() > 0) {
+        this.tiempoRestante.update(t => t - 1);
+      } else {
+        this.detenerContador();
+      }
+    }, 1000);
   }
 
 }
