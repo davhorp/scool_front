@@ -33,11 +33,15 @@ export const routes: Routes = [
     {
         path: 'login',
         loadComponent: ()=> import('./business/authentication/login/login.component'),
-        canActivate: [AuthenticatedGuard]
+        //canActivate: [AuthenticatedGuard]
     },
     {
         path: 'verify-account-user',
         loadComponent: ()=> import('./business/verifyAccount/verify-account-user/verify-account-user.component')
+    },
+    {
+        path: 'forget-password',
+        loadComponent: ()=> import('./business/authentication/forget-password/forget-password.component')
     },
     {
         path: '**',
