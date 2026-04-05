@@ -1,0 +1,171 @@
+.file-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+}
+
+.file-header {
+  padding: 24px;
+  background: #fcfcfc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}
+
+.student-profile { display: flex; align-items: center; gap: 20px; }
+.avatar-large {
+  width: 60px; height: 60px; background: #3498db; color: white;
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 1.5rem; font-weight: bold;
+}
+
+/* PESTAÑAS */
+.file-tabs {
+  display: flex;
+  background: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
+
+.file-tabs button {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: #7f8c8d;
+  transition: all 0.2s;
+}
+
+.file-tabs button.active {
+  color: #3498db;
+  border-bottom: 3px solid #3498db;
+  background: white;
+}
+
+/* TABLAS Y LISTAS */
+.tab-content { padding: 24px; min-height: 300px; }
+
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th { text-align: left; padding: 12px; color: #7f8c8d; border-bottom: 2px solid #eee; }
+td { padding: 12px; border-bottom: 1px solid #f1f1f1; }
+.grade-cell { font-weight: bold; color: #2c3e50; }
+
+.payment-item {
+  display: flex; justify-content: space-between; padding: 15px;
+  border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px;
+}
+
+.pay-status {
+  font-size: 0.7rem; padding: 4px 8px; border-radius: 4px;
+  text-transform: uppercase; margin-left: 10px;
+}
+.pay-status.pagado { background: #e8f5e9; color: #2e7d32; }
+.pay-status.pendiente { background: #fff3e0; color: #ef6c00; }
+
+.badge.moroso { color: #e74c3c; font-weight: bold; }
+
+.btn-pdf {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background-color: #e74c3c; /* Rojo tipo PDF */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 15px;
+}
+
+.btn-pdf:hover:not(:disabled) {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+}
+
+.btn-pdf:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+/* SPINNER DE CARGA */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+/* --- ESTILOS GENERALES (WEB) --- */
+.print-only-header {
+  display: none; /* Oculto por defecto en la aplicación */
+}
+
+/* --- ESTILOS PARA IMPRESIÓN --- */
+@media print {
+  .print-only-header {
+    display: flex !important; /* Aparece solo al imprimir */
+    align-items: center;
+    gap: 30px;
+    border-bottom: 2px solid #2c3e50;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+  }
+
+  .school-logo {
+    font-size: 50px;
+    background: #f1f3f4;
+    padding: 15px;
+    border-radius: 12px;
+  }
+
+  .school-info h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    color: #2c3e50;
+    text-transform: uppercase;
+  }
+
+  .school-info p {
+    margin: 4px 0;
+    font-size: 0.9rem;
+    color: #555;
+  }
+
+  .report-type {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #3498db;
+    letter-spacing: 1px;
+  }
+
+  /* Ajustamos la cabecera original para que no se vea redundante */
+  .file-header {
+    border: none !important;
+    background: transparent !important;
+    padding-left: 0 !important;
+  }
+
+  /* Forzamos que se impriman todas las secciones si lo deseas */
+  .tab-content {
+    display: block !important;
+  }
+}

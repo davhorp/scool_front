@@ -1,0 +1,105 @@
+<div class="file-container" [attr.data-date]="today">
+  <div class="print-only-header">
+    <div class="school-logo">
+      <span class="logo-placeholder">🏫</span>
+    </div>
+    <div class="school-info">
+      <h1>INSTITUTO EDUCATIVO MODELO</h1>
+      <p>Calle de la Educación #123, Ciudad de México</p>
+      <p>Tel: (55) 1234-5678 | Correo: secretaria&#64;colegio.edu.mx</p>
+      <div class="report-type">REPORTE INTEGRAL DEL ESTUDIANTE</div>
+    </div>
+  </div>
+  <header class="file-header">
+    <div class="student-profile">
+      <div class="avatar-large">{{ student().nombre[0] }}</div>
+      <div class="info">
+        <h2>{{ student().nombre }}</h2>
+        <p>ID: {{ student().id }} | Grado: {{ student().grado }}</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button 
+        class="btn-pdf" 
+        [disabled]="isGenerating()" 
+        (click)="generatePDF()">
+        
+        @if (isGenerating()) {
+          <span class="spinner"></span> Generando...
+        } @else {
+          <span class="icon">📄</span> Exportar PDF
+        }
+      </button>
+      <span class="badge" [ngClass]="student().estado">{{ student().estado }}</span>
+    </div>
+  </header>
+
+  <nav class="file-tabs">
+    <button [class.active]="activeTab() === 'academico'" (click)="changeTab('academico')">
+      📚 Académico
+    </button>
+    <button [class.active]="activeTab() === 'asistencia'" (click)="changeTab('asistencia')">
+      📅 Asistencia
+    </button>
+    <button [class.active]="activeTab() === 'pagos'" (click)="changeTab('pagos')">
+      💰 Pagos
+    </button>
+  </nav>
+
+  <div class="tab-content">
+    @switch (activeTab()) {
+      @case ('academico') {
+        <div class="table-card">
+          <h3>Boleta de Calificaciones</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Materia</th>
+                <th>Periodo</th>
+                <th>Calificación</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (g of grades(); track g.materia) {
+                <tr>
+                  <td>{{ g.materia }}</td>
+                  <td>{{ g.periodo }}</td>
+                  <td class="grade-cell">{{ g.nota }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      @case ('asistencia') {
+        <div class="asistencia-placeholder">
+          <h3>Registro de Asistencia</h3>
+          <p>Asistencia General: <strong>96%</strong></p>
+          <div class="simple-calendar-view">
+            <div class="day present">1</div><div class="day present">2</div>
+            <div class="day late">3</div><div class="day present">4</div>
+          </div>
+        </div>
+      }
+
+      @case ('pagos') {
+        <div class="payments-list">
+          <h3>Historial de Cobros</h3>
+          @for (p of payments(); track p.concepto) {
+            <div class="payment-item">
+              <div class="pay-info">
+                <strong>{{ p.concepto }}</strong>
+                <span>Vence: {{ p.fecha }}</span>
+              </div>
+              <div class="pay-amount">
+                ${{ p.monto }}
+                <span class="pay-status" [ngClass]="p.estado">{{ p.estado }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>

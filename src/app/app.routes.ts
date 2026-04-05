@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { AuthenticatedGuard } from './core/guards/authenticated.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
-    {
+    /*{
         path: '',
         loadComponent: () => import('./shared/components/layout/layout.component'),
         children: [
@@ -29,7 +30,28 @@ export const routes: Routes = [
             }
 
         ]
+    },*/
+    { 
+        path: 'admin', 
+        canActivate: [AuthGuard],
+        //canActivate: [roleGuard(['admin'])],
+        loadChildren: () => import('./business/features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
     },
+    /*{ 
+        path: 'profesor', 
+        canActivate: [roleGuard(['docente'])],
+        loadChildren: () => import('./features/docente/docente.routes')
+    },
+    { 
+        path: 'estudiante', 
+        canActivate: [roleGuard(['alumno'])],
+        loadChildren: () => import('./features/alumno/alumno.routes')
+    },
+    { 
+        path: 'familiar', 
+        canActivate: [roleGuard(['padre'])],
+        loadChildren: () => import('./features/tutor/tutor.routes')
+    },*/
     {
         path: 'login',
         loadComponent: ()=> import('./business/authentication/login/login.component'),
@@ -49,6 +71,6 @@ export const routes: Routes = [
     },
     {
         path: '**',
-        redirectTo: 'dashboard'
+        redirectTo: 'login'
     }
 ];

@@ -1,0 +1,96 @@
+<div class="dashboard-wrapper">
+  <div class="dashboard-header">
+    <h2>Resumen Institucional</h2>
+    <button class="btn-refresh" (click)="refreshData()">🔄 Actualizar</button>
+  </div>
+
+  <div class="stats-grid">
+    @for (item of stats(); track item.label) {
+      <div class="stat-card" [style.border-left-color]="item.color">
+        <div class="stat-info">
+          <span class="stat-label">{{ item.label }}</span>
+          <h3 class="stat-value">{{ item.value }}</h3>
+          <span class="stat-trend" [class.up]="item.trend > 0" [class.down]="item.trend < 0">
+            {{ item.trend > 0 ? '▲' : '▼' }} {{ item.trend }}%
+          </span>
+        </div>
+        <div class="stat-icon-bg">{{ item.icon }}</div>
+      </div>
+    }
+  </div>
+
+  <div class="dashboard-content">
+    <div class="content-card charts-section">
+      <h3>Distribución por Nivel</h3>
+      <div class="custom-bar-chart">
+        <div class="bar-group">
+          <span class="bar-label">Primaria</span>
+          <div class="bar-container"><div class="bar" style="width: 80%; background: #3498db;"></div></div>
+          <span class="bar-percent">400</span>
+        </div>
+        <div class="bar-group">
+          <span class="bar-label">Secundaria</span>
+          <div class="bar-container"><div class="bar" style="width: 65%; background: #2ecc71;"></div></div>
+          <span class="bar-percent">320</span>
+        </div>
+        <div class="bar-group">
+          <span class="bar-label">Preparatoria</span>
+          <div class="bar-container"><div class="bar" style="width: 90%; background: #f1c40f;"></div></div>
+          <span class="bar-percent:">450</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card activity-section">
+      <h3>Actividad Reciente</h3>
+      <div class="activity-list">
+        @for (act of recentActivities(); track act.time) {
+          <div class="activity-item">
+            <div class="activity-dot" [ngClass]="act.type"></div>
+            <div class="activity-details">
+              <strong>{{ act.user }}</strong>
+              <span>{{ act.action }}</span>
+              <small>{{ act.time }}</small>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="header-actions">
+  <button class="btn-primary" (click)="openModal()">+ Nueva Inscripción</button>
+  <button class="btn-refresh" (click)="refreshData()">🔄</button>
+</div>
+
+@if (isModalOpen()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Inscripción Rápida</h3>
+        <button class="close-x" (click)="closeModal()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nombre Completo</label>
+          <input type="text" [(ngModel)]="newStudent.nombre" placeholder="Ej. Juan Pérez">
+        </div>
+        <div class="form-group">
+          <label>Grado Escolar</label>
+          <select [(ngModel)]="newStudent.grado">
+            <option value="1">1° Año</option>
+            <option value="2">2° Año</option>
+            <option value="3">3° Año</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button class="btn-save" (click)="saveStudent()">Confirmar Inscripción</button>
+      </div>
+    </div>
+  </div>
+}

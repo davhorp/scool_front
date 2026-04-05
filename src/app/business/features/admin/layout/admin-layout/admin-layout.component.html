@@ -1,0 +1,72 @@
+<div class="admin-container" [class.collapsed]="isCollapsed()">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span class="logo">🏫</span>
+      <span class="school-name" *ngIf="!isCollapsed()">EduControl</span>
+    </div>
+    <nav class="sidebar-nav">
+      @for (item of menuItems; track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active-link" class="nav-item">
+          <span class="icon">{{ item.icon }}</span>
+          <span class="label" *ngIf="!isCollapsed()">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+  </aside>
+  <main class="main-content">
+    <header class="top-navbar">
+        <div class="left-section">
+            <button class="toggle-btn" (click)="toggleSidebar()">☰</button>
+            <div class="search-container">
+            <div class="search-input-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" 
+                    [(ngModel)]="searchTerm" 
+                    placeholder="Buscar alumno por nombre o ID...">
+            </div>
+            @if (filteredResults().length > 0) {
+                <div class="search-results-dropdown">
+                @for (student of filteredResults(); track student.id) {
+                    <div class="result-item" (click)="openFile(student)">
+                    <div class="result-info">
+                        <span class="result-name">{{ student.nombre }}</span>
+                        <span class="result-id">ID: {{ student.id }} • {{ student.grado }}</span>
+                    </div>
+                    <span class="status-badge" [ngClass]="student.estado"></span>
+                    </div>
+                }
+                </div>
+            } @else if (searchTerm().length >= 2 && filteredResults().length === 0) {
+                <div class="search-results-dropdown no-results">
+                No se encontraron coincidencias
+                </div>
+            }
+            </div>
+        </div>
+      <div class="user-actions">
+        <div class="user-info">
+          <div class="user-text">
+            <span class="user-name">Admin Principal</span>
+            <span class="user-role">Control Escolar</span>
+          </div>
+          <div class="avatar">A</div>
+        </div>
+
+        <button class="btn-logout" (click)="logout()" title="Cerrar Sesión">
+          <span class="logout-icon">🚪</span>
+          <span class="logout-text">Salir</span>
+        </button>
+  </div>
+    </header>
+    <section class="page-content">
+        @if (selectedStudent(); as student) {
+        <div class="view-header">
+            <button class="btn-back" (click)="closeFile()">← Volver al Panel</button>
+        </div>
+        <app-studen-file [student]="student" />
+        } @else {
+            <router-outlet />
+        }
+    </section>
+  </main>
+</div>

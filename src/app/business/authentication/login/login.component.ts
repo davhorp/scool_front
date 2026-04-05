@@ -1,10 +1,11 @@
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../../core/services/toast.service';
+import { User, UserRole } from '../../../models/auth.models';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,17 @@ import { ToastService } from '../../../core/services/toast.service';
   styleUrl: './login.component.css'
 })
 export default class LoginComponent {
+
+  currentUser = signal<User | null>(null);
+  userData: User | null = null;
+
+  // Mapa de rutas por rol
+  private readonly dashboardRoutes: Record<UserRole, string> = {
+    admin: '/admin/dashboard',
+    docente: '/docente/inicio',
+    alumno: '/alumno/mis-clases',
+    padre: '/tutor/seguimiento'
+  };
 
   private toastService = inject(ToastService);
 
@@ -37,13 +49,15 @@ export default class LoginComponent {
         this.formLoginApp.get('email')?.value, 
         this.formLoginApp.get('password')?.value).subscribe({
       next: (response)=> {
+        this.userData = { id: response.id, nombre: response.nameFull, rol: response.profile.profile } as User;
+        this.currentUser.set(this.userData);
+        console.log('Current User');
+        console.log(this.currentUser);
         localStorage.setItem('emailUsr', this.email);
-        const token = response.accessToken;
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const role = payload.role;
-        if(role === 'ADMIN') {
+        this.redirectByRole(this.userData.rol); // Redirige según el rol del usuario, por defecto a 'alumno'
+        /*if(role === 'ADMIN') {
           this.router.navigate(['/dashboard'])
-        }
+        }*/
         //else {
         //  this.router.navigate(['/profile'])
        // }
@@ -64,6 +78,14 @@ export default class LoginComponent {
       'info',
       3000
     );
+  }
+
+  redirectByRole(rol: UserRole) {
+    console.log(this.dashboardRoutes[rol]);
+    const targetRoute = this.dashboardRoutes[rol] || '/login';
+    console.log('URL ROL');
+    console.log(targetRoute);
+    this.router.navigate([targetRoute]);
   }
 
 }
