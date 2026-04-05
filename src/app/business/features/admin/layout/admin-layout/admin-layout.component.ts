@@ -27,6 +27,9 @@ interface StudentFile {
 })
 export class AdminLayoutComponent {
 
+  public nameFullUsr : string | null = localStorage.getItem('nameFullUsr');
+  public profileUsr : string | null = localStorage.getItem('profileUsr');
+
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
 
