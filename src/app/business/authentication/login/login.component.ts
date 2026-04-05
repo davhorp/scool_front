@@ -1,9 +1,10 @@
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './login.component.css'
 })
 export default class LoginComponent {
+
+  private toastService = inject(ToastService);
 
   formLoginApp: FormGroup;
   email: string = '';
@@ -54,6 +57,13 @@ export default class LoginComponent {
 
   forwardForgetPassword(): void {
     this.router.navigate(['/forget-password']);
+    // Lógica para guardar...
+    this.toastService.show(
+      'Re-direeccionando a recuperación de contraseña', 
+      'Redireccionamiento completo.', 
+      'info',
+      3000
+    );
   }
 
 }

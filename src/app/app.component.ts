@@ -2,11 +2,13 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { IdleServiceService } from './core/services/idle-service.service';
 import { AuthService } from './core/services/auth.service';
+import { ToastComponent } from './ui/toast/toast/toast.component';
+import { ToastContainerComponent } from './ui/toast/toast-container/toast-container.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ToastContainerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

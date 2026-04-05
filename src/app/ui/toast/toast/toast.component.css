@@ -1,0 +1,39 @@
+.toast-card {
+  position: relative;
+  width: 300px;
+  padding: 16px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+  animation: slideIn 0.3s ease-out;
+}
+
+.success { background-color: #2e7d32; }
+.error { background-color: #d32f2f; }
+.info { background-color: #0288d1; }
+.warning { background-color: #ed6c02; }
+
+.toast-title { font-weight: bold; display: block; margin-bottom: 4px; }
+.toast-message { margin: 0; font-size: 0.9rem; }
+.close-btn { background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
+
+.progress-bar {
+  position: absolute;
+  bottom: 0; left: 0; height: 4px;
+  background: rgba(255,255,255,0.5);
+  animation: shrink linear forwards;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes shrink {
+  from { width: 100%; }
+  to { width: 0%; }
+}
