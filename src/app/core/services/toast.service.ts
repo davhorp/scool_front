@@ -15,13 +15,13 @@ export class ToastService {
     const newToast: Toast = { id, title, message, type, duration };
     this.toasts.update(current => [...current, newToast]);
     // Auto-eliminar después del tiempo definido
-    setTimeout(() => {
+    /*setTimeout(() => {
       this.remove(id);
-    }, duration);
+    }, duration);*/
   }
 
   remove(id: number) {
     this.toasts.update(current => current.filter(t => t.id !== id));
   }
-  
+
 }
