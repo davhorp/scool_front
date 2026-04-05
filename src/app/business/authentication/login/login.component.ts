@@ -51,19 +51,18 @@ export default class LoginComponent {
       next: (response)=> {
         this.userData = { id: response.id, nombre: response.nameFull, rol: response.profile.profile } as User;
         this.currentUser.set(this.userData);
-        console.log('Current User');
-        console.log(this.currentUser);
         localStorage.setItem('emailUsr', this.email);
         this.redirectByRole(this.userData.rol); // Redirige según el rol del usuario, por defecto a 'alumno'
-        /*if(role === 'ADMIN') {
-          this.router.navigate(['/dashboard'])
-        }*/
-        //else {
-        //  this.router.navigate(['/profile'])
-       // }
       },
-      error: (err) => console.error('Login failed', err)
-    })
+      error: (err) => {
+        this.toastService.show(
+          'Error de Acceso', 
+          err.error.message, 
+          'error',
+          3000 // Duración larga para que lo lea bien
+        );
+    }
+    });
     } else {
       this.formLoginApp.markAllAsTouched(); // Muestra errores si intenta enviar
     }

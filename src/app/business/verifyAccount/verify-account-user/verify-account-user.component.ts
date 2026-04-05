@@ -23,8 +23,7 @@ export default class VerifyAccountUserComponent implements OnInit{
     const token = this.route.snapshot.queryParamMap.get('token');
     
     if (token) {
-      //this.http.get(environment.urlHostSchool+environment.urlServiceActivateAccount+`?token=${token}`).subscribe({
-      this.http.get(`http://192.168.100.35:8080/school_hermanos_grimm/auth/activate-account?token=${token}`).subscribe({
+      this.http.get(environment.urlHostSchool+environment.urlServiceActivateAccount+`?token=${token}`).subscribe({
         next: () => {
           this.status.set('success');
           setTimeout(() => this.router.navigate(['/login']), 3000);

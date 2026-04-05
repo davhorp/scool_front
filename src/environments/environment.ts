@@ -4,12 +4,13 @@
 
 export const environment = {
   production: false,
-  urlHostSchool:'http://localhost:8080/school_hermanos_grimm/auth',
+  urlHostSchool:'http://localhost:8080/school_hermanos_grimm',
   urlApi: 'http://localhost:8080/api/v1/',
-  serviceRestLoginPath: '/login',
-  urlServiceActivateAccount: '/activate-account',
-  urlServiceChangedPassword: '/changed-password',
-  urlServiceResetPassword: '/reset-password',
+  serviceRestLoginPath: '/auth/login',
+  urlServiceActivateAccount: '/auth/activate-account',
+  urlServiceChangedPassword: '/auth/changed-password',
+  urlServiceResetPassword: '/auth/reset-password',
+  urlServiceUploadPhoto: '/user/upload-photo-profile',
   userId:1,
 
   navigate_path_login: '/login',

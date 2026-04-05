@@ -39,6 +39,7 @@ export class AuthService {
       tap(response => {
        // this.userSignal.set(response);
         localStorage.setItem('user_session', JSON.stringify(response));
+        localStorage.setItem('user_email', email);
         localStorage.setItem('nameFullUsr', response.nameFull);
         localStorage.setItem('profileUsr', response.profile.profile);
         if(response.accessToken){
@@ -114,8 +115,7 @@ export class AuthService {
   }
 
   logout(): void{
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.refreshTokenKey);
+    localStorage.clear();
     //this.userSignal.set(null);
     //localStorage.removeItem('user_session');
     this.router.navigate(['/login']);
