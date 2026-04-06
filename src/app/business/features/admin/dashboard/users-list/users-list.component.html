@@ -1,119 +1,214 @@
 <div class="users-container">
-  <div class="users-header">
-    <h2>Gestión de Usuarios</h2>
-    <button class="btn-add" (click)="openAddModal()">+ Nuevo Usuario</button>
+  
+  @if (!selectedTeacherForStudents()) {
+    <div class="users-header">
+      <h2>Gestión de Usuarios</h2>
+      <button class="btn-add" (click)="openAddModal()">+ Nuevo Usuario</button>
+    </div>
+
+    <div class="filters-bar"> ... </div>
+
+    <div class="table-responsive">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th class="text-center">Detalles</th> 
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of filteredUsers(); track user.id) {
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar">{{ user.nombre[0] }}</div>
+                  <div class="user-data">
+                    <span class="u-name">{{ user.nombre }}</span>
+                    <span class="u-email">{{ user.correo }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="role-badge" [ngClass]="user.rol">{{ user.rol }}</span>
+              </td>
+              <td>
+                <button class="status-indicator" [class.active]="user.estado === 'activo'">
+                  {{ user.estado }}
+                </button>
+              </td>
+              <td class="text-center">
+                  <button class="btn-view-detail" (click)="openDetailsModal(user)">👁️</button>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  @if (user.rol === 'docente') {
+                    <button class="btn-icon students" (click)="viewTeacherStudents(user)" title="Ver Alumnos Asignados">
+                      🎓
+                    </button>
+                  }
+                  <button class="btn-icon edit">✏️</button>
+                  <button class="btn-icon delete">🗑️</button>
+                  @if (user.bloqueado) {
+                    <button class="btn-icon unlock">🔓</button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @else {
+    <div class="students-assigned-container">
+      <div class="sub-header">
+        <button class="btn-back-simple" (click)="selectedTeacherForStudents.set(null)">
+          ← Volver a Usuarios
+        </button>
+        <div class="teacher-info-banner">
+          <div class="mini-avatar">{{ selectedTeacherForStudents()?.nombre[0] }}</div>
+          <div>
+            <h3>Alumnos de: {{ selectedTeacherForStudents()?.nombre }}</h3>
+            <p>Total: {{ teacherStudents().length }} alumnos asignados</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="students-grid">
+        @for (student of teacherStudents(); track student.id) {
+          <div class="student-card">
+            <div class="card-accent" [ngClass]="student.grado"></div>
+            <div class="card-content">
+              <span class="student-grade">{{ student.grado }} - {{ student.seccion }}</span>
+              <h4>{{ student.nombre }}</h4>
+              <p class="student-id">Matrícula: {{ student.id }}</p>
+              
+              <div class="card-footer">
+                <button class="btn-outline-sm" (click)="openDetailsModal(student)">Ver Ficha</button>
+                <span class="status-dot" [title]="student.estado"></span>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state">
+            <p>Este docente aún no tiene alumnos asignados en este ciclo escolar.</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
   </div>
-  @if (isAddModalOpen()) {
-  <div class="modal-overlay" (click)="closeAddModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
+
+@if (isAddModalOpen()) {
+    <div class="modal-overlay" (click)="closeAddModal()">
+      </div>
+  }
+
+  @if (selectedUserForDetail(); as user) {
+  <div class="modal-overlay" (click)="closeDetailsModal()">
+    <div class="modal-content detail-modal" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h3>Registrar Nuevo Usuario</h3>
-        <button class="close-x" (click)="closeAddModal()">×</button>
+        <div class="header-with-avatar">
+          <div class="user-avatar large">{{ user.nombre[0] }}</div>
+          <div>
+            <h3>{{ isEditing() ? 'Editando Perfil' : 'Expediente de Usuario' }}</h3>
+            <p class="subtitle-modal">ID: {{user.id}} • {{user.rol}}</p>
+          </div>
+        </div>
+        <button class="close-x" (click)="closeDetailsModal()">×</button>
       </div>
       
       <div class="modal-body">
-        <div class="form-group">
-          <label>Nombre Completo</label>
-          <input type="text" 
-                 [(ngModel)]="newUser().nombre" 
-                 placeholder="Ej. María Jara">
-        </div>
+        <div class="detail-section">
+          <h4 class="section-title">📌 Información Personal</h4>
+          <div class="detail-grid">
+            
+            <div class="detail-item">
+              <label>Nombre Completo</label>
+              @if (!isEditing()) {
+                <span>{{user.nombre}}</span>
+              } @else {
+                <input type="text" class="edit-input" [(ngModel)]="editBuffer().nombre">
+              }
+            </div>
 
-        <div class="form-group">
-          <label>Correo Electrónico</label>
-          <input type="email" 
-                 [(ngModel)]="newUser().correo" 
-                 placeholder="ejemplo&#64;escuela.com">
-        </div>
+            <div class="detail-item">
+              <label>Correo Electrónico</label>
+              @if (!isEditing()) {
+                <span>{{user.correo}}</span>
+              } @else {
+                <input type="email" class="edit-input" [(ngModel)]="editBuffer().correo">
+              }
+            </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label>Rol en el Sistema</label>
-            <select [(ngModel)]="newUser().rol">
-              <option value="admin">Administrador</option>
-              <option value="docente">Docente</option>
-              <option value="alumno">Alumno</option>
-              <option value="tutor">Tutor / Padre</option>
-            </select>
+            <div class="detail-item">
+              <label>Teléfono</label>
+              @if (!isEditing()) {
+                <span>{{user.telefono || 'No registrado'}}</span>
+              } @else {
+                <input type="tel" class="edit-input" [(ngModel)]="editBuffer().telefono">
+              }
+            </div>
+
+            <div class="detail-item">
+              <label>Documento de Identidad (DNI)</label>
+              @if (!isEditing()) {
+                <span>{{user.dni || 'N/A'}}</span>
+              } @else {
+                <input type="text" class="edit-input" [(ngModel)]="editBuffer().dni">
+              }
+            </div>
+
           </div>
+        </div>
 
-          <div class="form-group">
-            <label>Estado Inicial</label>
-            <select [(ngModel)]="newUser().estado">
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
+        <div class="detail-section">
+          <h4 class="section-title">🏠 Ubicación y Dirección</h4>
+          <div class="detail-grid">
+            <div class="detail-item full-width">
+              <label>Dirección de Residencia</label>
+              @if (!isEditing()) {
+                <span>{{user.direccion || 'No especificada'}}</span>
+              } @else {
+                <input type="text" class="edit-input" [(ngModel)]="editBuffer().direccion">
+              }
+            </div>
+            
+            <div class="detail-item">
+              <label>Ciudad</label>
+              @if (!isEditing()) {
+                <span>{{user.ciudad || 'N/A'}}</span>
+              } @else {
+                <input type="text" class="edit-input" [(ngModel)]="editBuffer().ciudad">
+              }
+            </div>
+
+            <div class="detail-item">
+              <label>Código Postal</label>
+              @if (!isEditing()) {
+                <span>{{user.cp || 'N/A'}}</span>
+              } @else {
+                <input type="text" class="edit-input" [(ngModel)]="editBuffer().cp">
+              }
+            </div>
           </div>
         </div>
       </div>
 
       <div class="modal-footer">
-        <button class="btn-secondary" (click)="closeAddModal()">Cancelar</button>
-        <button class="btn-save" (click)="saveUser()">Guardar Usuario</button>
+        @if (!isEditing()) {
+          <button class="btn-secondary" (click)="closeDetailsModal()">Cerrar</button>
+          <button class="btn-edit-inline" (click)="enableEdit()">Editar Información</button>
+        } @else {
+          <button class="btn-secondary" (click)="cancelEdit()">Cancelar</button>
+          <button class="btn-save-edit" (click)="saveChanges()">Guardar Cambios</button>
+        }
       </div>
     </div>
   </div>
 }
-  <div class="filters-bar">
-    <div class="search-box">
-      <span>🔍</span>
-      <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar por nombre o correo...">
-    </div>
-    
-    <select [(ngModel)]="roleFilter" class="role-select">
-      <option value="todos">Todos los Roles</option>
-      <option value="admin">Administradores</option>
-      <option value="docente">Docentes</option>
-      <option value="alumno">Alumnos</option>
-      <option value="tutor">Tutores</option>
-    </select>
-  </div>
-
-  <div class="table-responsive">
-    <table class="users-table">
-      <thead>
-        <tr>
-          <th>Usuario</th>
-          <th>Rol</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (user of filteredUsers(); track user.id) {
-          <tr>
-            <td>
-              <div class="user-cell">
-                <div class="user-avatar">{{ user.nombre[0] }}</div>
-                <div class="user-data">
-                  <span class="u-name">{{ user.nombre }}</span>
-                  <span class="u-email" [innerHTML]="user.correo"></span>
-                </div>
-              </div>
-            </td>
-            <td>
-              <span class="role-badge" [ngClass]="user.rol">{{ user.rol }}</span>
-            </td>
-            <td>
-              <button class="status-indicator" 
-                      [class.active]="user.estado === 'activo'"
-                      (click)="toggleStatus(user)">
-                {{ user.estado }}
-              </button>
-            </td>
-            <td>
-              <div class="action-buttons">
-                <button class="btn-icon edit" title="Editar">✏️</button>
-                <button class="btn-icon delete" (click)="deleteUser(user)" title="Eliminar">🗑️</button>
-              </div>
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="4" class="empty-msg">No se encontraron usuarios con esos filtros.</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-</div>

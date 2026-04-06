@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../../../../core/services/toast.service';
+import { UserService } from '../../../../../core/services/user.service';
 
 interface User {
   id: number;
@@ -9,6 +10,7 @@ interface User {
   correo: string;
   rol: 'admin' | 'docente' | 'alumno' | 'tutor';
   estado: 'activo' | 'inactivo';
+  bloqueado?: boolean; // Para simular bloqueo por intentos fallidos
 }
 
 @Component({
@@ -20,7 +22,17 @@ interface User {
 })
 export class UsersListComponent {
 
+  isEditing = signal(false);
+  editBuffer = signal<any>({});
+  usrService = inject(UserService);
+  // Signal para controlar qué usuario se está viendo
+  selectedUserForDetail = signal<any | null>(null);
   private toastService = inject(ToastService);
+  // Signal para el maestro seleccionado
+  selectedTeacherForStudents = signal<any | null>(null);
+
+  // Signal para la lista de alumnos (puedes cargarla desde un servicio)
+  teacherStudents = signal<any[]>([]);
 
   // Control del Modal
   isAddModalOpen = signal(false);
@@ -39,10 +51,10 @@ export class UsersListComponent {
   
   // Datos simulados
   users = signal<User[]>([
-    { id: 1, nombre: 'Admin General', correo: 'admin&#64;escuela.edu.mx', rol: 'admin', estado: 'activo' },
-    { id: 2, nombre: 'Prof. Roberto Gómez', correo: 'rgomez&#64;escuela.edu.mx', rol: 'docente', estado: 'activo' },
-    { id: 3, nombre: 'Lucía Fernández', correo: 'lucia.f&#64;alumno.edu.mx', rol: 'alumno', estado: 'activo' },
-    { id: 4, nombre: 'Pedro Ortiz (Padre)', correo: 'portiz&#64;tutor.com', rol: 'tutor', estado: 'inactivo' },
+    { id: 1, nombre: 'Admin General', correo: 'admin&#64;escuela.edu.mx', rol: 'admin', estado: 'activo', bloqueado: true },
+    { id: 2, nombre: 'Prof. Roberto Gómez', correo: 'rgomez&#64;escuela.edu.mx', rol: 'docente', estado: 'activo', bloqueado: false  },
+    { id: 3, nombre: 'Lucía Fernández', correo: 'lucia.f&#64;alumno.edu.mx', rol: 'alumno', estado: 'activo', bloqueado: false },
+    { id: 4, nombre: 'Pedro Ortiz (Padre)', correo: 'portiz&#64;tutor.com', rol: 'tutor', estado: 'inactivo', bloqueado: false },
   ]);
 
   // Filtro Reactivo
@@ -104,5 +116,60 @@ export class UsersListComponent {
 
     this.closeAddModal();
   }
+
+  openDetailsModal(user: any) {
+  this.selectedUserForDetail.set(user);
+  this.isEditing.set(false);
+}
+
+// Inicia la edición copiando los datos al buffer
+enableEdit() {
+  this.editBuffer.set({ ...this.selectedUserForDetail() });
+  this.isEditing.set(true);
+}
+
+closeDetailsModal() {
+  this.selectedUserForDetail.set(null);
+}
+
+// Cancela y limpia
+cancelEdit() {
+  this.isEditing.set(false);
+}
+
+// Guarda los cambios (Aquí llamarías a tu servicio de API)
+saveChanges() {
+  const updatedData = this.editBuffer();
+  console.log('Enviando a API:', updatedData);
+  
+  // Simulación de actualización exitosa:
+  // this.userService.update(updatedData).subscribe(...)
+  
+  this.selectedUserForDetail.set(updatedData); // Actualiza la vista local
+  this.isEditing.set(false);
+}
+
+viewTeacherStudents(teacher: any) {
+  this.selectedTeacherForStudents.set(teacher);
+  // Aquí llamarías a tu servicio: 
+  // this.studentService.getByTeacher(teacher.id).subscribe(data => this.teacherStudents.set(data));
+  
+  // Datos de prueba:
+  this.teacherStudents.set([
+    { id: 'AL-101', nombre: 'Carlos Ruiz', grado: '6to', seccion: 'A', estado: 'activo' },
+    { id: 'AL-105', nombre: 'Ana Beltrán', grado: '6to', seccion: 'A', estado: 'activo' }
+  ]);
+}
+
+  /*unlockUser(user: User) {
+  // Llamada al servicio que pone bloqueado = false e intentos_fallidos = 0
+  this.usrService.desbloquear(user.id).subscribe(() => {
+    this.users.update(list => list.map(u => 
+      u.id === user.id ? { ...u, bloqueado: false, intentosFallidos: 0 } : u
+    ));
+    this.toastService.show('Usuario Desbloqueado', `${user.nombre} ya puede intentar loguearse.`, 'success');
+  });
+
+}*/
 
 }

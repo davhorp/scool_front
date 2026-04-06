@@ -291,3 +291,289 @@ button {
     gap: 0;
   }
 }
+
+/* Estilos para el botón de ver detalle en la tabla */
+.btn-view-detail {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1.1rem;
+}
+
+.btn-view-detail:hover {
+    background: #e2e8f0;
+    transform: scale(1.1);
+}
+
+.text-center { text-align: center; }
+
+/* Modal de Detalles Específico */
+.detail-modal {
+    max-width: 650px !important;
+}
+
+.header-with-avatar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar.large {
+    width: 50px;
+    height: 50px;
+    font-size: 1.4rem;
+    background: #3b82f6;
+}
+
+.subtitle-modal {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+/* Secciones de información */
+.detail-section {
+    margin-bottom: 25px;
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #f1f5f9;
+}
+
+.section-title {
+    margin: 0 0 15px 0;
+    font-size: 0.95rem;
+    color: #1e293b;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 5px;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-item label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.detail-item span {
+    font-size: 0.95rem;
+    color: #334155;
+    font-weight: 500;
+}
+
+.detail-item.full-width {
+    grid-column: span 2;
+}
+
+/* Botón especial del footer */
+.btn-edit-inline {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-edit-inline:hover {
+    background: #2563eb;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Contenedor de Alumnos */
+.students-assigned-container {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.sub-header {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.btn-back-simple {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-weight: 600;
+    cursor: pointer;
+    width: fit-content;
+    padding: 0;
+}
+
+.teacher-info-banner {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.mini-avatar {
+    width: 45px;
+    height: 45px;
+    background: #e0f2fe;
+    color: #0369a1;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Grid de Alumnos */
+.students-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.student-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s;
+}
+
+.student-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+}
+
+.card-accent {
+    height: 4px;
+    background: var(--primary-color);
+}
+
+.card-content {
+    padding: 15px;
+}
+
+.student-grade {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--primary-color);
+    background: #eff6ff;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.student-card h4 {
+    margin: 10px 0 5px 0;
+    font-size: 1.05rem;
+    color: var(--text-main);
+}
+
+.student-id {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 15px;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 12px;
+}
+
+.btn-outline-sm {
+    background: white;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-outline-sm:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e; /* Activo por defecto */
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Estilo para los inputs dentro del modal */
+.edit-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  background-color: #ffffff;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Botón de guardar cambios */
+.btn-save-edit {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-save-edit:hover {
+  background: #15803d;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+/* Animación sutil para el cambio de campos */
+input.edit-input {
+  animation: slideInInput 0.2s ease-out;
+}
+
+@keyframes slideInInput {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
