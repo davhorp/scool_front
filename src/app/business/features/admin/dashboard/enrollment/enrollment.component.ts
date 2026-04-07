@@ -1,9 +1,10 @@
-import { Component, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, signal, computed, inject, input, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { FilterUploadedPipe } from '../../../../utils/filter-uploaded.pipe';
 import { SafeUrlPipe } from '../../../../utils/safe-url.pipe';
+import { QrGeneratorComponent } from '../../../../utils/qr-generator/qr-generator.component';
 
 interface EnrollmentDoc {
   nombre: string;
@@ -15,11 +16,14 @@ interface EnrollmentDoc {
 @Component({
   selector: 'app-enrollment',
   standalone: true,
-  imports: [CommonModule, FormsModule, FilterUploadedPipe, SafeUrlPipe],
+  imports: [CommonModule, FormsModule, FilterUploadedPipe, SafeUrlPipe, QrGeneratorComponent],
   templateUrl: './enrollment.component.html',
   styleUrl: './enrollment.component.css'
 })
 export class EnrollmentComponent {
+
+  value = input.required<string>();
+  size = input<string>('150x150');
 
   searchTermPending = signal('');
   
@@ -96,12 +100,12 @@ export class EnrollmentComponent {
 
   // Datos básicos del alumno
   alumno = signal({
-    nombre: '',
-    apellido: '',
-    fechaNacimiento: '',
+    nombre: 'Alan',
+    apellido: 'Reyes Cruz',
+    fechaNacimiento: '2014-06-12',
     genero: 'M',
     grado: '1',
-    curp: ''
+    curp: 'wertyj4234625748iuy'
   });
 
   // Checklist de documentos
@@ -111,6 +115,12 @@ export class EnrollmentComponent {
     { nombre: 'Certificado de Grado Anterior', clave: 'certificado', cargado: false },
     { nombre: 'Comprobante de Domicilio', clave: 'domicilio', cargado: false }
   ]);
+
+  // Computed signal que reacciona si el valor cambia
+  qrUrl = computed(() => {
+    const data = encodeURIComponent(this.value());
+    return `https://api.qrserver.com/v1/create-qr-code/?size=${this.size()}&data=${data}`;
+  });
 
   nextStep() {
     if (this.currentStep() < 6) this.currentStep.update(s => s + 1);

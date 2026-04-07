@@ -177,10 +177,11 @@
           <button (click)="clearSignature()" class="btn-clear">Borrar Firma</button>
 
           <div class="qr-preview">
-            <div class="qr-placeholder">
-              <span>QR de Acceso</span>
-              <small>ID: {{ generatedUsername() }}</small>
+            <div class="qr-placeholde">
+                <app-qr-generator [value]="generatedUsername()" size="180x180" />
             </div>
+            <span>QR de Acceso</span>
+              <small>ID: {{ generatedUsername() }}</small>
           </div>
         </div>
       }
