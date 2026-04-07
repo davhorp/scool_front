@@ -1,0 +1,248 @@
+<div class="enrollment-card">
+    <div class="resume-section">
+    <div class="search-box-pending">
+      <span>🔎</span>
+      <input type="text" 
+             [(ngModel)]="searchTermPending" 
+             placeholder="Retomar inscripción por Folio o Nombre...">
+    </div>
+
+    @if (filteredPending().length > 0) {
+      <div class="pending-results">
+        @for (draft of filteredPending(); track draft.folio) {
+          <div class="draft-item" (click)="resumeEnrollment(draft)">
+            <div class="draft-info">
+              <strong>{{ draft.folio }}</strong>
+              <span>{{ draft.alumno.nombre }} {{ draft.alumno.apellido }}</span>
+            </div>
+            <button class="btn-resume">Retomar y Firmar →</button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+  <div class="stepper-modern">
+    @for (s of [1,2,3,4,5,6]; track s) {
+      <div class="step-circle" [class.active]="currentStep() >= s">{{ s }}</div>
+      @if (s < 6) { <div class="step-line" [class.filled]="currentStep() > s"></div> }
+    }
+  </div>
+
+  <div class="step-body">
+    @switch (currentStep()) {
+      
+      @case (1) {
+        <div class="form-section">
+          <h3>Identidad del Alumno</h3>
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Nombre(s)</label>
+              <input type="text" [(ngModel)]="alumno().nombre">
+            </div>
+            <div class="form-group">
+              <label>Usuario Sugerido</label>
+              <input type="text" [value]="generatedUsername()" disabled class="input-disabled">
+            </div>
+          </div>
+        </div>
+      }
+
+      @case (2) {
+        <div class="form-section">
+          <h3>🩺 Ficha Médica y Emergencias</h3>
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Tipo de Sangre</label>
+              <select [(ngModel)]="salud().tipoSangre">
+                <option value="O+">O Positivo</option>
+                <option value="A+">A Positivo</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Alergias</label>
+              <input type="text" [(ngModel)]="salud().alergias" placeholder="Medicamentos, polen, etc.">
+            </div>
+          </div>
+          <h4>Contactos Directos</h4>
+          @for (c of contactosEmergencia(); track $index) {
+            <div class="emergency-row">
+              <input type="text" [(ngModel)]="c.nombre" placeholder="Nombre">
+              <input type="text" [(ngModel)]="c.telefono" placeholder="Teléfono">
+            </div>
+          }
+        </div>
+      }
+
+      @case (3) {
+        <div class="form-section">
+          <h3>👥 Vinculación Familiar</h3>
+          <div class="search-tutor">
+            <input type="text" placeholder="Buscar tutor por CURP o Nombre..." class="search-input">
+            <button class="btn-search">🔍 Buscar</button>
+          </div>
+          <div class="authorized-list">
+            <h4>Personas autorizadas para retirada</h4>
+            <button class="btn-add-small">+ Agregar Persona</button>
+          </div>
+        </div>
+      }
+
+      @case (4) {
+  <div class="form-section">
+    <h3>📂 Carga de Documentos Digitales</h3>
+    <p class="section-hint">Formatos permitidos: PDF, JPG o PNG. Máximo 5MB por archivo.</p>
+
+    <div class="docs-grid">
+      @for (doc of documentos(); track doc.clave) {
+        <div class="doc-item" [class.uploaded]="doc.cargado">
+          <div class="doc-info">
+            <div class="status-icon" [class.success]="doc.cargado">
+              {{ doc.cargado ? '✅' : '📄' }}
+            </div>
+            
+            <div class="doc-text">
+              <span class="doc-name">{{ doc.nombre }}</span>
+              @if (doc.cargado) {
+                <small class="doc-status-text">Archivo cargado correctamente</small>
+              } @else {
+                <small class="doc-status-text pending">Pendiente de subir</small>
+              }
+            </div>
+          </div>
+
+          <div class="doc-actions">
+            @if (doc.cargado) {
+              <button class="btn-preview-mini" 
+                      (click)="openPreview(doc)" 
+                      title="Ver documento">
+                👁️
+              </button>
+            }
+
+            <label class="btn-upload-file" [class.secondary]="doc.cargado">
+              {{ doc.cargado ? 'Reemplazar' : 'Seleccionar' }}
+              <input type="file" 
+                     (change)="onFileSelected($event, doc.clave)" 
+                     hidden 
+                     accept="image/*,.pdf">
+            </label>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="docs-progress-container">
+      <div class="progress-info">
+        <span>Documentos obligatorios</span>
+        <span>{{ (documentos() | filterUploaded).length }} / {{ documentos().length }}</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" 
+             [style.width.%]="((documentos() | filterUploaded).length / documentos().length) * 100">
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+      @case (5) {
+        <div class="form-section finance">
+          <h3>💰 Plan Financiero</h3>
+          <div class="plan-cards">
+            <div class="plan-card" [class.selected]="planPago().tipo === 'completo'" (click)="planPago().tipo = 'completo'">
+              <span class="plan-title">Regular</span>
+              <span class="plan-price">$2,500/mes</span>
+            </div>
+            <div class="plan-card" [class.selected]="planPago().tipo === 'beca'" (click)="planPago().tipo = 'beca'">
+              <span class="plan-title">Beca 50%</span>
+              <span class="plan-price">$1,250/mes</span>
+            </div>
+          </div>
+          <div class="payment-summary">
+            <p>Total a pagar hoy (Inscripción): <strong>$1,500.00</strong></p>
+          </div>
+        </div>
+      }
+
+      @case (6) {
+        <div class="form-section final-step">
+          <h3>🖋️ Firma de Conformidad</h3>
+          <canvas #sigCanvas 
+                  width="500" height="200" 
+                  (mousedown)="startDrawing($event)"
+                  (mousemove)="draw($event)"
+                  (mouseup)="stopDrawing()"
+                  (mouseleave)="stopDrawing()"
+                  class="signature-pad"></canvas>
+          <button (click)="clearSignature()" class="btn-clear">Borrar Firma</button>
+
+          <div class="qr-preview">
+            <div class="qr-placeholder">
+              <span>QR de Acceso</span>
+              <small>ID: {{ generatedUsername() }}</small>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+
+  <div class="enrollment-footer">
+    <button (click)="prevStep()" [disabled]="currentStep() === 1">Atrás</button>
+    @if (currentStep() < 6) {
+      <button class="btn-next" (click)="nextStep()">Siguiente</button>
+    } @else {
+      <button class="btn-confirm" (click)="finalizarInscripcion()">Generar Matrícula y PDF</button>
+      <button class="btn-review-all" (click)="openReview()">👁️ Revisar Todo</button>
+    }
+  </div>
+</div>
+
+@if (isPreviewModalOpen()) {
+  <div class="modal-overlay" (click)="isPreviewModalOpen.set(false)">
+    <div class="modal-content summary-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Resumen de Pre-Inscripción</h3>
+        <div class="header-btns">
+          <button class="btn-print-mini" (click)="exportToPDF()">🖨️ Exportar</button>
+          <button class="close-x" (click)="isPreviewModalOpen.set(false)">×</button>
+        </div>
+      </div>
+
+      <div class="modal-body print-section">
+        <div class="summary-section">
+          <h4><span class="step-num">1</span> Datos del Alumno</h4>
+          <p><strong>Nombre:</strong> {{ alumno().nombre }} {{ alumno().apellido }}</p>
+          <p><strong>CURP:</strong> {{ alumno().curp }}</p>
+          <p><strong>Usuario:</strong> {{ generatedUsername() }}</p>
+        </div>
+
+        <div class="summary-section">
+          <h4><span class="step-num">2</span> Ficha Médica</h4>
+          <p><strong>Sangre:</strong> {{ salud().tipoSangre }} | <strong>Alergias:</strong> {{ salud().alergias || 'Ninguna' }}</p>
+          <p><strong>Emergencia:</strong> {{ contactosEmergencia()[0].nombre }} ({{ contactosEmergencia()[0].telefono }})</p>
+        </div>
+
+        <div class="summary-section">
+          <h4><span class="step-num">4</span> Documentación</h4>
+          <ul>
+            @for (doc of documentos(); track doc.clave) {
+              <li>{{ doc.nombre }}: {{ doc.cargado ? '✅ Cargado' : '❌ Pendiente' }}</li>
+            }
+          </ul>
+        </div>
+
+        <div class="summary-section">
+          <h4><span class="step-num">5</span> Plan de Pagos</h4>
+          <p><strong>Modalidad:</strong> {{ planPago().tipo | uppercase }}</p>
+          <p><strong>Inscripción:</strong> $1,500.00</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-pending" (click)="saveAsPending()">💾 Guardar como Pendiente</button>
+        <button class="btn-continue" (click)="isPreviewModalOpen.set(false)">Continuar Editando</button>
+      </div>
+    </div>
+  </div>
+}

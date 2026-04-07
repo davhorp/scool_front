@@ -198,6 +198,80 @@
             </div>
           </div>
         </div>
+        <div class="detail-section">
+          <h4 class="section-title">📊 Rendimiento Académico (Ciclo Actual)</h4>
+          <div class="grades-container">
+            <table class="grades-table">
+              <thead>
+                <tr>
+                  <th>Materia</th>
+                  <th>Promedio</th>
+                  <th>Asistencia</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (materia of user.academicData?.materias; track materia.nombre) {
+                  <tr>
+                    <td class="materia-name">{{materia.nombre}}</td>
+                    <td>
+                      <span class="grade-badge" [ngClass]="getGradeClass(materia.nota)">
+                        {{materia.nota}}
+                      </span>
+                    </td>
+                    <td>{{materia.asistencia}}%</td>
+                    <td>
+                      <span class="status-text" [class.danger]="materia.nota < 6">
+                        {{materia.nota >= 6 ? 'Aprobado' : 'Reprobado'}}
+                      </span>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="4" class="empty-msg-sm">No hay calificaciones registradas aún.</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        @if (currentUserRole() === 'admin') {
+          <div class="detail-section payment-section">
+            <h4 class="section-title">💳 Estatus de Pagos / Mensualidades</h4>
+            <div class="payment-card">
+              <div class="payment-status-header">
+                <div class="current-month">
+                  <label>Mes Actual: Abril</label>
+                  <span class="payment-badge" [ngClass]="user.paymentStatus">
+                    {{ user.paymentStatus === 'pagado' ? '✅ Al Corriente' : '⚠️ Pendiente de Pago' }}
+                  </span>
+                </div>
+                <div class="balance-info">
+                  <label>Deuda Pendiente</label>
+                  <span class="amount" [class.has-debt]="user.deuda > 0">
+                    ${{ user.deuda || 0 | number:'1.2-2' }}
+                  </span>
+                </div>
+              </div>
+              
+              <div class="payment-history-mini">
+                <label>Últimos movimientos:</label>
+                <div class="history-item">
+                  <span>Marzo 2026</span>
+                  <span class="text-success">Pagado el 05/03</span>
+                </div>
+                <div class="history-item">
+                  <span>Febrero 2026</span>
+                  <span class="text-success">Pagado el 02/02</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+      <div class="modal-footer">
+        </div>
       </div>
 
       <div class="modal-footer">

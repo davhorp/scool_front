@@ -16,12 +16,12 @@ export const ADMIN_ROUTES: Routes = [
         title: 'Gestión de Usuarios',
         loadComponent: () => import('./dashboard/users-list/users-list.component').then(m => m.UsersListComponent)
       },
-      /*{
+      {
         path: 'inscripciones',
         title: 'Control de Inscripciones',
-        loadComponent: () => import('./pages/enrollment/enrollment.component').then(m => m.EnrollmentComponent)
+        loadComponent: () => import('./dashboard/enrollment/enrollment.component').then(m => m.EnrollmentComponent)
       },
-      {
+      /*{
         path: 'reportes-financieros',
         title: 'Reportes de Pagos',
         loadComponent: () => import('./pages/reports/finance-reports.component').then(m => m.FinanceReportsComponent)

@@ -22,6 +22,9 @@ interface User {
 })
 export class UsersListComponent {
 
+  // Signal para el rol del usuario logueado (esto vendría de tu servicio de Auth)
+currentUserRole = signal<'admin' | 'docente' | 'alumno'>('admin');
+
   isEditing = signal(false);
   editBuffer = signal<any>({});
   usrService = inject(UserService);
@@ -89,6 +92,12 @@ export class UsersListComponent {
     this.users.update(list => list.map(u => u.id === user.id ? { ...u, estado: newStatus } : u));
     this.toastService.show('Estado Actualizado', `${user.nombre} ahora está ${newStatus}`, 'info');
   }
+
+  getGradeClass(nota: number): string {
+  if (nota >= 9) return 'grade-excellent';
+  if (nota >= 7) return 'grade-good';
+  return 'grade-danger';
+}
 
   saveUser() {
     const data = this.newUser();

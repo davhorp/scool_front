@@ -1,0 +1,597 @@
+.enrollment-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  padding: 30px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.enrollment-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* STEPPER */
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.step {
+  width: 35px; height: 35px;
+  border-radius: 50%;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #7f8c8d;
+  transition: all 0.3s;
+}
+
+.step.active {
+  background: var(--accent-color, #3498db);
+  color: white;
+  box-shadow: 0 0 10px rgba(52, 152, 219, 0.4);
+}
+
+.line {
+  width: 50px; height: 2px;
+  background: #eee;
+  margin: 0 10px;
+}
+
+/* FORMS */
+.grid-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+
+/* DOCS */
+.docs-grid { display: grid; gap: 12px; }
+.doc-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 15px; background: #f8f9fa; border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.doc-item.uploaded { border-color: #2ecc71; background: #f0fff4; }
+
+.btn-upload-small {
+  background: white; border: 1px solid #ddd; padding: 5px 12px;
+  border-radius: 4px; cursor: pointer; font-size: 0.8rem;
+}
+
+/* FOOTER */
+.enrollment-footer {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.btn-next, .btn-confirm { background: #3498db; color: white; border: none; padding: 10px 25px; border-radius: 6px; cursor: pointer; }
+.btn-confirm { background: #2ecc71; }
+.btn-back { background: none; border: 1px solid #ddd; padding: 10px 25px; border-radius: 6px; cursor: pointer; }
+
+.doc-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-view {
+  background: #f1f3f4;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-view:hover { background: #e8eaed; transform: scale(1.1); }
+
+/* MODAL DE PREVISUALIZACIÓN */
+.preview-modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 10001; /* Por encima de todo */
+  backdrop-filter: blur(5px);
+}
+
+.preview-modal-content {
+  background: white;
+  width: 90%; max-width: 700px;
+  border-radius: 12px;
+  overflow: hidden;
+  animation: zoomIn 0.2s ease-out;
+}
+
+.preview-header {
+  padding: 15px 20px;
+  background: #f8f9fa;
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid #eee;
+}
+
+.preview-body {
+  padding: 10px;
+  display: flex; justify-content: center;
+  background: #525659; /* Fondo oscuro tipo visor PDF */
+  min-height: 400px;
+}
+
+.preview-body img {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* STEPPER MODERNO */
+.stepper-modern {
+  display: flex; align-items: center; justify-content: center; margin-bottom: 30px;
+}
+.step-circle {
+  width: 30px; height: 30px; border-radius: 50%; background: #ddd;
+  display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold;
+}
+.step-circle.active { background: #3498db; color: white; transform: scale(1.2); }
+.step-line { flex-grow: 1; height: 3px; background: #ddd; margin: 0 10px; max-width: 50px; }
+.step-line.filled { background: #3498db; }
+
+/* FIRMA */
+.signature-pad {
+  border: 2px dashed #bdc3c7; background: #fdfdfd; border-radius: 8px; cursor: crosshair; display: block; margin: 0 auto;
+}
+.btn-clear { background: none; border: none; color: #e74c3c; cursor: pointer; text-decoration: underline; margin-top: 10px; }
+
+/* PLAN DE PAGOS */
+.plan-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+.plan-card {
+  padding: 20px; border: 2px solid #eee; border-radius: 12px; cursor: pointer; text-align: center; transition: all 0.2s;
+}
+.plan-card.selected { border-color: #3498db; background: #ebf5fb; }
+.plan-title { display: block; font-weight: bold; color: #2c3e50; }
+
+/* QR PREVIEW */
+.qr-preview { margin-top: 30px; display: flex; justify-content: center; }
+.qr-placeholder {
+  width: 120px; height: 120px; border: 2px solid #333; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; font-size: 0.7rem; padding: 10px; text-align: center;
+}
+
+.docs-progress-container {
+  margin-top: 25px;
+  padding: 15px;
+  background: #fdfdfd;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #7f8c8d;
+}
+
+.progress-bar-bg {
+  height: 6px;
+  background: #ecf0f1;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #2ecc71;
+  transition: width 0.5s ease-in-out;
+}
+
+.doc-status-text.pending {
+  color: #e67e22;
+}
+
+.btn-preview-mini {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+/* =========================================
+   BOTÓN DISPARADOR (Review All)
+   ========================================= */
+.btn-review-all {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1.5px solid #cbd5e1;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-review-all:hover {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+  transform: translateY(-1px);
+}
+
+/* =========================================
+   OVERLAY Y CONTENEDOR DEL MODAL
+   ========================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.6); /* Fondo slate oscuro profundo */
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.summary-modal {
+  background: #ffffff;
+  width: 100%;
+  max-width: 650px;
+  max-height: 90vh;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* =========================================
+   HEADER DEL MODAL
+   ========================================= */
+.modal-header {
+  padding: 1.5rem 2rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.header-btns {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-print-mini {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-print-mini:hover {
+  background: #f1f5f9;
+  color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+/* =========================================
+   CUERPO DEL RESUMEN
+   ========================================= */
+.modal-body {
+  padding: 2rem;
+  overflow-y: auto;
+  background: #ffffff;
+}
+
+.summary-section {
+  background: #fcfcfd;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s;
+}
+
+.summary-section:hover {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+.summary-section h4 {
+  margin: 0 0 1rem 0;
+  font-size: 0.95rem;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.step-num {
+  background: #3b82f6;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.summary-section p {
+  margin: 8px 0;
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* =========================================
+   CONTENEDOR DEL FOOTER
+   ========================================= */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end; /* Alineación a la derecha */
+  align-items: center;
+  gap: 12px; /* Espacio entre botones */
+  padding: 1.5rem 2rem;
+  background-color: #f8fafc; /* Fondo sutil para diferenciar del cuerpo */
+  border-top: 1px solid #e2e8f0;
+}
+
+/* =========================================
+   ESTILO BASE DE LOS BOTONES
+   ========================================= */
+.modal-footer button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+}
+
+/* =========================================
+   BOTÓN: GUARDAR COMO PENDIENTE (Estilo Secundario)
+   ========================================= */
+.btn-pending {
+  background-color: #ffffff;
+  color: #475569; /* Slate 600 */
+  border-color: #cbd5e1 !important; /* Borde gris suave */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-pending:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8 !important;
+  color: #1e293b; /* Slate 900 */
+  transform: translateY(-1px);
+}
+
+.btn-pending:active {
+  background-color: #e2e8f0;
+  transform: translateY(0);
+}
+
+/* =========================================
+   BOTÓN: CONTINUAR EDITANDO (Estilo Primario)
+   ========================================= */
+.btn-continue {
+  background-color: #3b82f6; /* Azul Primario */
+  color: #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+}
+
+.btn-continue:hover {
+  background-color: #2563eb; /* Azul más oscuro */
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-continue:active {
+  background-color: #1d4ed8;
+  transform: translateY(0);
+}
+
+/* =========================================
+   ADAPTATIVO (Móvil)
+   ========================================= */
+@media (max-width: 480px) {
+  .modal-footer {
+    flex-direction: column-reverse; /* El botón de continuar arriba */
+    padding: 1rem;
+    gap: 10px;
+  }
+
+  .modal-footer button {
+    width: 100%; /* Botones de ancho completo en celular */
+    padding: 12px;
+  }
+}
+
+.resume-section {
+  margin-bottom: 30px;
+  border-bottom: 2px dashed #eee;
+  padding-bottom: 20px;
+}
+
+.search-box-pending {
+  display: flex;
+  align-items: center;
+  background: #fff9eb; /* Tono amarillento para diferenciarlo del buscador principal */
+  border: 1px solid #f39c12;
+  padding: 10px 15px;
+  border-radius: 8px;
+}
+
+.search-box-pending input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  margin-left: 10px;
+  outline: none;
+  font-weight: 500;
+}
+
+.pending-results {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 5px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  position: absolute; /* Para que flote sobre el stepper */
+  z-index: 100;
+  width: 100%;
+  max-width: 740px;
+}
+
+.draft-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  transition: background 0.2s;
+}
+
+.draft-item:hover {
+  background: #fdf2e9;
+}
+
+.btn-resume {
+  background: #f39c12;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/* Contenedor de la vista previa del QR */
+.qr-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: #f1f5f9;
+  border-radius: 16px;
+  border: 2px dashed #cbd5e1;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+/* El cuadro del QR */
+.qr-placeholder {
+  width: 180px;
+  height: 180px;
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  border: 1px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Simulación de un patrón de QR para que el usuario visualice el resultado */
+.qr-placeholder::before {
+  content: "";
+  width: 120px;
+  height: 120px;
+  background-image: url('https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=EduControl-Preview'); /* URL de ejemplo */
+  background-size: contain;
+  opacity: 0.2; /* Lo ponemos tenue porque es una previsualización */
+  margin-bottom: 10px;
+}
+
+.qr-placeholder span {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #1e293b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.qr-placeholder small {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  color: #3b82f6;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* Efecto de escaneo (animación de línea) */
+.qr-placeholder::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #3b82f6;
+  box-shadow: 0 0 8px #3b82f6;
+  animation: scanning 2s infinite ease-in-out;
+}
+
+@keyframes scanning {
+  0% { top: 0; }
+  50% { top: 100%; }
+  100% { top: 0; }
+}
