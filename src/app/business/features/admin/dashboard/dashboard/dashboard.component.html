@@ -1,10 +1,11 @@
 <div class="dashboard-wrapper">
+
   <div class="dashboard-header">
     <h2>Resumen Institucional</h2>
     <button class="btn-refresh" (click)="refreshData()">🔄 Actualizar</button>
   </div>
 
-  <div class="stats-grid">
+  <!--<div class="stats-grid">
     @for (item of stats(); track item.label) {
       <div class="stat-card" [style.border-left-color]="item.color">
         <div class="stat-info">
@@ -17,6 +18,154 @@
         <div class="stat-icon-bg">{{ item.icon }}</div>
       </div>
     }
+  </div>-->
+
+  <div class="stats-grid">
+    @for (item of stats(); track item.label) {
+      <div class="stat-card" [style.border-left-color]="item.color">
+        <div class="stat-info">
+          <span class="stat-label">{{ item.label }}</span>
+          <h3 class="stat-value">{{ item.value }}</h3>
+          <span class="stat-trend" [class.up]="item.trend > 0" [class.down]="item.trend < 0">
+            {{ item.trend > 0 ? '▲' : '▼' }} {{ Math.abs(item.trend) }}%
+          </span>
+        </div>
+        <div class="stat-icon-bg" [style.color]="item.color">{{ item.icon }}</div>
+      </div>
+    }
+  </div>
+
+  <div class="dashboard-header-row">
+    <div class="title-group">
+      <p class="subtitle">Análisis de datos en tiempo real</p>
+    </div>
+
+    <div class="filter-container">
+      <div class="filter-box">
+        <label>Ciclo Escolar:</label>
+        <select class="select-modern" 
+                [ngModel]="selectedYear()" 
+                (ngModelChange)="onYearChange($event)">
+          <option value="2024-2025">2024 - 2025</option>
+          <option value="2025-2026">2025 - 2026</option>
+          <option value="2026-2027">2026 - 2027 (Actual)</option>
+        </select>
+      </div>
+      <button class="btn-refresh" (click)="loadDataByYear(selectedYear())">
+        🔄 Actualizar
+      </button>
+    </div>
+  </div>
+  <div class="charts-grid">
+    
+    <div class="analytics-card">
+  <div class="card-header">
+    <div class="header-info">
+      <span class="icon-badge">📊</span>
+      <div>
+        <h4>Distribución por Grados</h4>
+        <p>Población estudiantil por nivel académico</p>
+      </div>
+    </div>
+    @if (selectedGrade()) {
+      <button class="btn-clear-selection" (click)="selectedGrade.set(null)">
+        Limpiar Selección
+      </button>
+    }
+  </div>
+
+  <div class="chart-wrapper">
+    <canvas id="gradeChart"></canvas>
+  </div>
+
+  @if (selectedGrade(); as grade) {
+    <div class="drill-down-panel animate-in">
+      <div class="panel-header">
+        <div class="panel-title">
+          <h3>Alumnos en {{ grade }}</h3>
+          <span class="count-pill">{{ filteredStudents().length }} inscritos</span>
+        </div>
+        <button class="close-panel" (click)="selectedGrade.set(null)" title="Cerrar detalle">×</button>
+      </div>
+
+      <div class="table-container">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Estudiante</th>
+              <th>Matrícula</th>
+              <th>Grupo</th>
+              <th>Rendimiento</th>
+              <th class="text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (student of filteredStudents(); track student.id) {
+              <tr class="student-row">
+                <td>
+                  <div class="student-info">
+                    <div class="mini-avatar">{{ student.nombre[0] }}</div>
+                    <span class="full-name">{{ student.nombre }}</span>
+                  </div>
+                </td>
+                <td><code class="id-badge">{{ student.id }}</code></td>
+                <td>
+                  <span class="group-tag">Grupo {{ student.grupo }}</span>
+                </td>
+                <td>
+                  <div class="performance-track">
+                    <div class="track-info">
+                      <span [style.color]="getBarColor(student.promedio)">{{ student.promedio }}</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                      <div class="progress-bar-fill" 
+                          [style.width.%]="student.promedio * 10"
+                          [style.background-color]="getBarColor(student.promedio)">
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-right">
+                  <button class="btn-action-view" 
+                          title="Ver Expediente Completo" 
+                          (click)="openExpedient(student)">
+                    <span class="icon">👤</span>
+                    <span>Perfil</span>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <h4>Cumplimiento de Pagos</h4>
+        <small>Mensualidad Abril 2026</small>
+      </div>
+      <div class="chart-content doughnut-container">
+        <canvas id="paymentChart"></canvas>
+        <div class="payment-summary-overlay">
+          <span class="total-percent">{{ percentPaid() }}%</span>
+          <small>Al día</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card full-width-mobile">
+      <div class="chart-header">
+        <h4>Densidad por Grupos</h4>
+        <small>Comparativa de secciones A, B y C</small>
+      </div>
+      <div class="chart-content">
+        <canvas id="groupChart"></canvas>
+      </div>
+    </div>
+
   </div>
 
   <div class="dashboard-content">
@@ -90,6 +239,107 @@
       <div class="modal-footer">
         <button class="btn-secondary" (click)="closeModal()">Cancelar</button>
         <button class="btn-save" (click)="saveStudent()">Confirmar Inscripción</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (selectedStudentExpedient(); as student) {
+  <div class="modal-overlay" (click)="closeExpedient()">
+    <div class="modal-content expedient-modal" (click)="$event.stopPropagation()">
+      
+      <div class="modal-header">
+        <div class="student-profile">
+          <div class="avatar-large">{{ student.nombre[0] }}</div>
+          <div class="profile-text">
+            <h3>{{ student.nombre }}</h3>
+            <p>ID: {{ student.id }} • {{ student.grado }} "{{ student.grupo }}"</p>
+          </div>
+        </div>
+        <button class="close-x" (click)="closeExpedient()">×</button>
+      </div>
+
+      <div class="modal-body">
+        
+        <div class="kpi-grid">
+          <div class="kpi-card attendance">
+            <span class="kpi-label">Asistencia Total</span>
+            <div class="kpi-value-row">
+              <span class="kpi-value">{{ student.stats.asistencia }}%</span>
+              <div class="mini-chart"><div class="fill" [style.width.%]="student.stats.asistencia"></div></div>
+            </div>
+          </div>
+          <div class="kpi-card average">
+            <div class="kpi-header-with-trend">
+              <span class="kpi-label">Promedio General</span>
+              
+              <span class="trend-indicator" 
+                    [class.up]="student.stats.tendencia > 0" 
+                    [class.down]="student.stats.tendencia < 0">
+                {{ student.stats.tendencia > 0 ? '▲' : '▼' }} 
+                {{ Math.abs(student.stats.tendencia) | number:'1.1-1' }}
+              </span>
+            </div>
+
+            <div class="kpi-value-row with-chart">
+              <span class="kpi-value">{{ student.promedio | number:'1.1-2' }}</span>
+              
+              <div class="sparkline-container">
+                <canvas id="studentTrendChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="kpi-card tasks">
+            <span class="kpi-label">Tareas Entregadas</span>
+            <span class="kpi-value">{{ student.stats.tareasEntregadas }}/{{ student.stats.tareasTotales }}</span>
+          </div>
+        </div>
+
+        <div class="subjects-container">
+          <h4 class="section-subtitle">Detalle por Asignatura</h4>
+          
+          @for (materia of student.academicData; track materia.nombre) {
+            <div class="subject-detail-card">
+              <div class="subject-header">
+                <div class="subject-title">
+                  <span class="subject-icon">📚</span>
+                  <h5>{{ materia.nombre }}</h5>
+                </div>
+                <div class="subject-grade" [style.background-color]="getBarColor(materia.promedio)">
+                  {{ materia.promedio }}
+                </div>
+              </div>
+
+              <div class="subject-metrics">
+                <div class="metric-item">
+                  <label>Tareas ({{materia.tareas.completadas}}/{{materia.tareas.totales}})</label>
+                  <div class="progress-container">
+                    <div class="progress-fill tasks" [style.width.%]="(materia.tareas.completadas / materia.tareas.totales) * 100"></div>
+                  </div>
+                </div>
+
+                <div class="metric-item">
+                  <label>Exámenes (Promedio)</label>
+                  <div class="exam-pills">
+                    @for (nota of materia.examenes; track $index) {
+                      <span class="exam-pill" [class.low]="nota < 6">{{ nota }}</span>
+                    }
+                  </div>
+                </div>
+
+                <div class="metric-item">
+                  <label>Faltas</label>
+                  <span class="absence-count" [class.warning]="materia.faltas > 3">{{ materia.faltas }} faltas</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-print" (click)="downloadPDF(student)">📥 Descargar Reporte PDF</button>
+        <button class="btn-secondary" (click)="closeExpedient()">Cerrar</button>
       </div>
     </div>
   </div>
