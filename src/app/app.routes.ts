@@ -4,45 +4,19 @@ import { AuthenticatedGuard } from './core/guards/authenticated.guard';
 import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
-    /*{
-        path: '',
-        loadComponent: () => import('./shared/components/layout/layout.component'),
-        children: [
-            {
-                path: 'dashboard',
-                loadComponent: () => import('./business/admin/dashboard/dashboard.component'),
-                canActivate: [AuthGuard]
-            },
-            {
-                path: 'profile',
-                loadComponent: () => import('./business/admin/profile/profile.component'),
-                canActivate: [AuthGuard]
-            },
-            {
-                path: 'tables',
-                loadComponent: () => import('./business/admin/tables/tables.component'),
-                canActivate: [AuthGuard]
-            },
-            {
-                path: '',
-                redirectTo: 'dashboard',
-                pathMatch: 'full'
-            }
-
-        ]
-    },*/
-    { 
+   { 
         path: 'admin', 
         canActivate: [AuthGuard],
         //canActivate: [roleGuard(['admin'])],
         loadChildren: () => import('./business/features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
     },
-    /*{ 
-        path: 'profesor', 
-        canActivate: [roleGuard(['docente'])],
-        loadChildren: () => import('./features/docente/docente.routes')
-    },
     { 
+        path: 'docente', 
+        canActivate: [AuthGuard],
+        //canActivate: [roleGuard(['docente'])],
+        loadChildren: () => import('./business/features/teacher/teacher.routes').then(m => m.TEACHER_ROUTES)
+    },
+    /*{ 
         path: 'estudiante', 
         canActivate: [roleGuard(['alumno'])],
         loadChildren: () => import('./features/alumno/alumno.routes')

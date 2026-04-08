@@ -1,0 +1,50 @@
+<div class="admin-container" [class.collapsed]="isSidebarCollapsed()">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <span class="logo">🏫</span>
+            <span class="school-name" *ngIf="!isSidebarCollapsed()">EduControl</span>
+        </div>
+        <nav class="sidebar-nav">
+            @for (item of menuItems; track item.path) {
+                <a [routerLink]="item.path" routerLinkActive="active-link" class="nav-item">
+                    <span class="icon">{{ item.icon }}</span>
+                        @if (isSidebarCollapsed()) {
+                            <span class="label" *ngIf="isSidebarCollapsed()">{{ item.label }}</span>
+                        } @else {
+                            <span class="label">{{ item.label }}</span>
+                        }
+                </a>
+            }
+        </nav>
+    </aside>
+    <main class="main-content">
+        <header class="top-navbar">
+            <div class="left-section">
+                <button class="toggle-btn" (click)="toggleSidebar()">☰</button>
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" placeholder="Buscar alumnos, tareas, eventos...">
+                    </div>
+                </div>
+            </div>
+            <div class="user-actions">
+                <div class="user-info">
+                    <div class="user-text">
+                        <span class="user-name">{{nameFullUsr}}</span>
+                        <span class="user-role">{{profileUsr}}</span>
+                    </div>
+                    <div class="avatar">A</div>
+                </div>
+
+                <button class="btn-logout" (click)="logout()" title="Cerrar Sesión">
+                    <span class="logout-icon">🚪</span>
+                    <span class="logout-text">Salir</span>
+                </button>
+    </div>
+        </header>
+        <div class="content-wrapper">
+            <router-outlet></router-outlet>
+        </div>
+    </main>
+</div>

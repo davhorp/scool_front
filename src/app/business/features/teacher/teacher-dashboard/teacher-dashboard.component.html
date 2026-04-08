@@ -1,0 +1,98 @@
+<div class="teacher-dashboard">
+  <header class="welcome-header">
+    <div class="user-greeting">
+      <h1>Hola, {{ teacherName() }} 👋</h1>
+      <p>Hoy es {{ currentDate }}</p>
+    </div>
+    <div class="quick-stats">
+      <div class="q-stat"><span>📚</span> 3 Clases hoy</div>
+      <div class="q-stat"><span>📝</span> 12 Tareas por revisar</div>
+    </div>
+  </header>
+
+  <div class="dashboard-grid">
+    
+    <section class="widget schedule-widget">
+      <h3>📅 Horario de Hoy</h3>
+      <div class="schedule-list">
+        @for (clase of todayClasses(); track clase.id) {
+          <div class="class-card" [class.next]="clase.id === 101">
+            <div class="time">{{ clase.hora }}</div>
+            <div class="details">
+              <strong>{{ clase.materia }}</strong>
+              <span>{{ clase.grado }} • {{ clase.aula }}</span>
+            </div>
+            <div class="students-count">👥 {{ clase.estudiantes }}</div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="widget attendance-widget">
+      <div class="widget-header">
+        <h3>✅ Asistencia: 3° A - Matemáticas</h3>
+        <button class="btn-save" (click)="saveAttendance()">Guardar</button>
+      </div>
+      <div class="attendance-table">
+        @for (student of attendanceList(); track student.id) {
+          <div class="student-row">
+            <span>{{ student.nombre }}</span>
+            <div class="attendance-controls">
+              <button [class.p]="student.estado === 'presente'" (click)="markAttendance(student.id, 'presente')">P</button>
+              <button [class.f]="student.estado === 'ausente'" (click)="markAttendance(student.id, 'ausente')">F</button>
+              <button [class.t]="student.estado === 'tarde'" (click)="markAttendance(student.id, 'tarde')">T</button>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="widget tasks-widget">
+  <h3>📂 Pendiente por Calificar</h3>
+  <div class="task-list">
+    @for (task of pendingTasks(); track task.id) {
+      <div class="task-item">
+        <button class="btn-grade" (click)="openModal(task)">
+          Corregir
+        </button>
+      </div>
+    }
+  </div>
+</section>
+  </div>
+</div>
+
+
+@if (isModalOpen()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <header class="modal-header">
+        <div>
+          <h2>Revisión de Tarea</h2>
+          <p>{{ selectedTask()?.titulo }} - <span>{{ selectedTask()?.grupo }}</span></p>
+        </div>
+        <button class="btn-close" (click)="closeModal()">×</button>
+      </header>
+
+      <div class="modal-body">
+        <div class="grading-summary">
+          <div class="stat-circle">
+            <span class="number">85%</span>
+            <span class="label">Entregado</span>
+          </div>
+          <div class="distribution-chart">
+            <div class="bar-item"><div class="bar" style="height: 60%"></div><span>A</span></div>
+            <div class="bar-item"><div class="bar" style="height: 80%"></div><span>B</span></div>
+            <div class="bar-item"><div class="bar" style="height: 40%"></div><span>C</span></div>
+            <div class="bar-item"><div class="bar" style="height: 10%"></div><span>D</span></div>
+          </div>
+        </div>
+
+        <div class="action-zone">
+          <p>Hay <strong>{{ selectedTask()?.pendingCount }}</strong> alumnos esperando calificación.</p>
+          <button class="btn-primary-large">Abrir Panel de Calificación</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

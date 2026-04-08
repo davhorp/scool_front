@@ -1,0 +1,208 @@
+<div class="payment-management">
+  
+  <div class="payment-header">
+    <div class="chart-card">
+      <div class="chart-header-top">
+        <div class="title-group">
+          <h4>Cumplimiento de Pagos</h4>
+          <p class="subtitle-text">Ciclo Escolar 2026</p>
+        </div>
+        <select [ngModel]="selectedMonth()" (ngModelChange)="onMonthChange($event)" class="select-month">
+          @for (m of months; track m) {
+            <option [value]="m">{{ m }}</option>
+          }
+        </select>
+      </div>
+      
+      <div class="chart-content doughnut-container">
+        <canvas #paymentCanvas></canvas> 
+        <div class="payment-summary-overlay">
+          <span class="total-percent">{{ paymentReport().percent }}%</span>
+          <small>Recaudado</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="money-stats">
+      <div class="money-card collected">
+        <div class="m-icon">💰</div>
+        <div class="m-data">
+          <span class="label">Total Recaudado</span>
+          <span class="value">${{ paymentReport().paid.length * 1500 | number:'1.0-0' }}</span>
+        </div>
+      </div>
+      
+      <div class="money-card debt">
+        <div class="m-icon">🚨</div>
+        <div class="m-data">
+          <span class="label">Monto Pendiente</span>
+          <span class="value">${{ paymentReport().pending.length * 1500 | number:'1.0-0' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="details-grid">
+    <!--<div class="status-list-card border-pending">
+      <h5 class="list-title pending">⚠️ Pendientes ({{ paymentReport().pending.length }})</h5>
+      <div class="scroll-area">
+        @for (student of paymentReport().pending; track student.id) {
+          <div class="payment-item item-pending animate-in">
+            <div class="user-info">
+              <span class="student-name">{{ student.nombre }}</span>
+              <span class="tutor-name">Tutor: {{ student.tutor }}</span>
+            </div>
+            <button class="btn-remind" (click)="openReminderModal(student)">📲</button>
+          </div>
+        } @empty {
+          <div class="empty-state">
+            <span>✨</span>
+            <p>¡Increíble! Sin deudas este mes.</p>
+          </div>
+        }
+      </div>
+    </div>-->
+<div class="bulk-actions-bar" [class.active]="selectedIds().size > 0">
+  <div class="bulk-info">
+    <span class="count-badge">{{ selectedIds().size }}</span>
+    <p>Alumnos seleccionados para cobro</p>
+  </div>
+  <button class="btn-bulk-send" (click)="openBulkModal()">
+    🚀 Enviar Recordatorios Masivos
+  </button>
+</div>
+
+<div class="status-list-card">
+  <div class="list-header-actions">
+    <h5 class="list-title pending">⚠️ Pendientes</h5>
+    <label class="select-all">
+      <input type="checkbox" (change)="toggleAll($event)"> 
+      <span>Seleccionar Todos</span>
+    </label>
+  </div>
+
+  <div class="scroll-area">
+    @for (student of paymentReport().pending; track student.id) {
+      <div class="payment-item item-pending animate-in" [class.selected]="selectedIds().has(student.id)">
+        <div class="check-col">
+          <input type="checkbox" 
+                 [checked]="selectedIds().has(student.id)" 
+                 (change)="toggleSelection(student.id)">
+        </div>
+        <div class="user-info">
+          <span class="student-name">{{ student.nombre }}</span>
+          <span class="tutor-name">Tutor: {{ student.tutor }}</span>
+        </div>
+        <button class="btn-remind" (click)="openReminderModal(student)">📲</button>
+      </div>
+    }
+  </div>
+</div>
+    <div class="status-list-card border-success">
+      <h5 class="list-title success">✅ Pagados ({{ paymentReport().paid.length }})</h5>
+      <div class="scroll-area">
+        @for (student of paymentReport().paid; track student.id) {
+          <div class="payment-item item-success">
+            <div class="user-info">
+              <span class="student-name">{{ student.nombre }}</span>
+              <span class="tutor-name">Tutor: {{ student.tutor }}</span>
+            </div>
+            <div class="status-badge-paid">Pagado</div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (selectedStudentForReminder(); as student) {
+  <div class="modal-overlay" (click)="selectedStudentForReminder.set(null)">
+    <div class="modal-content reminder-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="header-title">
+          <span class="icon">📲</span>
+          <h4>Recordatorio de Pago</h4>
+        </div>
+        <button class="close-x" (click)="selectedStudentForReminder.set(null)">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="tutor-info-card">
+          <span class="label">Destinatario</span>
+          <strong>{{ student.tutor }}</strong>
+          <p class="sub-detail">Padre/Tutor de: {{ student.nombre }}</p>
+        </div>
+        <div class="form-group">
+          <label>Cuerpo del Mensaje</label>
+          <textarea [ngModel]="reminderMessage()" (ngModelChange)="reminderMessage.set($event)" rows="5" class="reminder-textarea"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="selectedStudentForReminder.set(null)">Cancelar</button>
+        <button class="btn-send-whatsapp" (click)="sendReminder()">
+          <span>Enviar vía WhatsApp</span>
+          <span class="send-icon">↗️</span>
+        </button>
+      </div>
+    </div>
+  </div>
+}
+<div class="bulk-floating-bar" [class.active]="selectedIds().size > 0">
+  <div class="bulk-content">
+    <div class="selection-info">
+      <span class="pulse-badge">{{ selectedIds().size }}</span>
+      <p>Seleccionados para cobro en <strong>{{ selectedMonth() }}</strong></p>
+    </div>
+    <div class="bulk-actions">
+      <button class="btn-cancel-all" (click)="clearSelection()">
+  Descartar
+</button>
+      <button class="btn-bulk-trigger" (click)="openBulkModal()">
+        <span>Enviar Recordatorios</span>
+        <i class="icon-send">🚀</i>
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (isBulkConfirmModalOpen()) {
+  <div class="modal-overlay" (click)="closeBulkModal()">
+    <div class="modal-content bulk-modal animate-pop">
+      <div class="modal-status-icon success">📢</div>
+      
+      <div class="modal-body-confirm">
+        <h3>Confirmar Acción Masiva</h3>
+        <p>Estás por enviar <strong>{{ selectedIds().size }}</strong> mensajes de WhatsApp a los tutores de los alumnos seleccionados.</p>
+        
+        <div class="info-alert">
+          <span class="alert-icon">ℹ️</span>
+          <p>Esta acción notificará sobre el adeudo del mes de <strong>{{ selectedMonth() }}</strong>.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer-dual">
+        <button class="btn-outline" (click)="closeBulkModal()">Regresar</button>
+        <button class="btn-confirm-final" (click)="confirmBulkSend()">
+          Sí, enviar ahora
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (isSendingBulk()) {
+  <div class="modal-overlay">
+    <div class="modal-content progress-modal">
+      <div class="loader-container">
+        <div class="spinner"></div>
+        <span class="percentage">{{ bulkProgress() }}%</span>
+      </div>
+      <h4>Procesando envíos</h4>
+      <p>Enviando mensaje {{ Math.round((bulkProgress() / 100) * selectedIds().size) }} de {{ selectedIds().size }}</p>
+      
+      <div class="progress-track-large">
+        <div class="progress-bar-active" [style.width.%]="bulkProgress()"></div>
+      </div>
+      <small>Por favor, mantén esta ventana abierta.</small>
+    </div>
+  </div>
+}

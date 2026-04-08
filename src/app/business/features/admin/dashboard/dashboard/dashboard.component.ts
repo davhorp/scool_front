@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { PaymentDashComponent } from '../payment-dash/payment-dash.component';
 Chart.register(...registerables);
 
 interface StatCard {
@@ -18,7 +19,7 @@ interface StatCard {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PaymentDashComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

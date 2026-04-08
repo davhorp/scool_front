@@ -1,0 +1,240 @@
+<div class="finance-container">
+  
+  <div class="stats-grid">
+    <div class="card-stat revenue">
+      <span class="label">Total Recaudado</span>
+      <h2 class="value">${{ totalRecaudado() | number:'1.2-2' }}</h2>
+      <span class="trend">↑ 12% vs mes anterior</span>
+    </div>
+
+    <div class="card-stat pending">
+      <span class="label">Cartera Pendiente</span>
+      <h2 class="value">${{ totalPendiente() | number:'1.2-2' }}</h2>
+      <span class="trend">Acción requerida</span>
+    </div>
+
+    <div class="card-stat risk" [class.high-risk]="indiceMorosidad() > 15">
+      <span class="label">Índice de Morosidad</span>
+      <h2 class="value">{{ indiceMorosidad() | number:'1.1-1' }}%</h2>
+      <div class="risk-bar">
+        <div class="risk-fill" [style.width.%]="indiceMorosidad()"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="finance-content">
+    
+    <div class="payment-alerts">
+      <div class="section-header">
+        <div class="header-left">
+          <h3>🚨 Alertas de Pago</h3>
+          <span class="count-tag">{{ filteredAtrasados().length }}</span>
+        </div>
+
+        <div class="page-size-control">
+          <label for="pageSize">Mostrar:</label>
+          <select 
+            id="pageSize"
+            [ngModel]="itemsPerPage()" 
+            (ngModelChange)="onPageSizeChange($event)"
+            class="select-n">
+            @for (size of pageSizeOptions; track size) {
+              <option [value]="size">{{ size }} registros</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="alert-list">
+        @if (isLoading()) {
+          @for (i of [1,2,3,4]; track i) {
+            <div class="skeleton-row">
+              <div class="skeleton sk-check"></div>
+              <div class="skeleton sk-text-long"></div>
+              <div class="skeleton sk-badge"></div>
+              <div class="skeleton sk-btn"></div>
+            </div>
+          }
+        } @else {
+          @for (pago of paginatedPayments(); track pago.id) {
+            <div class="alert-item animate-in" [class.selected]="selectedIds().has(pago.id)">
+              
+              <div class="check-col">
+                <input type="checkbox" 
+                       [checked]="selectedIds().has(pago.id)"
+                       (change)="toggleSelection(pago.id)">
+              </div>
+
+              <div class="info-main">
+                <div class="alumno-data">
+                  <strong>{{ pago.alumno }}</strong>
+                  <span class="tutor-tag">Tutor: {{ pago.tutor }}</span>
+                </div>
+                <div class="date-data">
+                  <i class="icon-calendar">📅</i>
+                  <span>Venció: {{ pago.fechaVencimiento | date:'dd MMM' }}</span>
+                </div>
+              </div>
+
+              <div class="method-col">
+                <span class="method-badge" [ngClass]="pago.metodoPago.toLowerCase()">
+                  {{ pago.metodoPago }}
+                </span>
+              </div>
+
+              <div class="action-col">
+                <span class="monto-val">${{ pago.monto | number:'1.0-0' }}</span>
+                <button class="btn-notify-small" 
+                        (click)="enviarRecordatorio(pago)" 
+                        title="Notificar a {{ pago.tutor }}">
+                  📧
+                </button>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-state">🎉 ¡Excelente! No hay deudas pendientes.</div>
+          }
+        }
+      </div>
+
+      @if (!isLoading() && totalPages() > 1) {
+  <div class="pagination-controls">
+    <button class="btn-page" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">
+      ←
+    </button>
+    
+    <div class="page-jump-container">
+  <span class="page-label">Página</span>
+  <button class="btn-jump" (click)="abrirJumpModal()">
+    <strong>{{ currentPage() }}</strong> de {{ totalPages() }}
+  </button>
+</div>
+
+    <button class="btn-page" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">
+      →
+    </button>
+  </div>
+}
+    </div>
+
+    <div class="monthly-summary">
+      <h3>Proyección de Ingresos</h3>
+      <div class="mini-chart">
+        <div class="bar-group">
+          <label>Marzo</label>
+          <div class="bar-bg"><div class="bar-fill" style="height: 85%;"></div></div>
+        </div>
+        <div class="bar-group">
+          <label>Abril</label>
+          <div class="bar-bg"><div class="bar-fill" style="height: 45%;"></div></div>
+        </div>
+        <div class="bar-group">
+          <label>Mayo</label>
+          <div class="bar-bg projected"><div class="bar-fill" style="height: 100%;"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (selectedIds().size > 0) {
+    <div class="bulk-actions-bar">
+      <div class="bulk-info">
+        <span class="count-badge">{{ selectedIds().size }}</span>
+        <p>Seleccionados para aviso masivo</p>
+      </div>
+      <div class="bulk-buttons">
+        <button class="btn-bulk-notify" (click)="notificarSeleccionados()">🚀 Notificar Lote</button>
+        <button class="btn-bulk-dismiss" (click)="clearSelection()">Descartar</button>
+      </div>
+    </div>
+  }
+</div>
+
+@if (selectedPaymentForMsg(); as seleccionado) {
+  <div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal-content msg-editor-modal" (click)="$event.stopPropagation()">
+      
+      <div class="modal-header">
+        <div class="header-info">
+          <span class="icon">✉️</span>
+          <div>
+            <h4>Revisar Recordatorio</h4>
+            <p>Para: <strong>{{ seleccionado.tutor }}</strong> (Tutor de {{ seleccionado.alumno }})</p>
+          </div>
+        </div>
+        <button class="close-btn" (click)="cerrarModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="payment-context-card">
+          <div class="ctx-item">
+            <label>Monto</label>
+            <span>${{ seleccionado.monto | number }}</span>
+          </div>
+          <div class="ctx-item">
+            <label>Preferencia</label>
+            <span class="badge-mini">{{ seleccionado.metodoPago }}</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Mensaje Personalizado</label>
+          <textarea 
+            [ngModel]="editableMessage()" 
+            (ngModelChange)="editableMessage.set($event)"
+            rows="6"
+            class="msg-textarea">
+          </textarea>
+          <small class="hint">Puedes editar el texto antes del envío final.</small>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn-send-final" 
+                [disabled]="isProcessing()" 
+                (click)="confirmarEnvioFinal()">
+          @if (isProcessing()) {
+            <span class="spinner-small"></span>
+            <span>Enviando...</span>
+          } @else {
+            <span>Enviar Mensaje</span>
+            <i class="icon">🚀</i>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (isJumpModalOpen()) {
+  <div class="modal-overlay" (click)="cerrarJumpModal()">
+    <div class="modal-content jump-modal" (click)="$event.stopPropagation()">
+      
+      <div class="modal-header-mini">
+        <h4>Ir a la página</h4>
+        <button class="close-x" (click)="cerrarJumpModal()">×</button>
+      </div>
+
+      <div class="modal-body-mini">
+        <p>Selecciona una página entre 1 y {{ totalPages() }}</p>
+        <div class="input-jump-group">
+          <input 
+            type="number" 
+            [ngModel]="jumpPageInput()" 
+            (ngModelChange)="jumpPageInput.set($event)"
+            min="1" 
+            [max]="totalPages()"
+            class="input-page-number"
+            (keyup.enter)="confirmarSalto()"
+            autoFocus>
+        </div>
+      </div>
+
+      <div class="modal-footer-mini">
+        <button class="btn-cancel-mini" (click)="cerrarJumpModal()">Cancelar</button>
+        <button class="btn-confirm-mini" (click)="confirmarSalto()">Saltar</button>
+      </div>
+    </div>
+  </div>
+}

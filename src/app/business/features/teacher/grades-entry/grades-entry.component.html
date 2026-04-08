@@ -1,0 +1,67 @@
+<div class="grades-container">
+  
+  <header class="grades-header">
+    <div class="subject-info">
+      <h2>{{ selectedSubject() }}</h2>
+      <span>Grupo: {{ selectedGroup() }}</span>
+    </div>
+
+    <div class="controls">
+      <div class="selector">
+        <label>Trimestre:</label>
+        <select [(ngModel)]="selectedTerm">
+          <option [value]="1">1er Trimestre</option>
+          <option [value]="2">2do Trimestre</option>
+          <option [value]="3">3er Trimestre</option>
+        </select>
+      </div>
+      <button class="btn-save-grades" (click)="saveTermGrades()">💾 Guardar Cambios</button>
+    </div>
+  </header>
+
+  <div class="summary-bar">
+    <div class="stat">Promedio Grupal: <strong>{{ groupAverage() }}</strong></div>
+    <div class="stat">Alumnos: <strong>{{ students().length }}</strong></div>
+  </div>
+
+  <div class="table-card">
+    <table class="grades-table">
+      <thead>
+        <tr>
+          <th>Estudiante</th>
+          <th>Parcial 1</th>
+          <th>Parcial 2</th>
+          <th>Parcial 3</th>
+          <th>Promedio Final</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of students(); track s.id) {
+          <tr>
+            <td class="student-name">{{ s.nombre }}</td>
+            <td>
+              <input type="number" [ngModel]="s.p1" (ngModelChange)="updateGrade(s.id, 'p1', $event)" min="0" max="10" step="0.1">
+            </td>
+            <td>
+              <input type="number" [ngModel]="s.p2" (ngModelChange)="updateGrade(s.id, 'p2', $event)" min="0" max="10" step="0.1">
+            </td>
+            <td>
+              <input type="number" [ngModel]="s.p3" (ngModelChange)="updateGrade(s.id, 'p3', $event)" min="0" max="10" step="0.1">
+            </td>
+            <td class="final-grade" [class.fail]="(s.p1 + s.p2 + s.p3) / 3 < 6">
+              {{ ((s.p1 + s.p2 + s.p3) / 3) | number:'1.1-1' }}
+            </td>
+            <td>
+              @if ((s.p1 + s.p2 + s.p3) / 3 >= 6) {
+                <span class="badge pass">Aprobado</span>
+              } @else {
+                <span class="badge fail">Reprobado</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

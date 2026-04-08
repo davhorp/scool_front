@@ -1,32 +1,32 @@
 import { Routes } from '@angular/router';
 
-export const ADMIN_ROUTES: Routes = [
+export const TEACHER_ROUTES: Routes = [
   {
     path: '',
     // Opcional: Un componente 'Layout' que contenga el Sidebar y Navbar de Admin
-    loadComponent: () => import('./layout/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
+    loadComponent: () => import('./teacher-layout/teacher-layout.component').then(m => m.TeacherLayoutComponent),
     children: [
       {
         path: 'dashboard',
         title: 'Panel de Control - Admin',
-        loadComponent: () => import('./dashboard/dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./teacher-dashboard/teacher-dashboard.component').then(m => m.TeacherDashboardComponent)
       },
       {
-        path: 'usuarios',
-        title: 'Gestión de Usuarios',
-        loadComponent: () => import('./dashboard/users-list/users-list.component').then(m => m.UsersListComponent)
+        path: 'students',
+        title: 'Gestión de Estudiantes',
+        loadComponent: () => import('./teacher-students/teacher-students.component').then(m => m.TeacherStudentsComponent)
       },
       {
-        path: 'inscripciones',
-        title: 'Control de Inscripciones',
-        loadComponent: () => import('./dashboard/enrollment/enrollment.component').then(m => m.EnrollmentComponent)
+        path: 'grades',/*Corregir el path */
+        title: 'Control de Notas',
+        loadComponent: () => import('./grades-entry/grades-entry.component').then(m => m.GradesEntryComponent)
       },
-      {
+     /* {
         path: 'reportes-financieros',
         title: 'Reportes de Pagos',
         loadComponent: () => import('./dashboard/finance-dashboard/finance-dashboard.component').then(m => m.FinanceDashboardComponent)
       },
-    /*  {
+     {
         path: 'configuracion',
         title: 'Configuración del Ciclo Escolar',
         loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent)

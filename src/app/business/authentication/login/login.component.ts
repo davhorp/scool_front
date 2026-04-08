@@ -22,7 +22,7 @@ export default class LoginComponent {
   // Mapa de rutas por rol
   private readonly dashboardRoutes: Record<UserRole, string> = {
     admin: '/admin/dashboard',
-    docente: '/docente/inicio',
+    docente: '/docente/dashboard',
     alumno: '/alumno/mis-clases',
     padre: '/tutor/seguimiento'
   };
@@ -84,7 +84,8 @@ export default class LoginComponent {
     const targetRoute = this.dashboardRoutes[rol] || '/login';
     console.log('URL ROL');
     console.log(targetRoute);
-    this.router.navigate([targetRoute]);
+    //this.router.navigate([targetRoute]);
+    this.router.navigate(["docente"]);
   }
 
 }

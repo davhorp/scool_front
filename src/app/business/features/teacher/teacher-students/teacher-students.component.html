@@ -1,0 +1,177 @@
+<div class="students-view-container">
+  
+  <header class="view-header">
+    <div class="header-content">
+      <h1 class="text-h2">Gestión Académica</h1>
+      <p class="text-muted">Expediente digital y seguimiento de rendimiento estudiantil.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="addStudent()">
+        <span class="icon">plus</span>
+        <span>Nuevo Alumno</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="view-layout">
+    
+    <aside class="master-panel">
+      <div class="search-container">
+        <div class="input-group">
+          <span class="input-icon">search</span>
+          <input type="text" 
+                 placeholder="Buscar por nombre o tutor..." 
+                 [ngModel]="searchQuery()" 
+                 (ngModelChange)="searchQuery.set($event)">
+        </div>
+      </div>
+      
+      <nav class="students-nav" aria-label="Lista de estudiantes">
+        @for (alumno of alumnosFiltrados(); track alumno.id) {
+          <button class="student-item-btn" 
+                  [class.is-active]="alumnoSeleccionado()?.id === alumno.id"
+                  (click)="seleccionarAlumno(alumno)">
+            
+            <div class="avatar-wrapper">
+              <img [src]="'https://ui-avatars.com/api/?name=' + alumno.nombre + '&background=4f46e5&color=fff'" 
+                   alt="Avatar de {{alumno.nombre}}"
+                   class="avatar-sm">
+              @if (alumno.estado === 'Riesgo') {
+                <span class="status-indicator-dot danger" title="Riesgo Académico"></span>
+              }
+            </div>
+            
+            <div class="item-content">
+              <div class="item-header">
+                <span class="student-name">{{ alumno.nombre }}</span>
+                <span class="student-grade">3° B</span>
+              </div>
+              <div class="item-meta">
+                <span class="gpa-pill" [attr.data-status]="alumno.promedio >= 9 ? 'excellent' : (alumno.promedio < 7.5 ? 'risk' : 'normal')">
+                  {{ alumno.promedio | number:'1.1-1' }}
+                </span>
+                <span class="attendance-meta">Asist: {{ alumno.asistencia }}%</span>
+              </div>
+            </div>
+          </button>
+        } @empty {
+          <div class="empty-list-state">
+            <span class="icon">person_search</span>
+            <p>No hay coincidencias para tu búsqueda.</p>
+          </div>
+        }
+      </nav>
+    </aside>
+
+    <main class="detail-panel" aria-labelledby="student-name-heading">
+      
+      @if (alumnoSeleccionado(); as alumno) {
+        <div class="detail-content animate-in">
+          
+          <section class="profile-hero-card">
+            <div class="profile-main">
+              <div class="avatar-large-container">
+                <img [src]="'https://ui-avatars.com/api/?name=' + alumno.nombre + '&background=4f46e5&color=fff'" 
+                     class="avatar-xl">
+              </div>
+              <div class="profile-identity">
+                <h2 id="student-name-heading">{{ alumno.nombre }}</h2>
+                <div class="badge-row">
+                  <span class="badge" [attr.data-status]="alumno.estado.toLowerCase()">
+                    {{ alumno.estado }}
+                  </span>
+                  <span class="id-tag">ID: EDU-{{ alumno.id | number:'3.0-0' }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <button class="btn btn-secondary" (click)="notificarTutor(alumno)">
+                <span class="icon">mail</span> Contactar Tutor
+              </button>
+              <button class="btn btn-primary-outline">
+                <span class="icon">edit</span> Editar Perfil
+              </button>
+            </div>
+          </section>
+
+          <div class="analytics-grid">
+            
+            <div class="card chart-card">
+              <div class="card-header">
+                <h3>Evolución de Calificaciones</h3>
+                <p class="text-xs">Promedio mensual del ciclo lectivo actual</p>
+              </div>
+              <div class="chart-container">
+                <div class="bar-chart">
+                  @for (item of historialRendimiento(); track item.mes) {
+                    <div class="chart-column">
+                      <div class="bar-wrapper">
+                        <div class="bar-fill" [style.height.%]="item.nota * 10">
+                          <span class="bar-tooltip">{{ item.nota }}</span>
+                        </div>
+                      </div>
+                      <span class="axis-label">{{ item.mes }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="card metrics-card">
+              <div class="card-header">
+                <h3>Indicadores Clave</h3>
+              </div>
+              <div class="metrics-container">
+                <div class="metric-item">
+                  <div class="metric-label">Asistencia</div>
+                  <div class="circular-progress-box" [style.--value]="alumno.asistencia">
+                    <svg viewBox="0 0 36 36" class="circular-chart">
+                      <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                      <path class="circle" [attr.stroke-dasharray]="alumno.asistencia + ', 100'" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    </svg>
+                    <span class="percentage">{{ alumno.asistencia }}%</span>
+                  </div>
+                </div>
+
+                <div class="metric-item">
+                  <div class="metric-label">Tareas</div>
+                  <div class="circular-progress-box" [style.--value]="alumno.tareasEntregadas">
+                    <svg viewBox="0 0 36 36" class="circular-chart">
+                      <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                      <path class="circle secondary" [attr.stroke-dasharray]="alumno.tareasEntregadas + ', 100'" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    </svg>
+                    <span class="percentage">{{ alumno.tareasEntregadas }}%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tutor-contact-footer">
+                <span class="label">Responsable Legal:</span>
+                <span class="value">{{ alumno.tutor }}</span>
+              </div>
+            </div>
+
+            <div class="card subjects-card">
+              <div class="card-header">
+                <h3>Desempeño por Materia</h3>
+              </div>
+              <div class="subjects-list">
+                <div class="subject-row"><span>Matemáticas</span> <strong>9.4</strong></div>
+                <div class="subject-row"><span>Ciencias Naturales</span> <strong>9.1</strong></div>
+                <div class="subject-row"><span>Lengua y Literatura</span> <strong>8.8</strong></div>
+                <div class="subject-row"><span>Geografía e Historia</span> <strong>7.5</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      } @else {
+        <div class="empty-detail-state animate-in">
+          <div class="illustration-box">📁</div>
+          <h2>Selecciona un expediente</h2>
+          <p>Haz clic en un alumno de la lista lateral para visualizar su rendimiento detallado, asistencia y datos de contacto.</p>
+        </div>
+      }
+    </main>
+  </div>
+</div>

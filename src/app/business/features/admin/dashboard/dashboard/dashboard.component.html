@@ -141,22 +141,13 @@
     </div>
   }
 </div>
-
-    <div class="chart-card">
-      <div class="chart-header">
-        <h4>Cumplimiento de Pagos</h4>
-        <small>Mensualidad Abril 2026</small>
-      </div>
-      <div class="chart-content doughnut-container">
-        <canvas id="paymentChart"></canvas>
-        <div class="payment-summary-overlay">
-          <span class="total-percent">{{ percentPaid() }}%</span>
-          <small>Al día</small>
-        </div>
-      </div>
+<!--</div>
+<div class="charts-grid">-->
+    <div class="analytics-card">
+      <app-payment-dash />
     </div>
 
-    <div class="chart-card full-width-mobile">
+    <!--<div class="chart-card full-width-mobile">
       <div class="chart-header">
         <h4>Densidad por Grupos</h4>
         <small>Comparativa de secciones A, B y C</small>
@@ -164,7 +155,7 @@
       <div class="chart-content">
         <canvas id="groupChart"></canvas>
       </div>
-    </div>
+    </div>-->
 
   </div>
 
