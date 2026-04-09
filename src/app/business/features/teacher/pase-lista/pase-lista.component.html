@@ -1,0 +1,104 @@
+<div class="attendance-container animate-in">
+  
+  <header class="attendance-header">
+    <div class="header-titles">
+      <h2>Pase de Lista</h2>
+      <p>Registra la asistencia diaria de tus alumnos de forma rápida.</p>
+    </div>
+    
+    <div class="header-controls">
+      <div class="control-group">
+        <label>Grupo / Materia</label>
+        <select class="select-modern">
+          <option>3° A - Matemáticas</option>
+          <option>3° A - Ciencias</option>
+          <option>3° B - Matemáticas</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Fecha</label>
+        <input type="date" class="input-modern" [value]="fechaHoy()">
+      </div>
+    </div>
+  </header>
+
+  <div class="summary-stats">
+    <div class="stat-card total">
+      <span class="stat-value">{{ listaAlumnos().length }}</span>
+      <span class="stat-label">Inscritos</span>
+    </div>
+    <div class="stat-card presentes">
+      <span class="stat-value">{{ conteo().presentes }}</span>
+      <span class="stat-label">Presentes</span>
+    </div>
+    <div class="stat-card retardos">
+      <span class="stat-value">{{ conteo().retardos }}</span>
+      <span class="stat-label">Retardos</span>
+    </div>
+    <div class="stat-card faltas">
+      <span class="stat-value">{{ conteo().faltas }}</span>
+      <span class="stat-label">Faltas</span>
+    </div>
+  </div>
+
+  <div class="students-list-wrapper">
+    <div class="list-header">
+      <span class="col-name">Alumno</span>
+      <span class="col-actions text-center">Estado de Asistencia</span>
+    </div>
+
+    <div class="students-list">
+      @for (alumno of listaAlumnos(); track alumno.id) {
+        <article class="student-row" [class.marked]="alumno.estado !== null">
+          
+          <div class="student-id-info">
+            <img [src]="alumno.foto" class="avatar-sm" alt="Avatar">
+            <div class="info">
+              <strong>{{ alumno.nombre }}</strong>
+              <small>ID: {{ alumno.matricula }}</small>
+            </div>
+          </div>
+
+          <div class="row-controls">
+            
+            <div class="attendance-actions">
+              <button class="btn-att present" [class.active]="alumno.estado === 'presente'" (click)="marcar(alumno.id, 'presente')" title="Presente">
+                <span class="icon">✓</span><span class="label">P</span>
+              </button>
+              
+              <button class="btn-att tardy" [class.active]="alumno.estado === 'retardo'" (click)="marcar(alumno.id, 'retardo')" title="Retardo">
+                <span class="icon">⏱</span><span class="label">R</span>
+              </button>
+  
+              <button class="btn-att absent" [class.active]="alumno.estado === 'falta'" (click)="marcar(alumno.id, 'falta')" title="Falta">
+                <span class="icon">✕</span><span class="label">F</span>
+              </button>
+            </div>
+
+            <button class="btn-report" 
+                    [routerLink]="['/docente/registrar-conducta']" 
+                    [queryParams]="{ studentId: alumno.id }"
+                    title="Reportar Conducta">
+              ⚠️ <span class="hide-mobile">Reportar</span>
+            </button>
+
+          </div>
+          
+        </article>
+      }
+    </div>
+  </div>
+
+  <footer class="action-footer">
+    <div class="progress-info">
+      <span>Avance: {{ alumnosMarcados() }} / {{ listaAlumnos().length }}</span>
+      <div class="mini-progress-bar">
+        <div class="fill" [style.width.%]="(alumnosMarcados() / listaAlumnos().length) * 100"></div>
+      </div>
+    </div>
+    <button class="btn-save-primary" [disabled]="alumnosMarcados() === 0" (click)="guardarLista()">
+      Guardar Asistencia
+    </button>
+  </footer>
+
+</div>

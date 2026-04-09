@@ -1,0 +1,49 @@
+.behavior-container { animation: fadeIn 0.4s ease; }
+
+.behavior-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
+}
+
+.points-badge {
+  background: #ecfdf5; border: 2px solid #10b981; padding: 10px 20px;
+  border-radius: 15px; text-align: center;
+}
+.points-badge.negative { background: #fff1f2; border-color: #ef4444; }
+.p-label { display: block; font-size: 0.7rem; color: #64748b; font-weight: bold; }
+.p-value { font-size: 1.5rem; color: #059669; }
+.negative .p-value { color: #dc2626; }
+
+/* FILTROS */
+.filter-bar { display: flex; gap: 10px; margin-bottom: 25px; }
+.filter-bar button {
+  padding: 8px 16px; border-radius: 20px; border: 1px solid #e2e8f0;
+  background: white; cursor: pointer; transition: 0.3s;
+}
+.filter-bar button.active { background: #1e293b; color: white; border-color: #1e293b; }
+
+/* TARJETAS DE NOTA */
+.note-card {
+  display: flex; gap: 20px; background: white; padding: 20px;
+  border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  border-left: 6px solid #cbd5e1;
+}
+
+.note-card.positivo { border-left-color: #10b981; background: #f0fdf4; }
+.note-card.incidencia { border-left-color: #ef4444; background: #fef2f2; }
+.note-card.observacion { border-left-color: #f59e0b; }
+
+.note-icon { font-size: 1.5rem; }
+.note-content { flex-grow: 1; }
+
+.note-meta { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.materia { font-weight: bold; color: #1e293b; text-transform: uppercase; font-size: 0.75rem; }
+.fecha { font-size: 0.8rem; color: #64748b; }
+
+.comentario { font-style: italic; color: #334155; margin-bottom: 10px; line-height: 1.4; }
+.docente-sign { font-size: 0.8rem; color: #94a3b8; }
+
+.note-points {
+  font-weight: 800; font-size: 1.2rem; display: flex; align-items: center;
+}
+.positivo .note-points { color: #10b981; }
+.incidencia .note-points { color: #ef4444; }

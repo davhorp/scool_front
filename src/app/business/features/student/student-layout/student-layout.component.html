@@ -1,0 +1,61 @@
+<div class="student-layout" [class.menu-collapsed]="!isMenuOpen()">
+  
+  <aside class="student-sidebar">
+    <div class="sidebar-brand">
+      <div class="logo-icon">🎓</div>
+      @if (isMenuOpen()) {
+        <span class="brand-name">EduPortal</span>
+      }
+    </div>
+
+    <nav class="sidebar-nav">
+      @for (item of menuItems; track item.path) {
+        <a [routerLink]="item.path" 
+           routerLinkActive="active-link" 
+           class="nav-item">
+          <span class="nav-icon">{{ item.icon }}</span>
+          @if (isMenuOpen()) {
+            <span class="nav-label">{{ item.label }}</span>
+          }
+          @if (!isMenuOpen()) {
+            <div class="tooltip">{{ item.label }}</div>
+          }
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-logout-mini" title="Cerrar Sesión">
+        <span>🚪</span>
+        @if (isMenuOpen()) { <span>Salir</span> }
+      </button>
+    </div>
+  </aside>
+
+  <div class="student-main">
+    
+    <header class="student-navbar">
+      <div class="nav-left">
+        <button class="toggle-btn" (click)="toggleMenu()">
+          {{ isMenuOpen() ? '◀' : '▶' }}
+        </button>
+        <h2 class="page-title">Panel del Estudiante</h2>
+      </div>
+
+      <div class="nav-right">
+        <div class="notifications">
+          <span class="bell-icon">🔔</span>
+          <span class="dot"></span>
+        </div>
+        <div class="student-profile-nav">
+          <span class="student-name">Juan Pérez</span>
+          <div class="mini-avatar">JP</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="student-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

@@ -1,0 +1,60 @@
+<div class="behavior-form-card">
+  <header class="form-header">
+    <h3>📝 Registro de Convivencia y Conducta</h3>
+    <p>Utiliza este formulario para registrar méritos o incidencias en el aula.</p>
+  </header>
+
+  <form (ngSubmit)="submitReport()" class="modern-form">
+    
+    <div class="form-group">
+      <label>Alumno</label>
+      <select [(ngModel)]="formData().studentId" name="student" class="styled-select">
+        <option [ngValue]="null" disabled>Selecciona un estudiante...</option>
+        @for (s of students(); track s.id) {
+          <option [ngValue]="s.id">{{ s.nombre }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="type-selector">
+      <label class="type-btn" [class.active]="formData().type === 'positivo'">
+        <input type="radio" [(ngModel)]="formData().type" name="type" value="positivo" hidden>
+        🌟 Logro
+      </label>
+      <label class="type-btn" [class.active]="formData().type === 'observacion'">
+        <input type="radio" [(ngModel)]="formData().type" name="type" value="observacion" hidden>
+        📝 Nota
+      </label>
+      <label class="type-btn" [class.active]="formData().type === 'incidencia'">
+        <input type="radio" [(ngModel)]="formData().type" name="type" value="incidencia" hidden>
+        ⚠️ Incidencia
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label>Descripción del suceso</label>
+      <textarea 
+        [(ngModel)]="formData().comment" 
+        name="comment" 
+        placeholder="Ej: El alumno mostró gran liderazgo durante el trabajo en equipo..."
+        rows="4"></textarea>
+    </div>
+
+    <div class="form-footer-actions">
+      <div class="points-input">
+        <label>Puntos:</label>
+        <input type="number" [(ngModel)]="formData().points" name="points" step="5">
+      </div>
+
+      <div class="notification-switch">
+        <label class="switch">
+          <input type="checkbox" [(ngModel)]="formData().notifyImmediate" name="notify">
+          <span class="slider"></span>
+        </label>
+        <span class="switch-label">Notificar al tutor ahora</span>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-submit">Publicar Reporte</button>
+  </form>
+</div>

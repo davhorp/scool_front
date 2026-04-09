@@ -1,0 +1,95 @@
+<div class="planner-container">
+  <header class="planner-header">
+    <h2>📅 Planificador de Clases</h2>
+    <p>Organiza tus temas y materiales para la semana actual.</p>
+  </header>
+
+  <div class="planner-grid">
+    @for (dia of diasSemana; track dia) {
+      <div class="day-column">
+        <div class="day-label">
+          <span>{{ dia }}</span>
+          <button class="btn-add-mini" (click)="addLesson(dia)">+</button>
+        </div>
+
+        <div class="lessons-container">
+          @for (lesson of getLessonsByDay(dia); track lesson.id) {
+            <div class="lesson-card" [class.completed]="lesson.completado">
+              <div class="card-top">
+                <span class="subject-tag">{{ lesson.materia }}</span>
+                <input type="checkbox" [checked]="lesson.completado" (change)="toggleComplete(lesson.id)">
+              </div>
+              
+              <h4>{{ lesson.tema }}</h4>
+              <p class="goal">🎯 {{ lesson.objetivo }}</p>
+              
+              <div class="materials">
+                @for (m of lesson.materiales; track m) {
+                  <span class="material-chip">📎 {{ m }}</span>
+                }
+              </div>
+
+              <div class="card-actions">
+                <button class="btn-edit" (click)="openEditModal(lesson)">📝 Editar</button>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-day-msg">No hay temas planeados</div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+@if (isModalOpen() && editingLesson()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Editar Plan de Clase</h3>
+        <button class="btn-close" (click)="closeModal()">×</button>
+      </div>
+
+      <form (ngSubmit)="saveLesson()" class="edit-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Materia</label>
+            <input type="text" [(ngModel)]="editingLesson()!.materia" name="materia">
+          </div>
+          <div class="form-group">
+            <label>Día</label>
+            <select [(ngModel)]="editingLesson()!.dia" name="dia">
+              @for (d of diasSemana; track d) {
+                <option [value]="d">{{ d }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Tema de la Clase</label>
+          <input type="text" [(ngModel)]="editingLesson()!.tema" name="tema">
+        </div>
+
+        <div class="form-group">
+          <label>Objetivo de Aprendizaje</label>
+          <textarea [(ngModel)]="editingLesson()!.objetivo" name="objetivo" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Materiales (separados por comas)</label>
+          <input type="text" 
+                 [ngModel]="materialsText" 
+                 (ngModelChange)="setMaterialsText($event)" 
+                 name="materiales"
+                 placeholder="Ej: Libro pág 40, Calculadora, Proyector">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" (click)="closeModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

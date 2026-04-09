@@ -1,0 +1,52 @@
+<div class="student-view">
+  
+  <header class="academic-summary">
+    <div class="summary-card main-gpa">
+      <span class="label">Promedio General</span>
+      <h2 class="value">{{ gpa() }}</h2>
+      <div class="progress-circle" [style.--p]="+gpa() * 10"></div>
+    </div>
+
+    <div class="summary-card status">
+      <span class="label">Estatus Académico</span>
+      <h3 class="value" [class.warning]="riskSubjects().length > 0">
+        {{ riskSubjects().length > 0 ? 'En Riesgo' : 'Regular' }}
+      </h3>
+      <p>{{ riskSubjects().length }} materia(s) bajo el promedio</p>
+    </div>
+  </header>
+
+  <section class="grades-section">
+    <h3>Mis Calificaciones - Ciclo 2026</h3>
+    
+    <div class="subjects-grid">
+      @for (item of myGrades(); track item.materia) {
+        <div class="subject-card">
+          <div class="card-header">
+            <h4>{{ item.materia }}</h4>
+            <span class="teacher-name">Prof. {{ item.docente }}</span>
+          </div>
+
+          <div class="grades-row">
+            <div class="grade-box">
+              <small>P1</small>
+              <strong>{{ item.p1 }}</strong>
+            </div>
+            <div class="grade-box">
+              <small>P2</small>
+              <strong>{{ item.p2 }}</strong>
+            </div>
+            <div class="grade-box pending">
+              <small>P3</small>
+              <strong>--</strong>
+            </div>
+            <div class="grade-box final" [class.low]="(item.p1 + item.p2)/2 < 6">
+              <small>PROM</small>
+              <strong>{{ ((item.p1 + item.p2) / 2) | number:'1.1-1' }}</strong>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+</div>

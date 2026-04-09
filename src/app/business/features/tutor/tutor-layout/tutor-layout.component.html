@@ -1,0 +1,54 @@
+<div class="tutor-layout" [class.collapsed]="!isMenuOpen()">
+  <aside class="sidebar">
+    <div class="brand">🏫 Familia EduControl</div>
+    <nav>
+      @for (item of menuItems; track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active" class="nav-link">
+          <span>{{ item.icon }}</span>
+          <span *ngIf="isMenuOpen()">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+  </aside>
+  <div class="nav-actions">
+  
+  <div class="notification-wrapper" (click)="toggleNotifPanel()">
+    <button class="btn-bell" [class.has-unread]="notifService.unreadCount() > 0">
+      🔔
+      @if (notifService.unreadCount() > 0) {
+        <span class="badge-count">{{ notifService.unreadCount() }}</span>
+      }
+    </button>
+
+    @if (showNotifPanel()) {
+      <div class="notif-dropdown" (click)="$event.stopPropagation()">
+        <div class="notif-header">
+          <span>Notificaciones</span>
+          <button (click)="notifService.marcarComoLeidas()">Limpiar</button>
+        </div>
+        <div class="notif-body">
+          @for (n of notifService.allNotifications(); track n.id) {
+            <div class="notif-row" [class.unread]="!n.leido">
+              <span class="icon-type">{{ n.tipo === 'asistencia' ? '⚠️' : '📢' }}</span>
+              <div class="notif-text">
+                <p>{{ n.mensaje }}</p>
+                <small>{{ n.fecha | date:'shortTime' }}</small>
+              </div>
+            </div>
+          } @empty {
+            <p class="empty-notif">No tienes avisos nuevos</p>
+          }
+        </div>
+      </div>
+    }
+  </div>
+  <main class="content">
+    <header class="top-bar">
+      <button (click)="toggleMenu()">☰</button>
+      <div class="user">Papá de Mateo y Lucía 👤</div>
+    </header>
+    <div class="router-area">
+      <router-outlet />
+    </div>
+  </main>
+</div>

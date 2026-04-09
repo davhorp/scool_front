@@ -1,0 +1,100 @@
+<div class="hijo-detalle-container animate-in">
+  
+  <nav class="hijos-selector">
+    @for (h of hijos(); track h.id) {
+      <button [class.active]="h.id === hijoSeleccionado().id" (click)="cambiarHijo(h)">
+        {{ h.nombre.split(' ')[0] }}
+      </button>
+    }
+  </nav>
+
+  <header class="hijo-hero">
+    <div class="hijo-main-info">
+      <div class="avatar-container">
+        <img [src]="hijoSeleccionado().foto" alt="Foto de {{hijoSeleccionado().nombre}}">
+        <span class="status-dot" [class.online]="hijoSeleccionado().presenteHoy"></span>
+      </div>
+      <div class="identity">
+        <h1>{{ hijoSeleccionado().nombre }}</h1>
+        <p>{{ hijoSeleccionado().grado }} • Matrícula: {{ hijoSeleccionado().matricula }}</p>
+      </div>
+    </div>
+    <div class="quick-actions">
+      <button class="btn-outline">📅 Ver Horario</button>
+      <button class="btn-primary">💬 Mensaje al Tutor</button>
+    </div>
+  </header>
+
+  <div class="detalle-grid">
+    
+    <section class="card grades-card">
+      <div class="card-header">
+        <h3>📊 Calificaciones del Periodo</h3>
+        <span class="period-badge">2do Trimestre</span>
+      </div>
+      <div class="grades-list">
+        @for (m of hijoSeleccionado().materias; track m.nombre) {
+          <div class="subject-row">
+            <span class="subject-name">{{ m.nombre }}</span>
+            <div class="subject-progress">
+              <div class="progress-bar">
+                <div class="fill" [style.width.%]="m.nota * 10" [attr.data-grade]="m.nota"></div>
+              </div>
+              <span class="grade-val">{{ m.nota }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="card attendance-card">
+      <h3>📅 Registro de Asistencia</h3>
+      <div class="attendance-summary">
+        <div class="stat">
+          <span class="val">{{ hijoSeleccionado().asistencia.porcentaje }}%</span>
+          <span class="lab">Total</span>
+        </div>
+        <div class="stat danger">
+          <span class="val">{{ hijoSeleccionado().asistencia.faltas }}</span>
+          <span class="lab">Faltas</span>
+        </div>
+      </div>
+      <div class="mini-calendar-view">
+        @for (dia of ultimosDias(); track dia.fecha) {
+          <div class="day-check" [class.absent]="!dia.presente">
+            <span class="day-name">{{ dia.label }}</span>
+            <span class="check-icon">{{ dia.presente ? '✅' : '❌' }}</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="card behavior-card">
+      <h3>📝 Observaciones Recientes</h3>
+      <div class="comments-timeline">
+        @for (obs of hijoSeleccionado().observaciones; track obs.id) {
+          <div class="comment-item">
+            <div class="comment-meta">
+              <strong>{{ obs.profesor }}</strong>
+              <span>{{ obs.fecha }}</span>
+            </div>
+            <p>{{ obs.texto }}</p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="card finance-mini-card">
+      <h3>💳 Estado de Cuenta</h3>
+      <div class="balance-info">
+        <p>Próxima Colegiatura:</p>
+        <div class="amount-due" [class.late]="hijoSeleccionado().pagoAtrasado">
+          ${{ hijoSeleccionado().proximoPagoMonto }}
+        </div>
+        <span>Vence el: {{ hijoSeleccionado().proximoPagoFecha }}</span>
+      </div>
+      <button class="btn-pay-hijo">Pagar Ahora</button>
+    </section>
+
+  </div>
+</div>

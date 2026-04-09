@@ -1,0 +1,65 @@
+<div class="tutor-view">
+  
+  <header class="tutor-welcome">
+    <div>
+      <h1>Bienvenido, Sr. Pérez</h1>
+      <p>Gestión académica y financiera de su familia.</p>
+    </div>
+    <div class="family-balance">
+      <span>Deuda Total Familiar</span>
+      <strong>${{ deudaTotal() | number }}</strong>
+    </div>
+  </header>
+
+  <div class="tutor-grid">
+    
+    <section class="hijos-section">
+      <h3>Mis Hijos</h3>
+      <div class="hijos-cards">
+        @for (hijo of hijos(); track hijo.id) {
+          <div class="hijo-card">
+            <img [src]="hijo.foto" class="hijo-thumb">
+            <div class="hijo-info">
+              <h4>{{ hijo.nombre }}</h4>
+              <span>{{ hijo.grado }}</span>
+              <div class="hijo-stats">
+                <span class="p-badge">Promedio: {{ hijo.promedio }}</span>
+                @if (hijo.faltaPago) {
+                  <span class="alert-badge">Pago Pendiente</span>
+                }
+              </div>
+            </div>
+            <button class="btn-detalles">Ver Expediente</button>
+          </div>
+        }
+      </div>
+    </section>
+
+    <aside class="notificaciones-section">
+      <h3>Notificaciones</h3>
+      <div class="notif-list">
+        @for (n of notificaciones(); track n.id) {
+          <div class="notif-item" [ngClass]="n.tipo">
+            <div class="notif-date">{{ n.fecha }}</div>
+            <div class="notif-body">
+              <strong>{{ n.titulo }}</strong>
+              <p>{{ n.contenido }}</p>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="quick-pay-card">
+        <h4>Próximos Vencimientos</h4>
+        @for (p of pagosPendientes(); track p.concepto) {
+          <div class="pay-row">
+            <span>{{ p.concepto }}</span>
+            <strong>${{ p.monto }}</strong>
+          </div>
+        }
+        <button class="btn-pay-all">Pagar Todo en Línea</button>
+      </div>
+    </aside>
+
+  </div>
+</div>

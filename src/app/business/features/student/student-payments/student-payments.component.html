@@ -1,0 +1,75 @@
+<div class="payments-container">
+  
+  <header class="finance-header">
+    <div class="balance-card" [class.has-debt]="totalDebt() > 0">
+      <span class="label">Saldo Pendiente</span>
+      <h2 class="amount">${{ totalDebt() | number:'1.2-2' }}</h2>
+      <p class="scholarship-tag">✨ {{ scholarship().nombre }} ({{ scholarship().porcentaje }}%) aplicada</p>
+    </div>
+
+    <div class="info-card">
+      <div class="info-item">
+        <span>Próximo Vencimiento</span>
+        <strong>15 de Abril, 2026</strong>
+      </div>
+      <button class="btn-pay-all" *ngIf="totalDebt() > 0">Pagar Todo</button>
+    </div>
+  </header>
+
+  <section class="payment-section">
+    <h3>🔔 Pagos Pendientes y Vencidos</h3>
+    <div class="pending-list">
+      @for (p of payments(); track p.id) {
+        @if (p.estado !== 'pagado') {
+          <div class="payment-item" [class.overdue]="p.estado === 'vencido'">
+            <div class="p-info">
+              <span class="p-status-dot"></span>
+              <div class="p-text">
+                <strong>{{ p.concepto }}</strong>
+                <small>Vence el: {{ p.fechaVencimiento | date:'dd/MM/yyyy' }}</small>
+              </div>
+            </div>
+            <div class="p-actions">
+              <span class="p-amount">${{ p.monto }}</span>
+              <button class="btn-pay-now" (click)="payNow(p)">Pagar</button>
+            </div>
+          </div>
+        }
+      } @empty {
+        <p class="all-clear">✅ Estás al día con tus pagos. ¡Gracias!</p>
+      }
+    </div>
+  </section>
+
+  <section class="history-section">
+    <h3>📜 Historial de Pagos</h3>
+    <div class="table-wrapper">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Concepto</th>
+            <th>Fecha Pago</th>
+            <th>Método</th>
+            <th>Monto</th>
+            <th>Recibo</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of payments(); track p.id) {
+            @if (p.estado === 'pagado') {
+              <tr>
+                <td>{{ p.concepto }}</td>
+                <td>{{ p.fechaPago | date:'dd/MM/yyyy' }}</td>
+                <td>{{ p.metodo }}</td>
+                <td>${{ p.monto }}</td>
+                <td>
+                  <button class="btn-download" (click)="downloadReceipt(p)">📄 PDF</button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

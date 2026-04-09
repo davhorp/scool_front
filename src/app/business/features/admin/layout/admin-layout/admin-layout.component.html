@@ -34,7 +34,7 @@
                     </div>
                     <span class="status-badge" [ngClass]="student.estado"></span>
                     </div>
-                }
+                } 
                 </div>
             } @else if (searchTerm().length >= 2 && filteredResults().length === 0) {
                 <div class="search-results-dropdown no-results">
@@ -56,7 +56,7 @@
           <span class="logout-icon">🚪</span>
           <span class="logout-text">Salir</span>
         </button>
-  </div>
+      </div>
     </header>
     <section class="page-content">
         @if (selectedStudent(); as student) {

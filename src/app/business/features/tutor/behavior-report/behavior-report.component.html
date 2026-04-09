@@ -1,0 +1,49 @@
+<div class="behavior-container">
+  
+  <header class="behavior-header">
+    <div class="header-text">
+      <h3>Bitácora de Convivencia</h3>
+      <p>Reportes registrados por el personal docente.</p>
+    </div>
+    
+    <div class="points-badge" [class.negative]="totalPuntos() < 0">
+      <span class="p-label">Puntaje Conductual</span>
+      <strong class="p-value">{{ totalPuntos() > 0 ? '+' : '' }}{{ totalPuntos() }}</strong>
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <button [class.active]="filterSelected() === 'todos'" (click)="filterSelected.set('todos')">Todos</button>
+    <button [class.active]="filterSelected() === 'positivo'" (click)="filterSelected.set('positivo')">🌟 Logros</button>
+    <button [class.active]="filterSelected() === 'incidencia'" (click)="filterSelected.set('incidencia')">⚠️ Alertas</button>
+  </div>
+
+  <div class="timeline">
+    @for (note of filteredNotes(); track note.id) {
+      <div class="note-card" [ngClass]="note.tipo">
+        <div class="note-icon">
+          {{ note.tipo === 'positivo' ? '⭐' : note.tipo === 'incidencia' ? '🚫' : '📝' }}
+        </div>
+        
+        <div class="note-content">
+          <div class="note-meta">
+            <span class="materia">{{ note.materia }}</span>
+            <span class="fecha">{{ note.fecha | date:'fullDate':'':'es' }}</span>
+          </div>
+          <p class="comentario">"{{ note.comentario }}"</p>
+          <div class="docente-sign">
+            Reportado por: <strong>{{ note.docente }}</strong>
+          </div>
+        </div>
+
+        <div class="note-points" *ngIf="note.puntos">
+          {{ note.puntos > 0 ? '+' : '' }}{{ note.puntos }}
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <p>No hay reportes registrados en este periodo. 🙌</p>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,101 @@
+.schedule-container { animation: slideUp 0.4s ease-out; }
+
+.schedule-header { margin-bottom: 25px; }
+.schedule-header h3 { color: #2d3436; font-size: 1.5rem; }
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  align-items: start;
+}
+
+.day-column {
+  background: white;
+  border-radius: 15px;
+  padding: 10px;
+  min-height: 400px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+  transition: all 0.3s;
+}
+
+.day-column.is-today {
+  background: #f0f3ff;
+  border: 2px solid #6c5ce7;
+  transform: scale(1.02);
+}
+
+.day-header {
+  text-align: center;
+  padding: 10px 0;
+  font-weight: bold;
+  color: #636e72;
+  border-bottom: 1px solid #f1f1f1;
+  margin-bottom: 15px;
+}
+
+.today-badge {
+  display: block;
+  font-size: 0.7rem;
+  background: #6c5ce7;
+  color: white;
+  border-radius: 10px;
+  padding: 2px 8px;
+  width: fit-content;
+  margin: 4px auto 0;
+}
+
+/* TARJETAS DE CLASE */
+.class-item {
+  background: white;
+  padding: 12px;
+  border-radius: 10px;
+  border-left: 4px solid #ddd;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.class-time {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #b2bec3;
+  margin-bottom: 5px;
+}
+
+.subject-title {
+  display: block;
+  font-weight: 600;
+  color: #2d3436;
+  font-size: 0.9rem;
+}
+
+.teacher {
+  display: block;
+  font-size: 0.75rem;
+  color: #b2bec3;
+}
+
+.room {
+  display: block;
+  font-size: 0.75rem;
+  color: #6c5ce7;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+.empty-day {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #dfe6e9;
+  padding-top: 20px;
+}
+
+/* Responsivo para móviles */
+@media (max-width: 1024px) {
+  .schedule-grid {
+    grid-template-columns: 1fr;
+  }
+  .day-column {
+    min-height: auto;
+  }
+}

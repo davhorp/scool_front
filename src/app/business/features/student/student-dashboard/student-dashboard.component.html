@@ -1,0 +1,62 @@
+<div class="profile-container">
+  
+  <aside class="profile-card identity">
+    <div class="photo-section">
+      <div class="avatar-wrapper">
+        <img [src]="previewUrl() || user()?.fotoUrl || 'assets/images/default-avatar.png'" 
+             class="profile-img">
+        <label class="btn-change-photo" title="Cambiar Foto">
+          📷
+          <input type="file" (change)="onFileSelected($event)" hidden accept="image/*">
+        </label>
+      </div>
+      <h2>{{ user()?.nombre }}</h2>
+      <span class="role-badge" [ngClass]="user()?.rol">{{ user()?.rol }}</span>
+    </div>
+
+    <div class="info-list">
+      <div class="info-item">
+        <label>Correo Electrónico</label>
+        <span>{{ user()?.email }}</span>
+      </div>
+      <div class="info-item">
+        <label>ID de Usuario</label>
+        <span>#{{ user()?.id }}</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="profile-card security">
+    <h3>🔒 Seguridad de la Cuenta</h3>
+    <p class="section-desc">Actualiza tu contraseña periódicamente para mantener tu cuenta segura.</p>
+
+    <form (ngSubmit)="updatePassword()" class="password-form">
+      <div class="form-group">
+        <label>Contraseña Actual</label>
+        <input type="password" [(ngModel)]="passwords().current" name="current" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nueva Contraseña</label>
+          <input type="password" [(ngModel)]="passwords().new" name="new" required>
+        </div>
+        <div class="form-group">
+          <label>Confirmar Nueva Contraseña</label>
+          <input type="password" [(ngModel)]="passwords().confirm" name="confirm" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-update-pass">Actualizar Contraseña</button>
+    </form>
+
+    <div class="security-tips">
+      <h4>Recomendaciones:</h4>
+      <ul>
+        <li>Usa al menos 8 caracteres.</li>
+        <li>Combina letras mayúsculas, minúsculas y números.</li>
+        <li>No compartas tu cuenta con otros usuarios del colegio.</li>
+      </ul>
+    </div>
+  </main>
+</div>

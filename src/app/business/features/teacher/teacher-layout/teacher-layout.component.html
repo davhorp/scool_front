@@ -17,32 +17,71 @@
             }
         </nav>
     </aside>
-    <main class="main-content">
+    <main class="main-content"> 
         <header class="top-navbar">
-            <div class="left-section">
-                <button class="toggle-btn" (click)="toggleSidebar()">☰</button>
-                <div class="search-container">
-                    <div class="search-wrapper">
-                        <span class="search-icon">🔍</span>
-                        <input type="text" placeholder="Buscar alumnos, tareas, eventos...">
-                    </div>
-                </div>
-            </div>
-            <div class="user-actions">
-                <div class="user-info">
-                    <div class="user-text">
-                        <span class="user-name">{{nameFullUsr}}</span>
-                        <span class="user-role">{{profileUsr}}</span>
-                    </div>
-                    <div class="avatar">A</div>
-                </div>
+  <div class="left-section">
+    <button class="toggle-btn" (click)="toggleSidebar()" aria-label="Alternar menú lateral">☰</button>
+    
+    <div class="search-container">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          placeholder="Buscar alumnos, tareas, eventos..."
+          aria-label="Buscar en el sistema"
+        >
+      </div>
 
-                <button class="btn-logout" (click)="logout()" title="Cerrar Sesión">
-                    <span class="logout-icon">🚪</span>
-                    <span class="logout-text">Salir</span>
-                </button>
+      @if (searchTerm().length >= 2) {
+        <div class="search-results-dropdown">
+          
+          @if (filteredResults().length > 0) {
+            <div class="results-list">
+              <div class="results-header">Sugerencias de alumnos</div>
+              @for (student of filteredResults(); track student.id) {
+                <div class="result-item" (click)="openFile(student)" role="button" tabindex="0">
+                  <img [src]="'https://ui-avatars.com/api/?name=' + student.nombre + '&background=4f46e5&color=fff'" class="result-avatar" alt="">
+                  <div class="result-info">
+                    <span class="result-name">{{ student.nombre }}</span>
+                    <span class="result-meta">ID: EDU-{{ student.id }} • {{ student.grado }}</span>
+                  </div>
+                  <span class="status-indicator" [class.active]="student.estado === 'Activo'"></span>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="no-results">
+              <span class="icon">📂</span>
+              <p>No se encontraron alumnos ni tareas para "<strong>{{ searchTerm() }}</strong>"</p>
+            </div>
+          }
+          
+        </div>
+      }
     </div>
-        </header>
+  </div>
+
+  <div class="user-actions">
+    
+    <button class="btn-icon notification-bell" aria-label="Notificaciones">
+      🔔
+      <span class="badge-dot"></span>
+    </button>
+
+    <div class="user-info">
+      <div class="user-text">
+        <span class="user-name">{{ nameFullUsr }}</span>
+        <span class="user-role">{{ profileUsr }}</span> </div>
+      <img [src]="'https://ui-avatars.com/api/?name=' + nameFullUsr + '&background=1e293b&color=fff'" class="avatar" alt="Avatar del usuario">
+    </div>
+
+    <button class="btn-logout" (click)="logout()" title="Cerrar Sesión">
+      <span class="logout-icon">🚪</span>
+      <span class="logout-text">Salir</span>
+    </button>
+  </div>
+</header>
         <div class="content-wrapper">
             <router-outlet></router-outlet>
         </div>

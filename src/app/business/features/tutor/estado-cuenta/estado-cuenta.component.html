@@ -1,0 +1,74 @@
+<div class="account-status-container animate-in">
+  
+  <header class="finance-header">
+    <div class="balance-summary">
+      <div class="total-debt">
+        <span class="label">Saldo Pendiente Total</span>
+        <h2 [class.critical]="resumenFinanciero().deudaTotal > 0">
+          ${{ resumenFinanciero().deudaTotal | number:'1.2-2' }}
+        </h2>
+      </div>
+      <div class="next-due">
+        <span class="label">Próximo Vencimiento</span>
+        <p>{{ resumenFinanciero().fechaProximoPago }}</p>
+      </div>
+    </div>
+    <div class="finance-actions">
+      <button class="btn-download">📄 Descargar PDF</button>
+      <button class="btn-pay-main">💳 Pagar Saldo Total</button>
+    </div>
+  </header>
+
+  <div class="finance-grid">
+    
+    <section class="card pending-charges">
+      <div class="card-header">
+        <h3>🔔 Cargos por Liquidar</h3>
+        <span class="badge-count">{{ cargosPendientes().length }} pendientes</span>
+      </div>
+      
+      <div class="charges-list">
+        @for (cargo of cargosPendientes(); track cargo.id) {
+          <div class="charge-item" [class.overdue]="cargo.atrasado">
+            <div class="charge-icon">
+              {{ cargo.categoria === 'Cafetería' ? '☕' : '📚' }}
+            </div>
+            <div class="charge-details">
+              <strong>{{ cargo.concepto }}</strong>
+              <span>{{ cargo.fechaVencimiento }} • {{ cargo.categoria }}</span>
+            </div>
+            <div class="charge-amount">
+              <strong>${{ cargo.monto | number:'1.2-2' }}</strong>
+              @if (cargo.atrasado) {
+                <span class="late-tag">Atrasado</span>
+              }
+            </div>
+            <button class="btn-pay-single">Pagar</button>
+          </div>
+        }
+      </div>
+    </section>
+
+    <aside class="card payment-history">
+      <h3>📜 Historial de Pagos</h3>
+      <div class="history-timeline">
+        @for (pago of historialPagos(); track pago.referencia) {
+          <div class="history-item">
+            <div class="history-marker"></div>
+            <div class="history-content">
+              <div class="history-info">
+                <strong>{{ pago.concepto }}</strong>
+                <small>Ref: {{ pago.referencia }}</small>
+              </div>
+              <div class="history-value">
+                <span class="amount-paid">${{ pago.monto | number:'1.2-2' }}</span>
+                <span class="date">{{ pago.fechaPago }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </aside>
+
+  </div>
+</div>

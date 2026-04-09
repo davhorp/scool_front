@@ -21,12 +21,22 @@ export const TEACHER_ROUTES: Routes = [
         title: 'Control de Notas',
         loadComponent: () => import('./grades-entry/grades-entry.component').then(m => m.GradesEntryComponent)
       },
-     /* {
-        path: 'reportes-financieros',
-        title: 'Reportes de Pagos',
-        loadComponent: () => import('./dashboard/finance-dashboard/finance-dashboard.component').then(m => m.FinanceDashboardComponent)
+      {
+        path: 'registrar-conducta',
+        title: 'Reportar Conducta',
+        loadComponent: () => import('./teacher-behavior-form/teacher-behavior-form.component').then(m => m.TeacherBehaviorFormComponent)
       },
-     {
+      {
+        path: 'attendance',
+        title: 'Reportes de Pagos',
+        loadComponent: () => import('./pase-lista/pase-lista.component').then(m => m.PaseListaComponent)
+      },
+      {
+        path: 'lesson-planner',
+        title: 'Planificador de Clases',
+        loadComponent: () => import('./lesson-planner/lesson-planner.component').then(m => m.LessonPlannerComponent)
+      },
+     /*{
         path: 'configuracion',
         title: 'Configuración del Ciclo Escolar',
         loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent)

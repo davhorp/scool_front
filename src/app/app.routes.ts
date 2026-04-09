@@ -16,16 +16,18 @@ export const routes: Routes = [
         //canActivate: [roleGuard(['docente'])],
         loadChildren: () => import('./business/features/teacher/teacher.routes').then(m => m.TEACHER_ROUTES)
     },
-    /*{ 
-        path: 'estudiante', 
-        canActivate: [roleGuard(['alumno'])],
-        loadChildren: () => import('./features/alumno/alumno.routes')
+    { 
+        path: 'alumno', 
+        canActivate: [AuthGuard],
+        //canActivate: [roleGuard(['alumno'])],
+        loadChildren: () => import('./business/features/student/student.routes').then(m => m.STUDENT_ROUTES)
     },
     { 
-        path: 'familiar', 
-        canActivate: [roleGuard(['padre'])],
-        loadChildren: () => import('./features/tutor/tutor.routes')
-    },*/
+        path: 'padre', 
+         canActivate: [AuthGuard],
+        //canActivate: [roleGuard(['padre'])],
+        loadChildren: () => import('./business/features/tutor/tutor.routes').then(m => m.FATHER_ROUTES)
+    },
     {
         path: 'login',
         loadComponent: ()=> import('./business/authentication/login/login.component'),

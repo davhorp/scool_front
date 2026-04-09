@@ -1,0 +1,385 @@
+/* --- VARIABLES DEL SISTEMA --- */
+:root {
+  --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --primary: #4f46e5;
+  --primary-dark: #3730a3;
+  --accent-pink: #f43f5e;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --success: #10b981;
+  --bg-main: #f8fafc;
+  --text-main: #0f172a;
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+  --text-slate: #64748b;
+  --white: #ffffff;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1);
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --accent-danger: #ef4444;
+  --radius: 24px;
+}
+
+/* --- LAYOUT GENERAL --- */
+.tutor-view {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: var(--bg-main);
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* --- HEADER: BIENVENIDA Y BALANCE --- */
+.tutor-welcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2.5rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px); /* Efecto de desenfoque de fondo */
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
+  box-shadow: 
+    0 10px 15px -3px rgba(0, 0, 0, 0.05),
+    0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  position: relative;
+  overflow: hidden; /* Para contener los efectos decorativos */
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+}
+
+/* Elemento decorativo espectacular de fondo */
+.tutor-welcome::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -10%;
+  width: 300px;
+  height: 300px;
+  background: var(--primary-gradient);
+  filter: blur(80px);
+  opacity: 0.08;
+  z-index: -1;
+}
+
+/* --- TEXTO DE BIENVENIDA --- */
+.tutor-welcome h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.tutor-welcome p {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin-top: 0.75rem;
+  font-weight: 500;
+}
+
+.family-balance {
+  background: linear-gradient(135deg, var(--white) 0%, #fff1f2 100%);
+  padding: 1.25rem 2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid #fecdd3;
+  box-shadow: var(--shadow-sm);
+  text-align: right;
+  min-width: 240px;
+}
+
+/* --- TARJETA DE BALANCE (EL "SHOWSTOPPER") --- */
+.family-balance {
+  background: var(--text-main); /* Fondo oscuro para máximo contraste */
+  padding: 1.5rem 2.5rem;
+  border-radius: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.family-balance:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 25px 30px -5px rgba(79, 70, 225, 0.2);
+}
+
+.family-balance span {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #94a3b8; /* Gris azulado */
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+/* Indicador visual de deuda si el monto existe */
+.family-balance strong::before {
+  content: "●";
+  color: var(--accent-danger);
+  font-size: 1rem;
+  margin-right: 8px;
+  animation: pulse 2s infinite;
+}
+
+/* --- GRID PRINCIPAL --- */
+.tutor-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px; /* Layout Maestro-Detalle */
+  gap: 2rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-dark);
+}
+
+/* --- SECCIÓN HIJOS (CARDS) --- */
+.hijos-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.hijo-card {
+  background: var(--white);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.hijo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.hijo-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  border: 2px solid #eef2ff;
+}
+
+.hijo-info h4 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--text-dark);
+}
+
+.hijo-info span {
+  font-size: 0.9rem;
+  color: var(--text-slate);
+}
+
+.hijo-stats {
+  display: flex;
+  gap: 8px;
+  margin: 1rem 0 1.5rem;
+  flex-wrap: wrap;
+}
+
+.p-badge {
+  background: #eef2ff;
+  color: var(--primary);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.alert-badge {
+  background: #fff1f2;
+  color: var(--accent-pink);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 1px solid #ffe4e6;
+}
+
+.btn-detalles {
+  margin-top: auto;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color, #e2e8f0);
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-detalles:hover {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+/* --- SECCIÓN NOTIFICACIONES Y PAGOS --- */
+.notificaciones-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.notif-list {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.notif-item {
+  padding: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notif-item:last-child { border-bottom: none; }
+
+.notif-date {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-slate);
+  text-transform: uppercase;
+}
+
+.notif-body strong {
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.notif-body p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-slate);
+  line-height: 1.4;
+}
+
+/* Colores por tipo de notificación */
+.notif-item.pago { border-left: 4px solid var(--accent-pink); }
+.notif-item.academico { border-left: 4px solid var(--primary); }
+.notif-item.evento { border-left: 4px solid var(--success); }
+
+/* --- CARD DE PAGO RÁPIDO --- */
+.quick-pay-card {
+  background: var(--text-dark);
+  color: var(--white);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+}
+
+.quick-pay-card h4 {
+  margin: 0 0 1.25rem 0;
+  font-size: 1rem;
+  color: #94a3b8;
+}
+
+.pay-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #334155;
+  font-size: 0.9rem;
+}
+
+.pay-row:last-of-type { border-bottom: none; }
+
+.btn-pay-all {
+  width: 100%;
+  margin-top: 1.5rem;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  padding: 1rem;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-pay-all:hover {
+  background: var(--primary-dark);
+}
+
+/* --- RESPONSIVIDAD --- */
+@media (max-width: 1100px) {
+  .tutor-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .notificaciones-section {
+    order: -1; /* Mover notificaciones arriba en tablets/móvil si es prioritario */
+  }
+}
+
+@media (max-width: 640px) {
+  .tutor-welcome {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .family-balance {
+    width: 100%;
+    text-align: left;
+  }
+
+  .hijos-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- ANIMACIONES --- */
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* --- RESPONSIVIDAD ADAPTATIVA --- */
+@media (max-width: 900px) {
+  .tutor-welcome {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem;
+    gap: 2rem;
+  }
+
+  .family-balance {
+    align-items: center;
+    width: 100%;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tutor-welcome h1 {
+    font-size: 1.75rem;
+  }
+  
+  .family-balance strong {
+    font-size: 1.75rem;
+  }
+}

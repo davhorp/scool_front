@@ -1,0 +1,32 @@
+<div class="schedule-container">
+  <header class="schedule-header">
+    <h3>Mi Horario Semanal</h3>
+    <p>Semana actual: Ciclo Escolar 2026</p>
+  </header>
+
+  <div class="schedule-grid">
+    @for (dayName of days; track dayName; let i = $index) {
+      <div class="day-column" [class.is-today]="today() === i + 1">
+        <div class="day-header">
+          <span class="day-name">{{ dayName }}</span>
+          @if (today() === i + 1) { <span class="today-badge">Hoy</span> }
+        </div>
+
+        <div class="classes-list">
+          @for (clase of getClassesForDay(i); track clase.horaInicio) {
+            <div class="class-item" [style.border-left-color]="clase.color">
+              <div class="class-time">{{ clase.horaInicio }} - {{ clase.horaFin }}</div>
+              <div class="class-details">
+                <span class="subject-title">{{ clase.materia }}</span>
+                <span class="teacher">{{ clase.docente }}</span>
+                <span class="room">📍 {{ clase.aula }}</span>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-day">Sin clases</div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>
