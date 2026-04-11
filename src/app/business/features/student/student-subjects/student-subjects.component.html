@@ -1,0 +1,66 @@
+<div class="subjects-container animate-in">
+  
+  <header class="subjects-header">
+    <div class="header-titles">
+      <h2>📚 Mis Materias</h2>
+      <p>{{ cicloEscolar() }}</p>
+    </div>
+    
+    @if (totalRecursosNuevos() > 0) {
+      <div class="global-alert">
+        <span class="icon">💡</span>
+        <span>Tienes <strong>{{ totalRecursosNuevos() }} materiales nuevos</strong> por revisar.</span>
+      </div>
+    }
+  </header>
+
+  <div class="subjects-grid">
+    @for (materia of materias(); track materia.id) {
+      <div class="subject-card">
+        
+        <div class="card-accent" [style.background-color]="materia.color"></div>
+        
+        <div class="card-content">
+          <div class="subject-info">
+            <h3 class="subject-name">{{ materia.nombre }}</h3>
+            <p class="teacher-name">👨‍🏫 {{ materia.docente }}</p>
+            <p class="schedule-mini">⏱ {{ materia.horarioResumen }}</p>
+          </div>
+
+          <div class="progress-section">
+            <div class="progress-labels">
+              <span>Avance del Temario</span>
+              <span>{{ materia.progreso }}%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" 
+                   [style.width.%]="materia.progreso"
+                   [style.background-color]="materia.color">
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <div class="resource-badge" [class.has-new]="materia.recursosNuevos > 0">
+              <span class="icon">📂</span>
+              @if (materia.recursosNuevos > 0) {
+                <span><strong>{{ materia.recursosNuevos }}</strong> nuevos</span>
+              } @else {
+                <span>Al día</span>
+              }
+            </div>
+            
+            <button class="btn-materials" [style.color]="materia.color" (click)="entrarAlAula(materia.id)">
+              Ir al Aula ➔
+            </button>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <p>Aún no tienes materias asignadas para este ciclo escolar.</p>
+      </div>
+    }
+  </div>
+
+</div>

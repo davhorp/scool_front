@@ -1,0 +1,45 @@
+/* Esto solo se aplica al papel cuando el usuario presiona Ctrl+P o Imprimir */
+@media print {
+  /* Ocultar TODO el ERP */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Mostrar SOLO el contenedor del convenio */
+  .print-only-container, .print-only-container * {
+    visibility: visible;
+  }
+
+  .print-only-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 20px;
+    color: black;
+    background: white;
+  }
+
+  /* Estilos del Documento */
+  .agreement-header { display: flex; border-bottom: 2px solid #000; padding-bottom: 20px; }
+  .school-info { margin-left: 20px; }
+  
+  .data-summary { width: 100%; margin: 30px 0; border: 1px solid #ccc; }
+  .data-summary td { padding: 10px; border: 1px solid #eee; }
+  .total-row { font-weight: bold; background: #f0f0f0; }
+
+  .agreement-signatures {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 100px;
+    text-align: center;
+  }
+  .sig-box { width: 200px; }
+}
+
+/* Ocultar en la pantalla normal para que no estorbe al Admin */
+@media screen {
+  .print-only-container {
+    display: none;
+  }
+}

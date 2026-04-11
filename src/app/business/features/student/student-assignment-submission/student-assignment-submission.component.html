@@ -1,0 +1,108 @@
+@if (tareaActual(); as tarea) {
+  <div class="submission-container">
+    
+    <div class="subject-breadcrumb">
+      <button class="btn-back">← Volver a la materia</button>
+      <span class="subject-badge">{{ tarea.materia }}</span>
+    </div>
+
+    <div class="task-grid">
+      
+      <section class="task-details-card">
+        <header class="task-header">
+          <div class="task-icon">📝</div>
+          <div>
+            <h2>{{ tarea.titulo }}</h2>
+            <p class="teacher">👨‍🏫 {{ tarea.docente }}</p>
+          </div>
+        </header>
+
+        <div class="task-meta">
+          <div class="meta-item">
+            <span class="label">Puntos</span>
+            <strong>{{ tarea.valorPuntos }} pts</strong>
+          </div>
+          <div class="meta-item urgency" [class.danger]="tiempoRestante() === 'Vence hoy' || tiempoRestante() === 'Fecha límite superada'">
+            <span class="label">Vencimiento</span>
+            <strong>{{ tiempoRestante() }}</strong>
+            <small>{{ tarea.fechaLimite | date:'dd MMM yyyy, hh:mm a' }}</small>
+          </div>
+        </div>
+
+        <div class="task-instructions">
+          <h3>Instrucciones</h3>
+          <p>{{ tarea.instrucciones }}</p>
+        </div>
+      </section>
+
+      <section class="submission-workspace">
+        
+        @if (tarea.estado === 'entregada') {
+          <div class="success-state animate-in">
+            <div class="success-icon">✅</div>
+            <h3>¡Tarea Entregada!</h3>
+            <p>Has enviado tu trabajo correctamente. El profesor lo revisará pronto.</p>
+            <button class="btn-outline">Anular entrega</button>
+          </div>
+        } @else {
+          <div class="workspace-card animate-in">
+            <h3>Tu Trabajo</h3>
+            
+            <div class="drop-zone" 
+                 [class.drag-over]="isDragging()"
+                 (drop)="onDrop($event)" 
+                 (dragover)="onDragOver($event)" 
+                 (dragleave)="onDragLeave($event)">
+              
+              <span class="cloud-icon">☁️</span>
+              <p>Arrastra tus archivos aquí o</p>
+              
+              <label class="btn-browse">
+                Explorar archivos
+                <input type="file" multiple (change)="onFileSelect($event)" hidden>
+              </label>
+            </div>
+
+            @if (archivosSeleccionados().length > 0) {
+              <div class="files-list">
+                @for (file of archivosSeleccionados(); track file.name; let i = $index) {
+                  <div class="file-item animate-in">
+                    <div class="file-info">
+                      <span class="file-icon">📄</span>
+                      <span class="file-name">{{ file.name }}</span>
+                      <span class="file-size">{{ (file.size / 1024 / 1024) | number:'1.1-2' }} MB</span>
+                    </div>
+                    <button class="btn-remove" (click)="removerArchivo(i)" title="Eliminar">✖</button>
+                  </div>
+                }
+              </div>
+            }
+
+            <div class="comment-box">
+              <label>Comentario privado para el profesor (Opcional):</label>
+              <textarea [(ngModel)]="comentarioAlumno" placeholder="Escribe aquí si necesitas aclarar algo sobre tu entrega..."></textarea>
+            </div>
+
+            <div class="action-footer">
+              <button class="btn-submit" 
+                      [disabled]="!puedeEntregar() || isSubmitting()"
+                      (click)="entregarTarea()">
+                @if (isSubmitting()) {
+                  ⏳ Enviando...
+                } @else {
+                  🚀 Entregar Tarea
+                }
+              </button>
+            </div>
+          </div>
+        }
+      </section>
+
+    </div>
+  </div>
+} @else {
+  <div class="loading-container">
+    <div class="loader"></div>
+    <p>Cargando información de la tarea...</p>
+  </div>
+}

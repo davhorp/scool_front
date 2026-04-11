@@ -45,8 +45,16 @@ export class AdminLayoutComponent {
     { path: 'usuarios', icon: '👥', label: 'Usuarios' },
     { path: 'inscripciones', icon: '📝', label: 'Inscripciones' },
     { path: 'reportes-financieros', icon: '💰', label: 'Finanzas' },
+    { path: 'horarios', icon: '📅', label: 'Horarios' },
     { path: 'configuracion', icon: '⚙️', label: 'Ajustes' },
-    { path: 'configuracion', icon: '⚙️', label: 'Ajustes' }
+    { path: 'academicos', icon: '🎓', label: 'Rendimiento' },
+    { path: 'reportes/morosidad', icon: '📉', label: 'Morosidad' },
+    { path: 'becas', icon: '💎', label: 'Becas e Incentivos' },
+    { path: 'configuracion', icon: '⚙️', label: 'Ajustes' },
+    // Opción de Auditoría (Solo para el jefe)
+    // { path: 'auditoria', icon: '🔍', label: 'Auditoría', roles: ['DUEÑO'] }
+    // Opción de Auditoría (Solo para el jefe)
+    { path: 'auditoria', icon: '🔍', label: 'Auditoría' }
   ];
 
   // Base de datos simulada (En producción vendría de un Servicio)

@@ -1,0 +1,187 @@
+@if (isLoading()) {
+  <div class="loading-state">
+    <div class="loader-pulse"></div>
+    <p>Preparando tu aula virtual...</p>
+  </div>
+} @else {
+  @if (aula(); as clase) {
+    <div class="classroom-wrapper animate-fade-in">
+      
+      <header class="hero-banner" 
+              [style.background-color]="clase.color"
+              [style.background-image]="'url(' + clase.portadaUrl + ')'">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <h1 class="hero-title">{{ clase.nombre }}</h1>
+          <p class="hero-subtitle">👨‍🏫 {{ clase.docente }}</p>
+        </div>
+        
+        <button class="btn-glass-meet">
+          <span class="icon">🎥</span> Unirse a la clase
+        </button>
+      </header>
+
+      <nav class="modern-tabs">
+        <button class="tab-btn" [class.active]="tabActiva() === 'muro'" (click)="cambiarTab('muro')">
+          Muro de Novedades
+        </button>
+        <button class="tab-btn" [class.active]="tabActiva() === 'trabajo'" (click)="cambiarTab('trabajo')">
+          Trabajo en Clase
+        </button>
+        <button class="tab-btn" [class.active]="tabActiva() === 'personas'" (click)="cambiarTab('personas')">
+          Compañeros
+        </button>
+        <div class="tab-indicator" [style.background-color]="clase.color"></div>
+      </nav>
+
+      <div class="class-layout">
+        
+        <main class="main-content">
+          
+          @if (tabActiva() === 'muro') {
+            <div class="tab-pane animate-slide-up">
+              @for (pub of clase.publicaciones; track pub.id) {
+                <article class="modern-card post-card">
+                  <header class="post-header">
+                    <div class="post-avatar" [style.color]="clase.color" [style.background-color]="clase.color + '15'">
+                      {{ pub.autor.charAt(0) }}
+                    </div>
+                    <div class="post-meta">
+                      <strong>{{ pub.autor }}</strong>
+                      <span>{{ pub.fecha }}</span>
+                    </div>
+                    <span class="post-badge" [ngClass]="pub.tipo">{{ pub.tipo }}</span>
+                  </header>
+                  
+                  <div class="post-body">
+                    <h4 class="post-title">{{ pub.titulo }}</h4>
+                    <p class="post-text">{{ pub.contenido }}</p>
+                    
+                    @if (pub.archivoAdjunto) {
+                      <div class="attachment-chip">
+                        <span class="icon">📄</span>
+                        <span class="filename">{{ pub.archivoAdjunto }}</span>
+                      </div>
+                    }
+                  </div>
+                </article>
+              }
+            </div>
+          }
+
+          @if (tabActiva() === 'trabajo') {
+            <div class="tab-pane animate-slide-up">
+              @for (unidad of clase.modulosTrabajo; track unidad.id) {
+                <section class="unit-section">
+                  
+                  <header class="unit-header">
+                    <div class="unit-accent" [style.background-color]="clase.color"></div>
+                    <div>
+                      <h2 class="unit-title">{{ unidad.titulo }}</h2>
+                      <p class="unit-desc">{{ unidad.descripcion }}</p>
+                    </div>
+                  </header>
+
+                  <div class="unit-items-grid">
+                    @for (item of unidad.items; track item.id) {
+                      <div class="work-item-card" 
+                           [class.interactive]="item.tipo !== 'material'"
+                           [routerLink]="item.tipo !== 'material' ? ['/alumno/tarea', item.id] : null">
+                        
+                        <div class="item-icon-wrapper" [ngClass]="item.tipo" [style.color]="clase.color">
+                          @if (item.tipo === 'tarea') { 📝 }
+                          @if (item.tipo === 'material') { 📚 }
+                          @if (item.tipo === 'cuestionario') { ❓ }
+                        </div>
+                        
+                        <div class="item-info">
+                          <h4 class="item-title">{{ item.titulo }}</h4>
+                          @if (item.fechaLimite) {
+                            <span class="item-due">Vence: {{ item.fechaLimite | date:'dd MMM, hh:mm a' }}</span>
+                          }
+                        </div>
+
+                        @if (item.tipo !== 'material') {
+                          <div class="item-status-wrapper">
+                            @if (item.estado === 'entregada') { <span class="status-pill success">✅ Entregada</span> }
+                            @if (item.estado === 'calificada') { <span class="status-pill graded">🎯 {{ item.calificacion }} pts</span> }
+                            @if (item.estado === 'pendiente') { <span class="status-pill pending">⏳ Pendiente</span> }
+                            @if (item.estado === 'retrasada') { <span class="status-pill danger">⚠️ Retrasada</span> }
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                </section>
+              }
+            </div>
+          }
+
+          @if (tabActiva() === 'personas') {
+            <div class="tab-pane animate-slide-up">
+              <section class="people-section">
+                <header class="people-header">
+                  <h2 class="people-title">Compañeros de clase</h2>
+                  <span class="people-count" [style.color]="clase.color">{{ clase.alumnosInscritos.length }} inscritos</span>
+                </header>
+                
+                <div class="people-grid">
+                  @for (alumno of clase.alumnosInscritos; track alumno.id) {
+                    <div class="person-row-card">
+                      <div class="person-avatar">
+                        @if (alumno.avatarUrl) {
+                          <img [src]="alumno.avatarUrl" [alt]="alumno.nombre">
+                        } @else {
+                          <span>{{ alumno.nombre.charAt(0) }}</span>
+                        }
+                      </div>
+                      
+                      <div class="person-details">
+                        <h4 class="person-name">{{ alumno.nombre }}</h4>
+                        <p class="person-id">Matrícula: {{ alumno.matricula }}</p>
+                      </div>
+
+                      <button class="action-btn-circle" title="Enviar mensaje">✉️</button>
+                    </div>
+                  } @empty {
+                    <div class="empty-state">
+                      <span class="empty-icon">👻</span>
+                      <p>Aún no hay compañeros en esta materia.</p>
+                    </div>
+                  }
+                </div>
+              </section>
+            </div>
+          }
+
+        </main>
+
+        <aside class="side-widgets desktop-only">
+          <div class="modern-card sticky-widget">
+            <header class="widget-header">
+              <h3 class="widget-title">⏳ Próximas Entregas</h3>
+              <a href="#" class="widget-link" [style.color]="clase.color">Ver todo</a>
+            </header>
+            
+            <div class="widget-content">
+              @for (tarea of clase.tareasProximas; track tarea.id) {
+                <div class="upcoming-task-item">
+                  <div class="task-info">
+                    <p class="task-title">{{ tarea.titulo }}</p>
+                    <p class="task-due">Vence: {{ tarea.vencimiento }}</p>
+                  </div>
+                  <button class="btn-tiny-action" [routerLink]="['/alumno/tarea', tarea.id]">Abrir</button>
+                </div>
+              } @empty {
+                <div class="empty-mini">
+                  <p>¡Todo al día! 🎉</p>
+                </div>
+              }
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  }
+}

@@ -1,0 +1,101 @@
+<div class="academic-container">
+  <header class="academic-header">
+    <div class="title-group">
+      <h2>📊 Estadísticas y Rendimiento Académico</h2>
+      <p>Análisis comparativo de grupos y materias del ciclo 2026.</p>
+    </div>
+    
+    <div class="filters">
+      <select [(ngModel)]="periodoSeleccionado">
+        @for (p of periodos; track p) {
+          <option [value]="p">{{ p }}</option>
+        }
+      </select>
+    </div>
+  </header>
+
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <span>Promedio General</span>
+      <strong>{{ promedioGlobal() }}</strong>
+    </div>
+    <div class="kpi-card">
+      <span>Tasa de Aprobación</span>
+      <strong [class.warning]="+tasaAprobacionGlobal() < 80">{{ tasaAprobacionGlobal() }}%</strong>
+    </div>
+    <div class="kpi-card formula-card">
+  <span>Fórmula IAE</span>
+  <div class="latex-font">
+    {{ formulaIAE }}
+  </div>
+</div>
+  </div>
+
+  <div class="academic-grid">
+    <div class="chart-panel">
+      <h3>Comparativa de Promedios por Grupo</h3>
+      <div class="bar-chart">
+        @for (g of dataGrupos(); track g.id) {
+          <div class="bar-container">
+            <div class="bar-fill" 
+                 [style.height.%]="g.promedio * 10" 
+                 [class.low]="g.promedio < 7.5">
+              <span class="bar-value">{{ g.promedio }}</span>
+            </div>
+            <span class="bar-label">{{ g.id }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="ranking-panel">
+      <h3>🌟 Cuadro de Honor</h3>
+      <div class="ranking-list">
+        @for (al of topAlumnos(); track al.nombre; let i = $index) {
+          <div class="ranking-item">
+            <span class="rank-pos">#{{ i + 1 }}</span>
+            <div class="rank-info">
+              <strong>{{ al.nombre }}</strong>
+              <small>{{ al.grupo }}</small>
+            </div>
+            <span class="rank-score">{{ al.promedio }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="risk-table-card">
+    <h3>⚠️ Materias con Mayor Índice de Reprobación</h3>
+    <table class="risk-table">
+      <thead>
+        <tr>
+          <th>Grupo</th>
+          <th>Materia Crítica</th>
+          <th>% Aprobación</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (g of dataGrupos(); track g.id) {
+          <tr>
+            <td>{{ g.nombre }}</td>
+            <td><strong>{{ g.materiaDificil }}</strong></td>
+            <td>{{ g.aprobacion }}%</td>
+            <td>
+              <span class="status-indicator" [class.red]="g.aprobacion < 80">
+                {{ g.aprobacion < 80 ? 'Intervención Requerida' : 'Bajo Control' }}
+              </span>
+            </td>
+            <td>
+              <button class="btn-schedule-link" routerLink="/admin/horarios">
+                📅 Ajustar Horario
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+</div>

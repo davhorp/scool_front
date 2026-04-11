@@ -1,121 +1,426 @@
+/* =========================================================
+   VARIABLES DE TEMA EDUCORE 2026
+   ========================================================= */
 :host {
-  --sidebar-width: 240px;
+  /* Paleta de Colores */
+  --primary: #3b82f6;
+  --sidebar-bg: #1e293b;
+  --primary-hover: #2563eb;
+  --primary-light: #eff6ff;
+  --bg-app: #f8fafc;
+  --bg-surface: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --danger: #ef4444;
+  
+  /* Dimensiones y Transiciones */
+  --sidebar-width: 260px;
   --sidebar-collapsed: 80px;
-  --student-primary: #6c5ce7;
-  --student-bg: #f4f7fe;
+  --header-height: 75px;
+  --transition-speed: 0.3s;
+  
+  /* Sombras y Bordes */
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
 }
 
+/* =========================================================
+   ESTRUCTURA PRINCIPAL (LAYOUT)
+   ========================================================= */
 .student-layout {
   display: flex;
   height: 100vh;
-  background-color: var(--student-bg);
+  background-color: var(--bg-app);
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow: hidden;
 }
 
-/* SIDEBAR */
-.student-sidebar {
-  width: var(--sidebar-width);
-  background: white;
+.student-main {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-right: 1px solid #e0e6ed;
-  z-index: 100;
+  height: 100vh;
+  transition: width var(--transition-speed) ease;
+  overflow: hidden;
 }
 
-.menu-collapsed .student-sidebar {
+/* =========================================================
+   SIDEBAR (MENÚ LATERAL)
+   ========================================================= */
+.student-sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  transition: width var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.02);
+}
+
+.student-layout.menu-collapsed .student-sidebar {
   width: var(--sidebar-collapsed);
 }
 
 .sidebar-brand {
-  height: 70px;
+  height: var(--header-height);
   display: flex;
   align-items: center;
-  padding: 0 25px;
-  gap: 15px;
-  font-weight: 800;
-  color: var(--student-primary);
-  font-size: 1.2rem;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border-color);
+  overflow: hidden;
+  white-space: nowrap;
 }
 
+.logo-icon {
+  font-size: 1.8rem;
+  min-width: 40px;
+  text-align: center;
+}
+
+.brand-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--bg-app);
+  margin-left: 12px;
+  letter-spacing: -0.02em;
+}
+
+/* Navegación del Sidebar */
 .sidebar-nav {
   flex-grow: 1;
-  padding: 20px 15px;
+  padding: 1.5rem 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
+
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
 .nav-item {
   display: flex;
   align-items: center;
   padding: 12px 15px;
-  color: #a0aec0;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
   text-decoration: none;
-  border-radius: 12px;
-  margin-bottom: 8px;
-  transition: all 0.2s;
+  font-weight: 600;
+  transition: all 0.2s ease;
   position: relative;
-}
-
-.nav-item:hover, .active-link {
-  background: #f0eeff;
-  color: var(--student-primary);
+  white-space: nowrap;
 }
 
 .nav-icon {
   font-size: 1.3rem;
-  margin-right: 15px;
+  min-width: 30px;
+  text-align: center;
+  transition: transform 0.2s;
 }
 
-.menu-collapsed .nav-icon {
-  margin-right: 0;
+.nav-label {
+  margin-left: 12px;
+  font-size: 0.95rem;
 }
 
-/* NAVBAR */
-.student-main {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+.nav-item:hover {
+  background-color: var(--primary-light);
+  color: var(--primary);
 }
 
-.student-navbar {
-  height: 70px;
-  background: white;
+.nav-item:hover .nav-icon {
+  transform: scale(1.1);
+}
+
+.nav-item.active-link {
+  background-color: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* TOOLTIPS PARA EL MENÚ COLAPSADO */
+.tooltip {
+  position: absolute;
+  left: 80px;
+  background: #1e293b;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-10px);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  z-index: 200;
+}
+
+.tooltip::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 5px 5px 5px 0;
+  border-style: solid;
+  border-color: transparent #1e293b transparent transparent;
+}
+
+.student-layout.menu-collapsed .nav-item:hover .tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Footer del Sidebar */
+.sidebar-footer {
+  padding: 20px 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.btn-logout-mini {
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 30px;
-  border-bottom: 1px solid #e0e6ed;
+  gap: 12px;
+  padding: 12px 15px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
-.nav-left { display: flex; align-items: center; gap: 20px; }
+.btn-logout-mini:hover {
+  background: #fef2f2;
+  color: var(--danger);
+}
+
+/* =========================================================
+   NAVBAR SUPERIOR (HEADER)
+   ========================================================= */
+.student-navbar {
+  height: var(--header-height);
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
 
 .toggle-btn {
-  background: #f0eeff;
-  border: none;
-  color: var(--student-primary);
-  width: 35px; height: 35px;
+  background: var(--bg-app);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
+.toggle-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.page-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Notificaciones */
+.notifications {
+  position: relative;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.bell-icon {
+  font-size: 1.3rem;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+
+.notifications:hover .bell-icon {
+  color: var(--text-main);
+}
+
+.dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--danger);
+  border-radius: 50%;
+  border: 2px solid var(--bg-surface);
+}
+
+/* Perfil de Usuario */
 .student-profile-nav {
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 30px;
+  transition: background 0.2s;
+}
+
+.student-profile-nav:hover {
+  background: var(--bg-app);
+}
+
+.student-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+/* =========================================================
+   ÁREA DE CONTENIDO
+   ========================================================= */
+.student-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  position: relative;
+  /* Fondo general para las páginas */
+  background-color: var(--bg-app);
+}
+
+/* =========================================================
+   UTILIDADES RESPONSIVAS
+   ========================================================= */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .student-content {
+    /* Si tienes la Bottom Nav en móvil, asegúrate de dejar espacio abajo */
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Nuevo estilo para el saludo en el Layout */
+.layout-greeting {
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-greeting .page-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.layout-greeting .subtitle {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* El divisor entre el perfil y el botón de salir */
+.divider-vertical {
+  width: 1px;
+  height: 30px;
+  background-color: var(--border-color);
+  margin: 0 10px;
+}
+
+/* Botón de salir en el header */
+.btn-logout-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-logout-header:hover {
+  background: #fef2f2;
+  color: var(--danger);
+  border-color: #fca5a5;
+}
+
+/* Badge de notificaciones unificado */
+.notifications .badge {
+  position: absolute;
+  top: -2px;
+  right: 2px;
+  background: var(--danger);
+  color: white;
+  font-size: 0.6rem;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 10px;
+  border: 2px solid var(--bg-surface);
+}
+
+.profile-info { display: flex; align-items: center; gap: 1rem; }
+.avatar {
+  width: 48px; 
+  height: 48px; 
+  background: linear-gradient(135deg, var(--primary), #60a5fa);
+  color: white; 
+  border-radius: 50%; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  font-size: 1.25rem; 
+  font-weight: 800; 
+  box-shadow: 0 4px 10px rgba(59,130,246,0.3);
 }
 
 .mini-avatar {
-  width: 35px; height: 35px;
-  background: var(--student-primary);
-  color: white;
-  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary-light);
+  color: var(--primary);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  font-weight: 800;
+  font-size: 0.9rem;
 }
 
-.student-content {
-  padding: 30px;
-  overflow-y: auto;
-  flex-grow: 1;
-}
+.profile-info h2 { margin: 0; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; }
+.profile-info p { margin: 0; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }

@@ -1,0 +1,178 @@
+<div class="attendance-wrapper animate-slide-up">
+  
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Control de Asistencia</h1>
+      <p class="text-muted">Ciclo Escolar 2026 - Semestre B</p>
+    </div>
+  </header>
+
+  <div class="attendance-layout">
+    
+    <main class="main-content">
+      
+      <section class="summary-hero modern-card">
+        <div class="hero-info">
+          <h2>Tu promedio de asistencia</h2>
+          <p>Mantén tu asistencia por encima del 80% para conservar tu derecho a exámenes ordinarios.</p>
+        </div>
+        <div class="hero-chart">
+          <div class="progress-circle" [style.--percentage]="porcentajeGlobal()">
+            <span class="percentage-text">{{ porcentajeGlobal() }}%</span>
+          </div>
+        </div>
+      </section>
+
+      <h3 class="section-title">Desglose por Materia</h3>
+      <div class="subjects-grid">
+        
+        @for (materia of materiasProcesadas(); track materia.id) {
+          <article class="modern-card subject-card" [ngClass]="materia.nivelRiesgo">
+            
+            <div class="card-header">
+              <div>
+                <h4 class="subject-name">{{ materia.nombre }}</h4>
+                <p class="teacher-name">{{ materia.profesor }}</p>
+              </div>
+              <span class="badge-risk">{{ materia.porcentaje }}%</span>
+            </div>
+
+            <div class="attendance-stats">
+              <div class="stat-item">
+                <span class="stat-value text-success">{{ materia.asistencias }}</span>
+                <span class="stat-label">Asistencias</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value text-danger">{{ materia.faltas }}</span>
+                <span class="stat-label">Faltas</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value text-warning">{{ materia.retardos }}</span>
+                <span class="stat-label">Retardos</span>
+              </div>
+            </div>
+
+            <div class="limit-bar-container">
+              <div class="limit-header">
+                <span>Límite de faltas permitidas: {{ materia.limiteFaltas }}</span>
+                @if (materia.nivelRiesgo === 'peligro') {
+                  <strong class="text-danger">¡Límite superado!</strong>
+                } @else if (materia.nivelRiesgo === 'alerta') {
+                  <strong class="text-warning">Te quedan {{ materia.faltasRestantes }}</strong>
+                } @else {
+                  <span class="text-muted">Te quedan {{ materia.faltasRestantes }}</span>
+                }
+              </div>
+              
+              <div class="progress-track">
+                <div class="progress-fill" 
+                     [style.width.%]="(materia.faltas / materia.limiteFaltas) * 100">
+                </div>
+              </div>
+            </div>
+
+          </article>
+        }
+      </div>
+    </main>
+
+    <aside class="side-widgets">
+      <div class="modern-card sticky-widget">
+        <div class="widget-header">
+          <h3 class="widget-title">🕒 Últimas Incidencias</h3>
+        </div>
+        
+        <div class="widget-content log-list">
+          @for (registro of historial(); track registro.id) {
+            <div class="log-item">
+              <div class="log-icon" [ngClass]="registro.tipo">
+                {{ registro.tipo === 'falta' ? '❌' : '⏱️' }}
+              </div>
+              <div class="log-details">
+                <p class="log-subject">{{ registro.materia }}</p>
+                <span class="log-date">{{ registro.fecha }}</span>
+                
+                <span class="status-pill" [ngClass]="registro.estado">
+                  {{ registro.estado | titlecase }}
+                </span>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-state">
+              <span class="icon">✨</span>
+              <p>¡Asistencia perfecta recientemente!</p>
+            </div>
+          }
+        </div>
+
+        <button class="btn-outline-full mt-3" (click)="abrirModalJustificante()">Solicitar Justificante</button>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+@if (isJustificanteModalOpen()) {
+  <div class="modal-overlay animate-fade-in" (click)="cerrarModalJustificante()">
+    
+    <div class="modal-content animate-slide-up" (click)="$event.stopPropagation()">
+      
+      <header class="modal-header">
+        <h3>📝 Nuevo Justificante</h3>
+        <button class="btn-close" (click)="cerrarModalJustificante()">✖</button>
+      </header>
+
+      <div class="modal-body">
+        <p class="modal-instructions">Adjunta tu comprobante oficial (receta médica, constancia, etc.) para justificar tu inasistencia.</p>
+
+        <form class="modern-form">
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Fecha de la inasistencia</label>
+              <input type="date" class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label>Motivo</label>
+              <select class="form-control">
+                <option value="" disabled selected>Selecciona una opción</option>
+                <option value="salud">Salud / Médico</option>
+                <option value="tramite">Trámite Oficial</option>
+                <option value="personal">Asunto Personal / Familiar</option>
+                <option value="transporte">Problema de Transporte</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Descripción detallada</label>
+            <textarea class="form-control" rows="3" placeholder="Explica brevemente la situación..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Evidencia (PDF o Imagen)</label>
+            <div class="file-upload-zone">
+              <span class="icon">📎</span>
+              <span>Haz clic para subir tu archivo</span>
+              <input type="file" class="file-input" accept=".pdf,image/*">
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <footer class="modal-footer">
+        <button class="btn-ghost" (click)="cerrarModalJustificante()" [disabled]="isSubmittingJustificante()">Cancelar</button>
+        <button class="btn-primary" (click)="enviarJustificante()" [disabled]="isSubmittingJustificante()">
+          @if (isSubmittingJustificante()) {
+            ⏳ Procesando...
+          } @else {
+            🚀 Enviar Solicitud
+          }
+        </button>
+      </footer>
+
+    </div>
+  </div>
+}

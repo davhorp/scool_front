@@ -1,6 +1,6 @@
 <div class="student-layout" [class.menu-collapsed]="!isMenuOpen()">
   
-  <aside class="student-sidebar">
+  <aside class="student-sidebar desktop-only">
     <div class="sidebar-brand">
       <div class="logo-icon">🎓</div>
       @if (isMenuOpen()) {
@@ -23,39 +23,39 @@
         </a>
       }
     </nav>
-
-    <div class="sidebar-footer">
-      <button class="btn-logout-mini" title="Cerrar Sesión">
-        <span>🚪</span>
-        @if (isMenuOpen()) { <span>Salir</span> }
-      </button>
-    </div>
   </aside>
 
   <div class="student-main">
     
-    <header class="student-navbar">
-      <div class="nav-left">
-        <button class="toggle-btn" (click)="toggleMenu()">
-          {{ isMenuOpen() ? '◀' : '▶' }}
-        </button>
-        <h2 class="page-title">Panel del Estudiante</h2>
-      </div>
+    <header class="student-navbar desktop-only">
+  <div class="nav-left">
+    <button class="toggle-btn" (click)="toggleMenu()">
+      {{ isMenuOpen() ? '◀' : '☰' }}
+    </button>
+    <div class="profile-info mobile-only">
+    <div class="student-profile-nav">
+      <div class="mini-avatar">JP</div>
+    </div>
+    <div>
+      <h2>Hola, {{ nameFullUsr }} 👋</h2>
+      <p class="subtitle">3° A Secundaria</p>
+      <!--<p>{{ estudiante().grado }}</p>-->
+    </div>
+  </div>
+  </div>
 
-      <div class="nav-right">
-        <div class="notifications">
-          <span class="bell-icon">🔔</span>
-          <span class="dot"></span>
-        </div>
-        <div class="student-profile-nav">
-          <span class="student-name">Juan Pérez</span>
-          <div class="mini-avatar">JP</div>
-        </div>
-      </div>
-    </header>
+  <div class="nav-right">
+    <div class="notifications">
+      <span class="bell-icon">🔔</span>
+      <span class="badge">1</span>
+    </div>
+    
+    <div class="divider-vertical"></div>
+    <button class="btn-logout-header" title="Cerrar Sesión">
+      <span>🚪</span> Salir
+    </button>
+  </div>
+</header>
 
     <main class="student-content">
-      <router-outlet />
-    </main>
-  </div>
-</div>
+      <router-outlet></router-outlet>

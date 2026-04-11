@@ -26,6 +26,38 @@ export const STUDENT_ROUTES: Routes = [
         title: 'Reportes de Pagos',
         loadComponent: () => import('./student-payments/student-payments.component').then(m => m.StudentPaymentsComponent)
       },
+      {
+        path: 'tarea/:id', // El :id es crucial
+        title: 'Entregar Tarea - EduCore',
+        loadComponent: () => import('./student-assignment-submission/student-assignment-submission.component')
+          .then(m => m.StudentAssignmentSubmissionComponent)
+      },
+      {
+        path: 'materias',
+        title: 'Mis Materias',
+        loadComponent: () => import('./student-subjects/student-subjects.component').then(m => m.StudentSubjectsComponent)
+      },
+      {
+        path: 'materia/:id', 
+        title: 'Aula Virtual - EduCore',
+        // Aquí cargas el componente del aula (que programarás después)
+        loadComponent: () => import('./student-classroom/student-classroom.component')
+          .then(m => m.StudentClassroomComponent)
+      },
+      {
+        path: 'asistencia', 
+        title: 'Control de Asistencia',
+        // Aquí cargas el componente del aula (que programarás después)
+        loadComponent: () => import('./student-attendance/student-attendance.component')
+          .then(m => m.StudentAttendanceComponent)
+      },
+      {
+        path: 'configuracion', 
+        title: 'Configuración del Perfil',
+        // Aquí cargas el componente del aula (que programarás después)
+        loadComponent: () => import('./student-config/student-config.component')
+          .then(m => m.StudentConfigComponent)
+      },
     /* {
         path: 'configuracion',
         title: 'Configuración del Ciclo Escolar',

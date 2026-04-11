@@ -1,0 +1,51 @@
+.discount-container { animation: slideUp 0.4s ease; }
+
+.discount-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 30px;
+}
+
+.config-panel {
+  background: white; padding: 30px; border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.student-info-card {
+  background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 25px;
+}
+
+.current-debt { margin-top: 10px; color: #64748b; font-size: 0.9rem; }
+.current-debt strong { color: #1e293b; font-size: 1.2rem; }
+
+.form-group label { display: block; margin-bottom: 10px; font-weight: bold; color: #475569; }
+.form-group select { 
+  width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; 
+}
+
+/* RESUMEN DE CÁLCULO */
+.summary-preview {
+  margin: 25px 0; padding: 20px; background: #f0fdf4; border-radius: 15px;
+}
+
+.summary-preview .row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.save-amount { color: #16a34a; font-weight: bold; }
+.total { border-top: 1px dashed #bbf7d0; pt: 10px; font-weight: 800; }
+.final-amount { font-size: 1.5rem; color: #166534; }
+
+.btn-apply {
+  width: 100%; padding: 15px; border: none; border-radius: 12px;
+  background: #166534; color: white; font-weight: bold; cursor: pointer;
+}
+
+.btn-apply:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+/* LISTA DERECHA */
+.active-list-panel { background: white; padding: 25px; border-radius: 20px; }
+.becado-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px; border-bottom: 1px solid #f1f5f9;
+}
+.becado-item strong { font-size: 0.9rem; color: #1e293b; }
+.becado-item span { font-size: 0.8rem; color: #64748b; }
+.btn-remove { background: none; border: none; color: #ef4444; cursor: pointer; }

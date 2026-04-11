@@ -1,0 +1,135 @@
+<div class="profile-wrapper animate-slide-up">
+  
+  <header class="page-header">
+    <h1 class="page-title">Mi Perfil</h1>
+    <p class="text-muted">Gestiona tu identidad visual y consulta tu información oficial.</p>
+  </header>
+
+  <div class="profile-layout">
+    
+    <aside class="profile-sidebar">
+      <div class="modern-card text-center">
+        
+        <div class="avatar-container" [class.uploading]="isUploading()">
+          
+          @if (fotoPerfilUrl()) {
+            <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="avatar-img">
+          } @else {
+            <div class="avatar-placeholder">
+              {{ perfil().nombre.charAt(0) }}{{ perfil().apellidos.charAt(0) }}
+            </div>
+          }
+
+          <label class="avatar-overlay" for="file-upload" title="Cambiar foto">
+            <span class="icon">📷</span>
+            <span>Actualizar</span>
+          </label>
+          
+          <input id="file-upload" type="file" accept="image/png, image/jpeg, image/webp" hidden (change)="onFotoSelect($event)">
+          
+          @if (isUploading()) {
+            <div class="loader-overlay">
+              <div class="spinner"></div>
+            </div>
+          }
+        </div>
+
+        <h2 class="student-fullname">{{ perfil().nombre }} {{ perfil().apellidos }}</h2>
+        <p class="student-badge">Estudiante Activo</p>
+
+        @if (fotoPerfilUrl()) {
+          <button class="btn-ghost-danger mt-3" (click)="eliminarFoto()" [disabled]="isUploading()">
+            🗑️ Eliminar foto
+          </button>
+        }
+      </div>
+    </aside>
+
+    <main class="profile-content">
+      
+      <section class="modern-card info-section">
+        <div class="section-header">
+          <span class="icon-accent">🎓</span>
+          <h3>Información Académica</h3>
+        </div>
+        
+        <div class="info-grid">
+          <div class="info-group">
+            <span class="info-label">Matrícula</span>
+            <span class="info-value highlight">{{ perfil().matricula }}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">Grado</span>
+            <span class="info-value">{{ perfil().grado }}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">Grupo</span>
+            <span class="info-value">{{ perfil().grupo }}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">Turno</span>
+            <span class="info-value">{{ perfil().turno }}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">Campus</span>
+            <span class="info-value">{{ perfil().campus }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="modern-card info-section">
+        <div class="section-header">
+          <span class="icon-accent">👤</span>
+          <h3>Datos Personales</h3>
+        </div>
+        
+        <div class="info-grid">
+          <div class="info-group full-width">
+            <span class="info-label">Nombre Completo</span>
+            <span class="info-value">{{ perfil().nombre }} {{ perfil().apellidos }}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">CURP</span>
+            <span class="info-value mono-font">{{ perfil().curp }}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">Fecha de Nacimiento</span>
+            <span class="info-value">{{ perfil().fechaNacimiento }}</span>
+          </div>
+          <div class="info-group full-width">
+            <span class="info-label">Correo Institucional</span>
+            <span class="info-value text-primary">{{ perfil().correoInstitucional }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="modern-card info-section">
+        <div class="section-header">
+          <span class="icon-accent">🛡️</span>
+          <h3>Contacto de Emergencia</h3>
+        </div>
+        
+        <div class="info-grid">
+          <div class="info-group full-width">
+            <span class="info-label">Nombre del Tutor</span>
+            <span class="info-value">{{ perfil().tutor.nombre }}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">Parentesco</span>
+            <span class="info-value">{{ perfil().tutor.parentesco }}</span>
+          </div>
+          <div class="info-group">
+            <span class="info-label">Teléfono</span>
+            <span class="info-value">{{ perfil().tutor.telefono }}</span>
+          </div>
+        </div>
+        
+        <div class="alert-box mt-4">
+          <span class="icon">ℹ️</span>
+          <p>Para modificar cualquier dato personal o de emergencia, por favor acude a la ventanilla de <strong>Control Escolar</strong> con la documentación oficial correspondiente.</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>

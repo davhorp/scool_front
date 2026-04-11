@@ -1,24 +1,62 @@
 <div class="dashboard-wrapper">
 
+  @if (nivelAlerta() !== 'ninguna') {
+  <div class="alert-box animate-in" [ngClass]="'severity-' + nivelAlerta()">
+    <div class="alert-content">
+      <div class="alert-icon">
+        <span class="pulse-ring"></span>
+        <span class="icon">
+          @if (nivelAlerta() === 'roja') { 🛡️ }
+          @else if (nivelAlerta() === 'naranja') { 🌙 }
+          @else { ⚠️ }
+        </span>
+      </div>
+      
+      <div class="alert-text">
+        <h4>
+          @if (nivelAlerta() === 'roja') { ¡ALERTA DE SEGURIDAD! }
+          @else if (nivelAlerta() === 'naranja') { ACCESO FUERA DE HORARIO }
+          @else { RIESGO FINANCIERO }
+        </h4>
+        <p>
+          @if (nivelAlerta() === 'roja') { Se detectó un acceso desde una IP no registrada. }
+          @else if (nivelAlerta() === 'naranja') { Usuario operando en horario no laboral. }
+          @else { El ISF ha caído al {{ datosFinancieros().isf }}%. }
+        </p>
+      </div>
+    </div>
+    
+    <button class="btn-audit-link" routerLink="/admin/auditoria">
+      @if (nivelAlerta() === 'roja') { Bloquear / Investigar }
+      @else { Ver Detalles }
+      <span class="arrow">→</span>
+    </button>
+     @if (nivelAlerta() === 'roja') {
+      <button class="btn-panic" (click)="triggerPanicMode()">
+        <span class="icon">🚫</span>
+        Cerrar Todas las Sesiones
+      </button>
+    }
+  </div>
+}
+  <section class="admin-panel strategic-alert">
+    <app-financial-health-widget />
+  </section>
+
+  <div class="summary-card academic-shortcut">
+      <div class="card-info">
+        <h3>Promedio Global: {{ statss().promedioGeneral }}</h3>
+        <p>Haz clic para ver el análisis por grupo.</p>
+      </div>
+      <button class="btn-view-more" routerLink="/admin/academicos">
+        Ver Reporte Completo
+      </button>
+    </div>
+
   <div class="dashboard-header">
     <h2>Resumen Institucional</h2>
     <button class="btn-refresh" (click)="refreshData()">🔄 Actualizar</button>
   </div>
-
-  <!--<div class="stats-grid">
-    @for (item of stats(); track item.label) {
-      <div class="stat-card" [style.border-left-color]="item.color">
-        <div class="stat-info">
-          <span class="stat-label">{{ item.label }}</span>
-          <h3 class="stat-value">{{ item.value }}</h3>
-          <span class="stat-trend" [class.up]="item.trend > 0" [class.down]="item.trend < 0">
-            {{ item.trend > 0 ? '▲' : '▼' }} {{ item.trend }}%
-          </span>
-        </div>
-        <div class="stat-icon-bg">{{ item.icon }}</div>
-      </div>
-    }
-  </div>-->
 
   <div class="stats-grid">
     @for (item of stats(); track item.label) {
@@ -34,7 +72,6 @@
       </div>
     }
   </div>
-
   <div class="dashboard-header-row">
     <div class="title-group">
       <p class="subtitle">Análisis de datos en tiempo real</p>

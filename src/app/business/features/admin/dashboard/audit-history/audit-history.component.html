@@ -1,0 +1,56 @@
+<div class="audit-container">
+  <header class="audit-header">
+    <div class="header-info">
+      <h2>🔍 Bitácora de Auditoría Financiera</h2>
+      <p>Rastreo de incentivos y modificaciones de deuda en tiempo real.</p>
+    </div>
+    <div class="impact-card">
+      <span>Total Descuentos Otorgados:</span>
+      <strong>- ${{ totalDescontado() | number }}</strong>
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <input type="text" 
+           placeholder="Filtrar por Administrador o Estudiante..." 
+           [ngModel]="filtroAdmin()" 
+           (ngModelChange)="filtroAdmin.set($event)">
+    <button class="btn-export">📥 Exportar Reporte (CSV)</button>
+  </div>
+
+  <div class="table-card">
+    <table class="audit-table">
+      <thead>
+        <tr>
+          <th>Fecha / Hora</th>
+          <th>Administrador</th>
+          <th>Acción Realizada</th>
+          <th>Beneficiario</th>
+          <th>Impacto</th>
+          <th>Dirección IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (log of filteredLogs(); track log.id) {
+          <tr>
+            <td class="time-col">{{ log.fecha }}</td>
+            <td>
+              <div class="user-badge">
+                <span class="avatar">{{ log.adminNombre[0] }}</span>
+                {{ log.adminNombre }}
+              </div>
+            </td>
+            <td><span class="action-text">{{ log.accion }}</span></td>
+            <td><strong>{{ log.estudiante }}</strong></td>
+            <td class="amount-col">
+              <small>${{ log.montoOriginal | number }}</small>
+              <span class="arrow">→</span>
+              <strong>${{ log.montoFinal | number }}</strong>
+            </td>
+            <td class="ip-col"><code>{{ log.ip }}</code></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

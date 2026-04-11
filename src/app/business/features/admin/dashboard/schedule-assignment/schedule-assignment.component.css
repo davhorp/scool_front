@@ -1,0 +1,277 @@
+/* VARIABLES DE DISEÑO EDUCORE 2026 */
+:host {
+  --primary: #3b82f6;
+  --primary-dark: #1e40af;
+  --primary-light: #eff6ff;
+  --accent: #8b5cf6;
+  --success: #10b981;
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.05);
+}
+
+.schedule-container {
+  padding: 1.5rem;
+  background-color: var(--bg-main);
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, sans-serif;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* HEADER Y ACCIONES */
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.title-group h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.title-group p {
+  color: var(--text-muted);
+  margin: 0.25rem 0 0 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--bg-card);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+/* SELECTOR DE DOCENTES (LA HERRAMIENTA) */
+.teacher-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.teacher-picker label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--primary);
+  letter-spacing: 0.05em;
+}
+
+.teacher-picker select {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 2px solid var(--primary-light);
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.teacher-picker select:focus {
+  border-color: var(--primary);
+  background: white;
+  outline: none;
+}
+
+.divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border-color);
+}
+
+/* SELECTOR DE SALÓN Y BOTONES */
+.actions select:not(.teacher-picker select) {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-weight: 500;
+}
+
+.btn-save {
+  background: var(--text-main);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.btn-save:hover {
+  background: #000;
+  transform: translateY(-2px);
+}
+
+/* EL GRID DEL HORARIO */
+.grid-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  overflow: hidden; /* Para que el scroll sea interno si es necesario */
+}
+
+.schedule-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.schedule-table th {
+  background: #fcfcfc;
+  padding: 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--bg-main);
+  text-align: center;
+}
+
+.schedule-table td {
+  border-right: 1px solid var(--bg-main);
+  border-bottom: 1px solid var(--bg-main);
+  vertical-align: top;
+  position: relative;
+}
+
+.time-label {
+  background: #f8fafc;
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: center;
+  width: 100px;
+  font-size: 0.9rem;
+  padding: 1rem !important;
+}
+
+/* ZONAS DE CLIC */
+.drop-zone {
+  height: 100px;
+  min-width: 160px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.drop-zone:hover {
+  background: #f1f5f9;
+}
+
+.add-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--border-color);
+  font-size: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.drop-zone:hover .add-hint {
+  opacity: 1;
+}
+
+/* ETIQUETA DE MATERIA ASIGNADA */
+.materia-tag {
+  height: 100%;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-left: 4px solid rgba(0,0,0,0.1);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.materia-tag strong {
+  font-size: 0.85rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.materia-tag span {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.status-check {
+  font-size: 0.65rem;
+  font-weight: 800;
+  margin-top: auto;
+  color: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* LEYENDA */
+.legend {
+  margin-top: 1.5rem;
+  background: #f1f5f9;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+/* RESPONSIVO */
+@media (max-width: 1024px) {
+  .grid-card {
+    overflow-x: auto; /* Scroll horizontal para tablets/móviles */
+  }
+  
+  .schedule-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 640px) {
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .divider {
+    display: none;
+  }
+  
+  .btn-save {
+    width: 100%;
+  }
+}
+
+/* ANIMACIONES */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

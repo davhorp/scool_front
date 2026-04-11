@@ -1,32 +1,143 @@
-<div class="schedule-container">
-  <header class="schedule-header">
-    <h3>Mi Horario Semanal</h3>
-    <p>Semana actual: Ciclo Escolar 2026</p>
-  </header>
+<div class="student-portal-wrapper">
+  
+  <header class="portal-header">
+  <div class="header-actions">
+    <div class="view-toggle">
+      <button [class.active]="vistaActual() === 'diaria'" (click)="vistaActual.set('diaria')">
+        📱 Diaria
+      </button>
+      <button [class.active]="vistaActual() === 'semanal'" (click)="vistaActual.set('semanal')">
+        📅 Semanal
+      </button>
+    </div>
+  </div>
+</header>
 
-  <div class="schedule-grid">
-    @for (dayName of days; track dayName; let i = $index) {
-      <div class="day-column" [class.is-today]="today() === i + 1">
-        <div class="day-header">
-          <span class="day-name">{{ dayName }}</span>
-          @if (today() === i + 1) { <span class="today-badge">Hoy</span> }
-        </div>
+  @if (vistaActual() === 'diaria') {
+    <div class="mobile-portal view-section animate-in">
+      
+      <nav class="days-scroll">
+        @for (dia of diasSemana; track dia) {
+          <button class="day-chip" 
+                  [class.active]="diaSeleccionado() === dia"
+                  (click)="seleccionarDia(dia)">
+            {{ dia.substring(0, 3) }}
+          </button>
+        }
+      </nav>
 
-        <div class="classes-list">
-          @for (clase of getClassesForDay(i); track clase.horaInicio) {
-            <div class="class-item" [style.border-left-color]="clase.color">
-              <div class="class-time">{{ clase.horaInicio }} - {{ clase.horaFin }}</div>
-              <div class="class-details">
-                <span class="subject-title">{{ clase.materia }}</span>
-                <span class="teacher">{{ clase.docente }}</span>
-                <span class="room">📍 {{ clase.aula }}</span>
+      <main class="schedule-timeline">
+        <h3>Tu horario para el {{ diaSeleccionado() }}</h3>
+        
+        <div class="timeline-container">
+          @for (clase of clasesDelDia(); track clase.id) {
+            <div class="timeline-item" [ngClass]="clase.estado">
+              
+              <div class="time-col">
+                <span class="start">{{ clase.horaInicio }}</span>
+                <span class="end">{{ clase.horaFin }}</span>
+              </div>
+
+              <div class="timeline-divider">
+                <div class="dot" [style.border-color]="clase.color"></div>
+                <div class="line"></div>
+              </div>
+
+              <div class="class-card" [style.border-left-color]="clase.color">
+                @if (clase.estado === 'activa') {
+                  <div class="live-badge">En curso</div>
+                }
+
+                <div class="class-header">
+                  <h4>{{ clase.materia }}</h4>
+                  <span class="room-tag">📍 {{ clase.salon }}</span>
+                </div>
+                
+                @if (clase.docente) {
+                  <div class="teacher-info">
+                    <span>👨‍🏫 {{ clase.docente }}</span>
+                  </div>
+                }
               </div>
             </div>
-          } @empty {
-            <div class="empty-day">Sin clases</div>
+          }
+
+          @if (clasesDelDia().length === 0) {
+            <div class="empty-state">
+              <p>No tienes clases registradas para este día. ¡Disfruta tu descanso! 🌴</p>
+            </div>
           }
         </div>
+      </main>
+    </div>
+  }
+
+  @if (vistaActual() === 'semanal') {
+    <div class="schedule-container view-section animate-in">
+      <header class="schedule-header-secondary">
+        <h3>Mi Horario Semanal</h3>
+        <p>Semana actual: Ciclo Escolar 2026</p>
+      </header>
+
+      <div class="schedule-grid">
+        @for (dayName of diasSemana; track dayName; let i = $index) {
+          <div class="day-column" [class.is-today]="today() === i + 1">
+            
+            <div class="day-header">
+              <span class="day-name">{{ dayName }}</span>
+              @if (today() === i + 1) { <span class="today-badge">Hoy</span> }
+            </div>
+
+            <div class="classes-list">
+              @for (clase of getClassesForDay(i); track clase.horaInicio) {
+                <div class="class-item" [style.border-left-color]="clase.color">
+                  <div class="class-time">{{ clase.horaInicio }} - {{ clase.horaFin }}</div>
+                  <div class="class-details">
+                    <span class="subject-title">{{ clase.materia }}</span>
+                    <span class="teacher">{{ clase.docente }}</span>
+                    <span class="room">📍 {{ clase.salon }}</span>
+                  </div>
+                </div>
+              } @empty {
+                <div class="empty-day">Sin clases</div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <section class="todo-list animate-in">
+  <div class="section-header">
+    <h3>📝 Tareas Pendientes</h3>
+    <span class="task-badge">{{ tareasPendientes().length }}</span>
+  </div>
+  
+  <div class="tasks-container">
+    @for (tarea of tareasPendientes(); track tarea.id) {
+      <div class="task-item" [ngClass]="tarea.urgencia">
+        <div class="task-info">
+          <h4>{{ tarea.titulo }}</h4>
+          <p>
+            <span class="subject-name">{{ tarea.materia }}</span>
+            <span class="dot-separator">•</span>
+            <strong [class.danger-text]="tarea.urgencia === 'alta'">
+              {{ tarea.vencimiento }}
+            </strong>
+          </p>
+        </div>
+        
+        <button class="btn-primary" [routerLink]="['/alumno/tarea', tarea.id]">
+          Abrir y Entregar
+        </button>
+      </div>
+    } @empty {
+      <div class="empty-tasks">
+        <div class="empty-icon">🎉</div>
+        <p>¡Todo al día! No tienes tareas pendientes.</p>
       </div>
     }
   </div>
+</section>
 </div>

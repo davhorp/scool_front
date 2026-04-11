@@ -1,0 +1,36 @@
+<div class="isf-card" [class.alert-mode]="isAlertActive()">
+  
+  <div class="card-header">
+    <h4>Índice de Salud Financiera (ISF)</h4>
+    <span class="badge" [class.danger]="isAlertActive()">
+      {{ isAlertActive() ? '⚠️ Riesgo Alto' : '✅ Saludable' }}
+    </span>
+  </div>
+
+  <div class="isf-display">
+    <h2 class="isf-value">{{ isf() | number:'1.1-1' }}%</h2>
+    
+    <div class="progress-track">
+      <div class="progress-fill" 
+           [style.width.%]="isf()"
+           [style.background-color]="isAlertActive() ? '#ef4444' : '#10b981'">
+      </div>
+    </div>
+  </div>
+
+  @if (isAlertActive()) {
+    <div class="alert-action">
+      <p>
+        <strong>Sugerencia:</strong> 
+        Se recomienda reforzar la cobranza de mensualidades vencidas o revisar gastos operativos.
+      </p>
+      <button class="btn-action" (click)="goToMorosidad()">Ver Detalle de Morosidad</button>
+    </div>
+  }
+
+  <div class="formula-info">
+  <p>Cálculo basado en:</p>
+  <div [innerHTML]="isfFormula"></div>
+</div>
+
+</div>

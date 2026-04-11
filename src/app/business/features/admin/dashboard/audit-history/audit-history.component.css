@@ -1,0 +1,43 @@
+.audit-container { animation: fadeIn 0.4s ease-out; }
+
+.audit-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
+}
+
+.impact-card {
+  background: #fef2f2; border: 1px solid #fee2e2; padding: 15px 25px;
+  border-radius: 12px; text-align: right;
+}
+.impact-card span { display: block; font-size: 0.8rem; color: #991b1b; }
+.impact-card strong { font-size: 1.5rem; color: #dc2626; }
+
+.filter-bar {
+  display: flex; gap: 15px; margin-bottom: 20px;
+}
+.filter-bar input {
+  flex-grow: 1; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0;
+}
+
+.table-card {
+  background: white; border-radius: 15px; overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.audit-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.audit-table th { background: #f8fafc; padding: 15px; text-align: left; color: #64748b; font-size: 0.75rem; text-transform: uppercase; }
+.audit-table td { padding: 15px; border-bottom: 1px solid #f1f5f9; }
+
+/* ESTILOS DE COLUMNAS */
+.time-col { color: #94a3b8; font-family: monospace; }
+.user-badge { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+.avatar { 
+  width: 24px; height: 24px; background: #3b82f6; color: white; 
+  border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;
+}
+
+.action-text { color: #1e293b; font-style: italic; }
+.amount-col { display: flex; flex-direction: column; align-items: flex-end; }
+.amount-col small { text-decoration: line-through; color: #94a3b8; }
+.arrow { color: #10b981; font-size: 0.7rem; margin: 2px 0; }
+
+.ip-col code { background: #f1f5f9; padding: 2px 5px; border-radius: 4px; font-size: 0.8rem; }

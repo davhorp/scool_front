@@ -1,0 +1,49 @@
+<div class="print-only-container" id="convenio-legal">
+  <div class="agreement-header">
+    <div class="school-logo">🏫</div>
+    <div class="school-info">
+      <h1>SISTEMA ESCOLAR EDUCORE</h1>
+      <p>Convenio de Reconocimiento de Adeudo y Plan de Pagos</p>
+      <small>Folio: CONV-2026-{{ datos().id }}</small>
+    </div>
+  </div>
+
+  <div class="agreement-body">
+    <p>En la Ciudad de México, al día <strong>{{ fechaActual | date:'longDate' }}</strong>, se celebra el presente convenio entre la institución y el tutor <strong>{{ datos().tutor }}</strong>, respecto al alumno <strong>{{ datos().alumno }}</strong>.</p>
+
+    <table class="data-summary">
+      <tr>
+        <td>Adeudo Original:</td>
+        <td>${{ datos().deudaOriginal | number }}</td>
+      </tr>
+      <tr>
+        <td>Incentivo Aplicado ({{ datos().becaNombre }}):</td>
+        <td>- ${{ datos().descuento | number }}</td>
+      </tr>
+      <tr class="total-row">
+        <td>Monto Final a Liquidar:</td>
+        <td>${{ datos().montoFinal | number }}</td>
+      </tr>
+    </table>
+
+    <h3>Cláusulas:</h3>
+    <ol>
+      <li>El tutor se compromete a liquidar el monto final antes del día 05 del próximo mes.</li>
+      <li>En caso de incumplimiento, el incentivo aplicado quedará sin efecto, regresando a la deuda original.</li>
+      <li>Este documento sirve como comprobante de compromiso académico-financiero.</li>
+    </ol>
+  </div>
+
+  <div class="agreement-signatures">
+    <div class="sig-box">
+      <hr>
+      <p>Firma del Tutor</p>
+      <small>{{ datos().tutor }}</small>
+    </div>
+    <div class="sig-box">
+      <hr>
+      <p>Sello de Administración</p>
+      <small>EduCore ERP System</small>
+    </div>
+  </div>
+</div>

@@ -6,6 +6,9 @@ import { Chart, registerables } from 'chart.js';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { PaymentDashComponent } from '../payment-dash/payment-dash.component';
+import { FinancialHealthWidgetComponent } from '../financial-health-widget/financial-health-widget.component';
+import { RouterLink } from '@angular/router';
+
 Chart.register(...registerables);
 
 interface StatCard {
@@ -16,16 +19,51 @@ interface StatCard {
   color: string;
 }
 
+  // Definimos los tipos de alerta para mantener el tipado fuerte
+type AlertLevel = 'amarilla' | 'naranja' | 'roja' | 'ninguna';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, PaymentDashComponent],
+  imports: [CommonModule, FormsModule, PaymentDashComponent, FinancialHealthWidgetComponent, RouterLink],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent 
 //implements AfterViewInit 
 {
+
+// Datos que vendrían de tus servicios de Spring Boot
+  datosFinancieros = signal({ isf: 65 }); // Bajo el 70%
+  seguridad = signal({ ipReconocida: false, horaAcceso: '03:15 AM' });
+
+  // Lógica inteligente para determinar la gravedad
+  nivelAlerta = computed<AlertLevel>(() => {
+    const { isf } = this.datosFinancieros();
+    const { ipReconocida, horaAcceso } = this.seguridad();
+
+    // 1. Prioridad Máxima: ROJA (Seguridad comprometida)
+    if (!ipReconocida) return 'roja';
+
+    // 2. Prioridad Media-Alta: NARANJA (Actividad sospechosa/Horario)
+    if (this.esHoraInusual(horaAcceso)) return 'naranja';
+
+    // 3. Prioridad Preventiva: AMARILLA (Salud Financiera)
+    if (isf < 70) return 'amarilla';
+
+    return 'ninguna';
+  });
+  /**
+   * Definimos el signal 'stats' que espera el HTML.
+   * En un escenario real, estos datos vendrían de un servicio de 
+   * analítica o de tu backend en Spring Boot.
+   */
+  statss = signal({
+    totalAlumnos: 850,
+    totalDocentes: 42,
+    inscripcionesMes: 15,
+    alertasSistema: 2, // Al ser > 0, disparará la visualización de la alerta
+    promedioGeneral: 8.5
+  }); 
 
   // Guardamos la instancia para destruirla al cerrar el modal
   studentTrendChartInstance: any;
@@ -400,4 +438,32 @@ closeExpedient() {
     pdf.save(`Expediente_${student.nombre.replace(' ', '_')}.pdf`);
   }
 
+  private esHoraInusual(hora: string): boolean {
+    // Lógica para detectar si es entre 11 PM y 6 AM
+    const h = parseInt(hora.split(':')[0]);
+    return h >= 22 || h <= 6;
+  }
+
+  triggerPanicMode() {
+    const confirmacion = confirm(
+      "🛑 ¡ATENCIÓN! Estás a punto de cerrar TODAS las sesiones activas del sistema. " +
+      "Esto desconectará a administradores, docentes y padres inmediatamente. ¿Deseas continuar?"
+    );
+
+    if (confirmacion) {
+      // 1. Llamada al servicio de seguridad (Backend: DELETE /api/auth/sessions)
+      console.warn("Cerrando todas las sesiones del sistema por emergencia...");
+      
+      // 2. Notificación de éxito
+      this.toastService.show(
+        'SISTEMA BLOQUEADO', 
+        'Todas las sesiones han sido cerradas. El acceso está restringido hasta nuevo aviso.', 
+        'error'
+      );
+
+      // 3. Opcional: Redirigir al dueño al login también para asegurar su propia sesión
+      // this.authService.logout();
+    }
+  }
+  
 }

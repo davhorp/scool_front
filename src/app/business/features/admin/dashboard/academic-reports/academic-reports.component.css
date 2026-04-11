@@ -1,0 +1,316 @@
+/* VARIABLES DE DISEÑO 2026 */
+:host {
+  --primary: #2563eb;
+  --primary-light: #dbeafe;
+  --secondary: #64748b;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --radius: 16px;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+.academic-container {
+  padding: 2rem;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* HEADER Y FILTROS */
+.academic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.title-group h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0;
+  color: #0f172a;
+}
+
+.title-group p {
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.filters select {
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  font-weight: 600;
+  color: var(--text-main);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filters select:hover {
+  border-color: var(--primary);
+}
+
+/* FILA DE KPIs */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.kpi-card {
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s;
+}
+
+.kpi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.kpi-card span {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.kpi-card strong {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-top: 0.5rem;
+  color: var(--primary);
+}
+
+.kpi-card strong.warning { color: var(--warning); }
+
+.formula-card {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: white;
+}
+
+.formula-card span { color: #94a3b8; }
+.formula-card .latex-font {
+  margin-top: 1rem;
+  font-family: 'Cambria', serif;
+  font-size: 1.1rem;
+  background: rgba(255,255,255,0.05);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+/* GRID DE GRÁFICO Y RANKING */
+.academic-grid {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.chart-panel, .ranking-panel {
+  background: var(--bg-card);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #334155;
+}
+
+/* GRÁFICO DE BARRAS */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 300px;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.bar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 12%;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.bar-fill {
+  width: 100%;
+  background: linear-gradient(to top, var(--primary), #60a5fa);
+  border-radius: 8px 8px 0 0;
+  position: relative;
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-height: 5px;
+}
+
+.bar-fill:hover {
+  filter: brightness(1.1);
+}
+
+.bar-fill.low {
+  background: linear-gradient(to top, var(--danger), #f87171);
+}
+
+.bar-value {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.bar-label {
+  margin-top: 1rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* RANKING (CUADRO DE HONOR) */
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+
+.ranking-item:hover {
+  transform: scale(1.02);
+  background: var(--primary-light);
+}
+
+.rank-pos {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin-right: 1.25rem;
+  width: 30px;
+}
+
+.rank-info { flex-grow: 1; }
+.rank-info strong { display: block; font-size: 0.95rem; }
+.rank-info small { color: var(--text-muted); font-weight: 500; }
+
+.rank-score {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--primary);
+  background: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+/* TABLA DE RIESGO */
+.risk-table-card {
+  background: var(--bg-card);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.risk-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.75rem;
+}
+
+.risk-table th {
+  text-align: left;
+  padding: 1rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.risk-table td {
+  padding: 1.25rem 1rem;
+  background: #fcfcfc;
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.risk-table tr td:first-child { border-left: 1px solid #f1f5f9; border-radius: 12px 0 0 12px; }
+.risk-table tr td:last-child { border-right: 1px solid #f1f5f9; border-radius: 0 12px 12px 0; }
+
+.status-indicator {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.status-indicator.red {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+/* RESPONSIVO */
+@media (max-width: 1200px) {
+  .academic-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .academic-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .kpi-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .bar-chart {
+    height: 200px;
+  }
+  
+  .bar-label {
+    font-size: 0.6rem;
+    transform: rotate(-45deg);
+    margin-top: 1.5rem;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,72 @@
+<div class="schedule-container">
+  <header class="schedule-header">
+  <div class="title-group">
+    <h2>📅 Constructor de Horarios</h2>
+    <p>Gestionando: <strong>{{ salonSeleccionado() }}</strong></p>
+  </div>
+
+  <div class="actions">
+    <div class="teacher-picker">
+      <label>Docente a asignar:</label>
+      <select [ngModel]="idDocenteSeleccionado()" 
+              (ngModelChange)="idDocenteSeleccionado.set($event)">
+        <option value="">-- Seleccionar Docente --</option>
+        @for (docente of listaDocentes(); track docente.id) {
+          <option [value]="docente.id">
+            {{ docente.nombre }} ({{ docente.especialidad }})
+          </option>
+        }
+      </select>
+    </div>
+
+    <div class="divider"></div>
+
+    <select [ngModel]="salonSeleccionado()" 
+            (ngModelChange)="salonSeleccionado.set($event)">
+      @for (s of salones; track s) {
+        <option [value]="s">{{ s }}</option>
+      }
+    </select>
+    
+    <button class="btn-save">Guardar Cambios</button>
+  </div>
+</header>
+
+  <div class="grid-card">
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th>Hora</th>
+          @for (dia of dias; track dia) {
+            <th>{{ dia }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (hora of horas; track hora) {
+          <tr>
+            <td class="time-label">{{ hora }}</td>
+            @for (dia of dias; track dia) {
+              <td class="drop-zone" (click)="asignarMateria(dia, hora)">
+                @if (getSlot(dia, hora); as slot) {
+                    <div class="materia-tag" [style.background-color]="slot.color">
+                    <strong>{{ slot.materia }}</strong>
+                    <span>{{ slot.docente }}</span>
+                    
+                    <div class="status-check">✓ Verificado</div>
+                    </div>
+                } @else {
+                    <span class="add-hint">+</span>
+                }
+                </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="legend">
+    <p>💡 <strong>Tip:</strong> Haz clic en cualquier espacio en blanco para asignar una materia disponible.</p>
+  </div>
+</div>
