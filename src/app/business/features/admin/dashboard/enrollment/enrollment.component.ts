@@ -1,4 +1,5 @@
 import { Component, signal, computed, inject, input, ViewChild, ElementRef } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../../../../core/services/toast.service';
@@ -21,6 +22,8 @@ interface EnrollmentDoc {
   styleUrl: './enrollment.component.css'
 })
 export class EnrollmentComponent {
+
+  private sanitizer = inject(DomSanitizer);
 
   value = input.required<string>();
   size = input<string>('150x150');
@@ -92,7 +95,8 @@ export class EnrollmentComponent {
 
   private toastService = inject(ToastService);
 
-  selectedPreview = signal<{url: string, type: string, nombre: string} | null>(null);
+  //selectedPreview = signal<{url: string, type: string, nombre: string} | null>(null);
+  selectedPreview = signal<{url: SafeResourceUrl, type: string, nombre: string} | null>(null);
 
   docsCargadosCount = computed(() => 
   this.documentos().filter(d => d.cargado).length
@@ -113,7 +117,11 @@ export class EnrollmentComponent {
     { nombre: 'Acta de Nacimiento', clave: 'acta', cargado: false },
     { nombre: 'CURP', clave: 'curp_doc', cargado: false },
     { nombre: 'Certificado de Grado Anterior', clave: 'certificado', cargado: false },
-    { nombre: 'Comprobante de Domicilio', clave: 'domicilio', cargado: false }
+    { nombre: 'Comprobante de Domicilio', clave: 'domicilio', cargado: false },
+    { nombre: 'INE (Padre / Tutor)', clave: 'ine', cargado: false },
+    { nombre: 'Fotografía', clave: 'foto', cargado: false },
+    { nombre: 'Cartilla vacunación', clave: 'vacunacion', cargado: false },
+    { nombre: 'Certificado medico', clave: 'medico', cargado: false }
   ]);
 
   // Computed signal que reacciona si el valor cambia
@@ -180,7 +188,7 @@ export class EnrollmentComponent {
   openPreview(doc: any) {
     if (doc.previewUrl) {
       this.selectedPreview.set({
-        url: doc.previewUrl,
+        url: this.sanitizer.bypassSecurityTrustResourceUrl(doc.previewUrl),
         type: doc.type,
         nombre: doc.nombre
       });

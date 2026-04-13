@@ -84,8 +84,8 @@ export default class LoginComponent {
     const targetRoute = this.dashboardRoutes[rol] || '/login';
     console.log('URL ROL');
     console.log(targetRoute);
-    //this.router.navigate([targetRoute]);
-    this.router.navigate(["alumno/dashboard"]);
+    this.router.navigate([targetRoute]);
+    //this.router.navigate(["alumno/dashboard"]);
   }
 
 }

@@ -189,7 +189,7 @@
   </div>
 
   <div class="enrollment-footer">
-    <button (click)="prevStep()" [disabled]="currentStep() === 1">Atrás</button>
+    <button class="btn-back" (click)="prevStep()" [disabled]="currentStep() === 1">Atrás</button>
     @if (currentStep() < 6) {
       <button class="btn-next" (click)="nextStep()">Siguiente</button>
     } @else {
@@ -243,6 +243,29 @@
       <div class="modal-footer">
         <button class="btn-pending" (click)="saveAsPending()">💾 Guardar como Pendiente</button>
         <button class="btn-continue" (click)="isPreviewModalOpen.set(false)">Continuar Editando</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (selectedPreview(); as preview) {
+  <div class="modal-backdrop" (click)="selectedPreview.set(null)">
+    <div class="modal-preview" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ preview.nombre }}</h3>
+        <button class="btn-close-icon" (click)="selectedPreview.set(null)">&times;</button>
+      </div>
+
+      <div class="modal-content">
+        @if (preview.type.startsWith('image/')) {
+            <img [src]="preview.url" [alt]="preview.nombre" class="preview-media">
+        } @else {
+            <iframe [src]="preview.url" class="preview-media"></iframe>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-primary" (click)="selectedPreview.set(null)">Cerrar</button>
       </div>
     </div>
   </div>

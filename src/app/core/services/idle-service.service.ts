@@ -40,6 +40,7 @@ export class IdleServiceService {
           this.ngZone.run(() => this.logoutUser());
         });
     });
+    
   }
 
    /*logoutUser() {

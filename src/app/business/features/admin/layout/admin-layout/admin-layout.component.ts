@@ -98,7 +98,7 @@ export class AdminLayoutComponent {
     this.toastService.show(
       'Sesión Finalizada', 
       'Has salido del sistema de forma segura.', 
-      'info'
+      'success',
     );
     // Ejecutamos el cierre de sesión tras un breve delay 
     // para que el usuario vea la notificación
