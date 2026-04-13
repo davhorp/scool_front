@@ -11,6 +11,7 @@ export const environment = {
   urlServiceChangedPassword: '/auth/changed-password',
   urlServiceResetPassword: '/auth/reset-password',
   urlServiceUploadPhoto: '/user/upload-photo-profile',
+  urlServiceSugerenciasUsuario: '/user/verificar-disponibilidad-username',
   userId:1,
 
   navigate_path_login: '/login',

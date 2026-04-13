@@ -5,13 +5,32 @@ import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { FilterUploadedPipe } from '../../../../utils/filter-uploaded.pipe';
 import { SafeUrlPipe } from '../../../../utils/safe-url.pipe';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { QrGeneratorComponent } from '../../../../utils/qr-generator/qr-generator.component';
+import { environment } from '../../../../../../environments/environment';
 
 interface EnrollmentDoc {
   nombre: string;
   clave: string;
   cargado: boolean;
   file?: File;
+}
+
+export interface Alumno {
+  nombre: string;
+  apellidoPaterno: string;
+  apellidoMaterno: string;
+  fechaNacimiento: string; // Formato YYYY-MM-DD del input type="date"
+  genero: string;
+  correo: string;
+  telefono: string;
+}
+export interface Salud {
+  tipoSangre: string;
+  alergias: string;
+  discapacidades: string;
+  necesidadesEspeciales: string; // Formato YYYY-MM-DD del input type="date"
+  notasMedicas: string;
 }
 
 @Component({
@@ -22,6 +41,26 @@ interface EnrollmentDoc {
   styleUrl: './enrollment.component.css'
 })
 export class EnrollmentComponent {
+
+   salud = signal<Salud>({
+    tipoSangre: '',
+    alergias: '',
+    discapacidades: '',
+    necesidadesEspeciales: '',
+    notasMedicas: ''
+  });
+
+  private userSettings = JSON.parse(localStorage.getItem('user_session') || '{}');
+  private headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.userSettings.accessToken}`
+    });
+
+  private http = inject(HttpClient);
+
+  // Señales nuevas para manejar las sugerencias
+  sugerencias = signal<string[]>([]);
+  usuarioSeleccionado = signal<string>('');
+  cargandoSugerencias = signal<boolean>(false);
 
   private sanitizer = inject(DomSanitizer);
 
@@ -52,21 +91,37 @@ export class EnrollmentComponent {
 
   currentStep = signal(1); // Ahora llegaremos hasta el paso 6
 
-  // 1. Automatización: Username Sugerido
+  // Computed Signal: Reacciona automáticamente cuando cambia el nombre, apellido o fecha
   generatedUsername = computed(() => {
-    const nom = this.alumno().nombre.toLowerCase().trim().split(' ')[0];
-    const ape = this.alumno().apellido.toLowerCase().trim().split(' ')[0];
-    const year = new Date().getFullYear();
-    return nom && ape ? `${nom.charAt(0)}.${ape}${year}` : '';
+    console.log('Generando usuario para:', this.currentStep);
+    const data = this.alumno();
+    
+    // Si no hay nombre o apellido paterno, no mostramos nada
+    if (!data.nombre || !data.apellidoPaterno || !data.apellidoMaterno) {
+      return '';
+    }
+
+    // Lógica sugerida: Primera letra del nombre + Apellido Paterno + Año de nacimiento
+    // Ejemplo: Juan Perez (2010) -> jperez2010
+    const inicialNombre = data.nombre.charAt(0).toLowerCase();
+    
+    // Tomamos solo la primera palabra del apellido paterno por si capturan compuestos
+    const primerApellido = data.apellidoPaterno.trim().split(' ')[0].toLowerCase();
+    // Tomamos solo la primera palabra del apellido paterno por si capturan compuestos
+    const primerApellidoMaterno = data.apellidoMaterno.trim().split(' ')[0].toLowerCase();
+    
+    // Extraemos el año de la fecha de nacimiento (YYYY-MM-DD)
+    const anio = data.fechaNacimiento ? data.fechaNacimiento.split('-')[0] : '';
+
+    // Removemos acentos para evitar usuarios inválidos (opcional pero recomendado)
+    const usuarioBruto = `${inicialNombre}${primerApellido}${primerApellidoMaterno}${anio}`;
+    return usuarioBruto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   });
 
-  // 2. Ficha Médica
-  salud = signal({
-    tipoSangre: '',
-    alergias: '',
-    condiciones: '',
-    seguro: 'publico'
-  });
+// Actualizador genérico (el que implementamos antes)
+  actualizarCampo(campo: keyof Alumno, valor: string) {
+    this.alumno.update(estado => ({ ...estado, [campo]: valor }));
+  }
 
   contactosEmergencia = signal([
     { nombre: '', telefono: '', parentesco: '' },
@@ -103,13 +158,14 @@ export class EnrollmentComponent {
 );
 
   // Datos básicos del alumno
-  alumno = signal({
-    nombre: 'Alan',
-    apellido: 'Reyes Cruz',
-    fechaNacimiento: '2014-06-12',
-    genero: 'M',
-    grado: '1',
-    curp: 'wertyj4234625748iuy'
+  alumno = signal<Alumno>({
+    nombre: '',
+    apellidoPaterno: '',
+    apellidoMaterno: '',
+    fechaNacimiento: '',
+    genero: '',
+    correo: '',
+    telefono: ''
   });
 
   // Checklist de documentos
@@ -211,7 +267,7 @@ export class EnrollmentComponent {
 
   resetForm() {
     this.currentStep.set(1);
-    this.alumno.set({ nombre: '', apellido: '', fechaNacimiento: '', genero: 'M', grado: '1', curp: '' });
+    this.alumno.set({ nombre: '', apellidoMaterno: '', fechaNacimiento: '', genero: 'M', apellidoPaterno: '', correo: '', telefono: '' });
     this.documentos.update(docs => docs.map(d => ({ ...d, cargado: false, file: undefined })));
   }
 
@@ -267,6 +323,28 @@ export class EnrollmentComponent {
       'success'
     );
     this.searchTermPending.set(''); // Limpiar buscador
+  }
+
+  solicitarSugerencias() {
+    const base = this.generatedUsername();
+    if (!base) return;
+    this.cargandoSugerencias.set(true);
+    this.http.get<any>(environment.urlHostSchool.concat(environment.urlServiceSugerenciasUsuario), { params : new HttpParams().set('username', base), headers: this.headers })
+      .subscribe({
+        next: (opciones) => {
+          this.sugerencias.set(opciones.sugerencias);
+          // Auto-seleccionamos la primera opción por defecto
+          if (opciones.sugerencias.length > 0) {
+            this.usuarioSeleccionado.set(opciones.sugerencias[0]);
+          }
+          this.cargandoSugerencias.set(false);
+        },
+        error: () => this.cargandoSugerencias.set(false)
+      });
+  }
+  // Método para cuando el usuario hace clic en un "chip"
+  elegirSugerencia(opcion: string) {
+    this.usuarioSeleccionado.set(opcion);
   }
 
 }

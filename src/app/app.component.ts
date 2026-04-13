@@ -4,11 +4,12 @@ import { IdleServiceService } from './core/services/idle-service.service';
 import { AuthService } from './core/services/auth.service';
 import { ToastComponent } from './ui/toast/toast/toast.component';
 import { ToastContainerComponent } from './ui/toast/toast-container/toast-container.component';
+import { LoadingComponent } from './core/services/loading/loading/loading.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ToastContainerComponent],
+  imports: [RouterOutlet, ToastContainerComponent, LoadingComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

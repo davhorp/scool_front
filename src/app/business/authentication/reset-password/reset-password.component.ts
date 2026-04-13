@@ -41,7 +41,6 @@ export default class ResetPasswordComponent implements OnDestroy{
     if (this.emailChangedPasswordUser) {
       this.resetPassServ.requestChangedPassword(this.emailChangedPasswordUser).subscribe({
         next: (response) => {
-          console.log('Código de verificación reenviado:', response);
           // Reiniciar el contador
           this.tiempoRestante.set(600);
           this.iniciarContador();
@@ -62,9 +61,7 @@ export default class ResetPasswordComponent implements OnDestroy{
       }
       this.resetPassServ.resetPassword(email, codeVerification, newPassword).subscribe({
       next: (response)=> {
-        console.log(response);
         if(response.response.codeResult === '200'){
-          console.log(response.response.codeResult);
           localStorage.removeItem('emailChangedPassword');
           this.router.navigate(['/login'])
         }

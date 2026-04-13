@@ -30,18 +30,84 @@
 
   <div class="step-body">
     @switch (currentStep()) {
-      
       @case (1) {
         <div class="form-section">
           <h3>Identidad del Alumno</h3>
+          
           <div class="grid-2">
             <div class="form-group">
-              <label>Nombre(s)</label>
-              <input type="text" [(ngModel)]="alumno().nombre">
+              <label for="nombre">Nombre(s)</label>
+              <input type="text" id="nombre" name="nombre" [(ngModel)]="alumno().nombre" (ngModelChange)="actualizarCampo('nombre', $event)" required>
             </div>
             <div class="form-group">
-              <label>Usuario Sugerido</label>
-              <input type="text" [value]="generatedUsername()" disabled class="input-disabled">
+              <label for="apellidoPaterno">Apellido Paterno</label>
+              <input type="text" id="apellidoPaterno" name="apellidoPaterno" [(ngModel)]="alumno().apellidoPaterno" (ngModelChange)="actualizarCampo('apellidoPaterno', $event)" required>
+            </div>
+
+            <div class="form-group">
+              <label for="apellidoMaterno">Apellido Materno</label>
+              <input type="text" id="apellidoMaterno" name="apellidoMaterno" [(ngModel)]="alumno().apellidoMaterno" (ngModelChange)="actualizarCampo('apellidoMaterno', $event)" required>
+            </div>
+            <div class="form-group">
+              <label for="fechaNacimiento">Fecha de Nacimiento</label>
+              <input type="date" id="fechaNacimiento" name="fechaNacimiento" [(ngModel)]="alumno().fechaNacimiento" (ngModelChange)="actualizarCampo('fechaNacimiento', $event)" required>
+            </div>
+
+            <div class="form-group">
+              <label for="genero">Género</label>
+              <select id="genero" name="genero" [(ngModel)]="alumno().genero" >
+                <option value="" disabled selected>Seleccione una opción</option>
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+                <option value="O">Otro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Usuario Asignado</label>
+              
+              <div class="input-action-row">
+                <input type="text" 
+                      [value]="usuarioSeleccionado()" 
+                      placeholder="Haga clic en Generar" 
+                      disabled 
+                      class="input-disabled">
+                      
+                <button type="button" 
+                        class="btn-generar" 
+                        (click)="solicitarSugerencias()"
+                        [disabled]="cargandoSugerencias() || !generatedUsername()">
+                  {{ cargandoSugerencias() ? 'Buscando...' : 'Generar' }}
+                </button>
+              </div>
+
+              @if (sugerencias().length > 0) {
+                <div class="sugerencias-box">
+                  <span class="sugerencias-label">Opciones disponibles:</span>
+                  <div class="chips-container">
+                    @for (sug of sugerencias(); track sug) {
+                      <button type="button" 
+                              class="chip" 
+                              [class.chip-activo]="usuarioSeleccionado() === sug"
+                              (click)="elegirSugerencia(sug)">
+                        {{ sug }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <h3 style="margin-top: 1.5rem;">Datos de Contacto</h3>
+          
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="correo">Correo Electrónico</label>
+              <input type="email" id="correo" name="correo" [(ngModel)]="alumno().correo" placeholder="ejemplo@correo.com">
+            </div>
+            <div class="form-group">
+              <label for="telefono">Teléfono</label>
+              <input type="tel" id="telefono" name="telefono" [(ngModel)]="alumno().telefono" placeholder="10 dígitos">
             </div>
           </div>
         </div>
@@ -50,26 +116,59 @@
       @case (2) {
         <div class="form-section">
           <h3>🩺 Ficha Médica y Emergencias</h3>
+          
           <div class="grid-2">
             <div class="form-group">
-              <label>Tipo de Sangre</label>
-              <select [(ngModel)]="salud().tipoSangre">
+              <label for="tipoSangre">Tipo de Sangre</label>
+              <select id="tipoSangre" name="tipoSangre" [(ngModel)]="salud().tipoSangre" required>
+                <option value="" disabled selected>Seleccione una opción</option>
                 <option value="O+">O Positivo</option>
+                <option value="O-">O Negativo</option>
                 <option value="A+">A Positivo</option>
+                <option value="A-">A Negativo</option>
+                <option value="B+">B Positivo</option>
+                <option value="B-">B Negativo</option>
+                <option value="AB+">AB Positivo</option>
+                <option value="AB-">AB Negativo</option>
+                <option value="D">Desconocido</option>
               </select>
             </div>
+            
             <div class="form-group">
-              <label>Alergias</label>
-              <input type="text" [(ngModel)]="salud().alergias" placeholder="Medicamentos, polen, etc.">
+              <label for="alergias">Alergias</label>
+              <textarea id="alergias" name="alergias" rows="3" [(ngModel)]="salud().alergias" placeholder="Medicamentos, polen, alimentos, etc."></textarea>
             </div>
           </div>
-          <h4>Contactos Directos</h4>
+
+          <div class="grid-2" style="margin-top: 1rem;">
+            <div class="form-group">
+              <label for="discapacidades">Discapacidades</label>
+              <textarea id="discapacidades" name="discapacidades" rows="3" [(ngModel)]="salud().discapacidades" placeholder="Físicas, visuales, auditivas, etc. (Opcional)"></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="necesidadesEspeciales">Necesidades Especiales</label>
+              <textarea id="necesidadesEspeciales" name="necesidadesEspeciales" rows="3" [(ngModel)]="salud().necesidadesEspeciales" placeholder="Requerimientos en el aula, dieta, etc. (Opcional)"></textarea>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1rem;">
+            <label for="notasMedicas">Notas Médicas Adicionales</label>
+            <textarea id="notasMedicas" name="notasMedicas" rows="3" [(ngModel)]="salud().notasMedicas" placeholder="Tratamientos vigentes, cirugías previas u otra información médica relevante..."></textarea>
+          </div>
+
+          <!--<h4 style="margin-top: 2rem; margin-bottom: 1rem; color: #0f172a;">Contactos Directos de Emergencia</h4>
+          
           @for (c of contactosEmergencia(); track $index) {
             <div class="emergency-row">
-              <input type="text" [(ngModel)]="c.nombre" placeholder="Nombre">
-              <input type="text" [(ngModel)]="c.telefono" placeholder="Teléfono">
+              <div class="form-group" style="flex: 1;">
+                <input type="text" [id]="'contactoNombre' + $index" [name]="'contactoNombre' + $index" [(ngModel)]="c.nombre" placeholder="Nombre completo del contacto">
+              </div>
+              <div class="form-group" style="flex: 1;">
+                <input type="tel" [id]="'contactoTelefono' + $index" [name]="'contactoTelefono' + $index" [(ngModel)]="c.telefono" placeholder="Teléfono a 10 dígitos">
+              </div>
             </div>
-          }
+          }-->
         </div>
       }
 
@@ -189,7 +288,9 @@
   </div>
 
   <div class="enrollment-footer">
-    <button class="btn-back" (click)="prevStep()" [disabled]="currentStep() === 1">Atrás</button>
+    @if (currentStep() > 1) {
+      <button class="btn-back" (click)="prevStep()" [disabled]="currentStep() === 1">Atrás</button>
+    }
     @if (currentStep() < 6) {
       <button class="btn-next" (click)="nextStep()">Siguiente</button>
     } @else {
@@ -213,8 +314,10 @@
       <div class="modal-body print-section">
         <div class="summary-section">
           <h4><span class="step-num">1</span> Datos del Alumno</h4>
-          <p><strong>Nombre:</strong> {{ alumno().nombre }} {{ alumno().apellido }}</p>
-          <p><strong>CURP:</strong> {{ alumno().curp }}</p>
+          <p><strong>Nombre:</strong> {{ alumno().nombre }}</p>
+          <p><strong>Apellido Paterno:</strong> {{ alumno().apellidoPaterno }}</p>
+          <p><strong>Apellido Materno:</strong> {{ alumno().apellidoMaterno }}</p>
+          <!--<p><strong>CURP:</strong> {{ alumno().curp }}</p>-->
           <p><strong>Usuario:</strong> {{ generatedUsername() }}</p>
         </div>
 

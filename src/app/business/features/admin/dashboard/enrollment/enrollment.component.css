@@ -52,7 +52,22 @@
 }
 
 .form-group { display: flex; flex-direction: column; gap: 8px; }
-.form-group input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.95rem;
+  color: #1e293b;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  box-sizing: border-box; /* Evita que el padding rompa el grid */
+}
+
+.form-group input::placeholder {
+  color: #94a3b8;
+}
 
 /* DOCS */
 .docs-grid { display: grid; gap: 12px; }
@@ -695,4 +710,201 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Contenedor principal de la tarjeta del formulario */
+.form-section {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #334155;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Títulos de sección con separador visual */
+.form-section h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+  letter-spacing: -0.025em;
+}
+
+/* Grid layout para las dos columnas */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #475569;
+}
+
+/* Estado Focus (cuando el usuario interactúa con el campo) */
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3b82f6; /* Azul primario estilo Tailwind */
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Estado Deshabilitado (Para el Usuario Sugerido) */
+.form-group input:disabled,
+.input-disabled {
+  background-color: #f1f5f9;
+  color: #64748b;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+  font-weight: 500;
+}
+
+/* Hover suave en los campos para interactividad */
+.form-group input:hover:not(:disabled),
+.form-group select:hover:not(:disabled) {
+  border-color: #94a3b8;
+}
+
+/* Media Query: Responsividad para dispositivos móviles */
+@media (max-width: 640px) {
+  .grid-2 {
+    grid-template-columns: 1fr; /* Pasa a una sola columna */
+    gap: 1.25rem;
+  }
+  
+  .form-section {
+    padding: 1.5rem;
+  }
+}
+
+/* Contenedor del input y el botón contiguo */
+.input-action-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input-action-row input {
+  flex: 1; /* El input toma el espacio sobrante */
+}
+
+/* Botón secundario para generar */
+.btn-generar {
+  padding: 0 1rem;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-generar:hover:not(:disabled) {
+  background-color: #e2e8f0;
+}
+
+.btn-generar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Caja de sugerencias */
+.sugerencias-box {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background-color: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+}
+
+.sugerencias-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Estilo de los Chips */
+.chip {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.chip:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+/* Chip seleccionado */
+.chip-activo {
+  background-color: #eff6ff;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+/* Agregamos textarea a la regla existente de inputs y selects */
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.95rem;
+  color: #1e293b;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  box-sizing: border-box;
+  font-family: inherit; /* Asegura que la fuente sea la misma */
+}
+
+/* Regla exclusiva para textareas */
+.form-group textarea {
+  resize: vertical; /* Permite al usuario hacerla más alta, pero no deformar el ancho */
+  min-height: 80px;
+}
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Alineación para la fila de emergencias */
+.emergency-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Responsividad para los contactos en móviles */
+@media (max-width: 640px) {
+  .emergency-row {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed #e2e8f0;
+  }
 }

@@ -34,9 +34,7 @@ export default class ForgetPasswordComponent {
       this.changedPassServ.requestChangedPassword(
         this.formChangedPassword.get('emailChangedPassword')?.value).subscribe({
       next: (response)=> {
-        console.log(response);
         if(response.response.codeResult === '200'){
-          console.log(response.response.codeResult);
           localStorage.setItem('emailChangedPassword',this.formChangedPassword.get('emailChangedPassword')?.value);
           this.router.navigate(['/reset-password'])
         }

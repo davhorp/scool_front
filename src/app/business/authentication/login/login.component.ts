@@ -80,10 +80,7 @@ export default class LoginComponent {
   }
 
   redirectByRole(rol: UserRole) {
-    console.log(this.dashboardRoutes[rol]);
     const targetRoute = this.dashboardRoutes[rol] || '/login';
-    console.log('URL ROL');
-    console.log(targetRoute);
     this.router.navigate([targetRoute]);
     //this.router.navigate(["alumno/dashboard"]);
   }
