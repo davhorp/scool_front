@@ -8,6 +8,9 @@ import { SafeUrlPipe } from '../../../../utils/safe-url.pipe';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { QrGeneratorComponent } from '../../../../utils/qr-generator/qr-generator.component';
 import { environment } from '../../../../../../environments/environment';
+import { Alumno } from '../../../../../models/inscripcion/alumno.models';
+import { Salud } from '../../../../../models/inscripcion/salud.models';
+import { Tutor } from '../../../../../models/inscripcion/tutor.models';
 
 interface EnrollmentDoc {
   nombre: string;
@@ -16,22 +19,6 @@ interface EnrollmentDoc {
   file?: File;
 }
 
-export interface Alumno {
-  nombre: string;
-  apellidoPaterno: string;
-  apellidoMaterno: string;
-  fechaNacimiento: string; // Formato YYYY-MM-DD del input type="date"
-  genero: string;
-  correo: string;
-  telefono: string;
-}
-export interface Salud {
-  tipoSangre: string;
-  alergias: string;
-  discapacidades: string;
-  necesidadesEspeciales: string; // Formato YYYY-MM-DD del input type="date"
-  notasMedicas: string;
-}
 
 @Component({
   selector: 'app-enrollment',
@@ -41,6 +28,123 @@ export interface Salud {
   styleUrl: './enrollment.component.css'
 })
 export class EnrollmentComponent {
+
+
+  // ###### TUTOR ALUMNO ######
+  // 1. Signal para el control principal (El Checkbox)
+  esFamiliaExistente = signal<boolean>(false);
+  // 2. Signals para la búsqueda
+  terminoBusqueda = signal<string>('');
+  buscando = signal<boolean>(false);
+  mensajeBusqueda = signal<string>('');
+  personasAutorizadas = signal<Tutor[]>([]);
+
+// 3. Estado del Tutor que se está vinculando
+  tutorActual = signal<Tutor>({
+    id: 0, 
+    nombre: '',
+    apellidos: '',
+    curp: '',
+    parentesco: '',
+    telefono: '',
+    correo: '',
+    autorizadoRetiro: true // Por defecto, el tutor principal puede retirar
+  });
+
+  // Función para alternar el checkbox y limpiar datos
+  toggleFamiliaExistente() {
+    this.esFamiliaExistente.set(!this.esFamiliaExistente());
+    this.limpiarTutor();
+    this.terminoBusqueda.set('');
+    this.mensajeBusqueda.set('');
+  }
+
+  // Simulación de búsqueda en el backend
+  buscarTutor() {
+    if (this.terminoBusqueda().trim().length < 3) return;
+
+    this.buscando.set(true);
+    this.mensajeBusqueda.set('');
+
+    // Simulando una llamada HTTP
+    setTimeout(() => {
+      if (this.terminoBusqueda().toLowerCase() === 'lopez') {
+        // Encontramos al tutor, actualizamos el signal
+        this.tutorActual.set({
+          id: 1,
+          nombre: 'Carlos',
+          apellidos: 'López Hernández',
+          curp: 'LOHC801010HDFRRN09',
+          parentesco: 'Padre',
+          telefono: '5512345678',
+          correo: 'carlos@ejemplo.com',
+          autorizadoRetiro: true
+        });
+        this.mensajeBusqueda.set('Tutor encontrado y vinculado.');
+      } else {
+        this.limpiarTutor();
+        this.mensajeBusqueda.set('No se encontró ningún tutor con ese criterio.');
+      }
+      this.buscando.set(false);
+    }, 1000);
+  }
+
+  limpiarTutor() {
+    this.tutorActual.set({
+      id: 0,
+      nombre: '', apellidos: '', curp: '', parentesco: '', telefono: '', correo: '', autorizadoRetiro: true
+    });
+  }
+
+  // Actualizador genérico para los inputs
+  actualizarCampoTutor(campo: keyof Tutor, valor: any) {
+    this.tutorActual.update(t => ({ ...t, [campo]: valor }));
+  }
+
+  agregarPersonaAutorizada() {
+    if(this.personasAutorizadas().length >= 2) {
+      this.toastService.show(
+        'Límite alcanzado', 
+        'Solo puedes agregar hasta 2 personas autorizadas, adicionales al Tutor Principal', 
+        'warning');
+    } else {
+      const nuevaPersona: Tutor = {
+      id: 0,
+      nombre: '',
+      apellidos: '',
+      curp: '', // Opcional para secundarios
+      parentesco: '',
+      telefono: '',
+      correo: '',
+      autorizadoRetiro: true // Verdadero por defecto al estar en esta lista
+    };
+    // Usamos .update() para clonar el arreglo actual y añadir el nuevo objeto al final
+    this.personasAutorizadas.update(listaActual => [...listaActual, nuevaPersona]);
+    }
+  }
+
+  // 2. Método para actualizar un campo específico de una persona en el arreglo
+  actualizarPersonaAutorizada(index: number, campo: keyof Tutor, valor: any) {
+    this.personasAutorizadas.update(lista => {
+      // Creamos una copia del arreglo
+      const nuevaLista = [...lista];
+      // Actualizamos solo la persona en el índice modificado
+      nuevaLista[index] = { ...nuevaLista[index], [campo]: valor };
+      return nuevaLista;
+    });
+  }
+
+  // 3. Método para remover a la persona si el usuario se arrepiente
+  eliminarPersonaAutorizada(index: number) {
+    // Filtramos la lista para devolver todas las personas menos la del índice indicado
+    this.personasAutorizadas.update(lista => lista.filter((_, i) => i !== index));
+  }
+
+   // ###### TUTOR ALUMNO ######
+
+  // Datos básicos del alumno
+  alumno = signal(new Alumno());
+
 
    salud = signal<Salud>({
     tipoSangre: '',
@@ -93,7 +197,6 @@ export class EnrollmentComponent {
 
   // Computed Signal: Reacciona automáticamente cuando cambia el nombre, apellido o fecha
   generatedUsername = computed(() => {
-    console.log('Generando usuario para:', this.currentStep);
     const data = this.alumno();
     
     // Si no hay nombre o apellido paterno, no mostramos nada
@@ -139,7 +242,6 @@ export class EnrollmentComponent {
 
   // 3. Tutores y Recogida
   tutorExistente = signal<any | null>(null);
-  personasAutorizadas = signal([{ nombre: '', parentesco: '', foto: null as any }]);
 
   // 4. Finanzas
   planPago = signal({
@@ -156,17 +258,6 @@ export class EnrollmentComponent {
   docsCargadosCount = computed(() => 
   this.documentos().filter(d => d.cargado).length
 );
-
-  // Datos básicos del alumno
-  alumno = signal<Alumno>({
-    nombre: '',
-    apellidoPaterno: '',
-    apellidoMaterno: '',
-    fechaNacimiento: '',
-    genero: '',
-    correo: '',
-    telefono: ''
-  });
 
   // Checklist de documentos
   documentos = signal<EnrollmentDoc[]>([
@@ -187,6 +278,8 @@ export class EnrollmentComponent {
   });
 
   nextStep() {
+    console.log('Datos alumno:', this.alumno());
+    console.log('Datos alumno salud:', this.salud());
     if (this.currentStep() < 6) this.currentStep.update(s => s + 1);
   }
 
@@ -267,7 +360,7 @@ export class EnrollmentComponent {
 
   resetForm() {
     this.currentStep.set(1);
-    this.alumno.set({ nombre: '', apellidoMaterno: '', fechaNacimiento: '', genero: 'M', apellidoPaterno: '', correo: '', telefono: '' });
+    this.alumno.set(new Alumno());
     this.documentos.update(docs => docs.map(d => ({ ...d, cargado: false, file: undefined })));
   }
 
@@ -344,7 +437,7 @@ export class EnrollmentComponent {
   }
   // Método para cuando el usuario hace clic en un "chip"
   elegirSugerencia(opcion: string) {
-    this.usuarioSeleccionado.set(opcion);
+    this.alumno.set({ ...this.alumno(), username: opcion }); // Actualizamos el alumno con el username seleccionado
   }
 
 }

@@ -118,43 +118,44 @@
           <h3>🩺 Ficha Médica y Emergencias</h3>
           
           <div class="grid-2">
-            <div class="form-group">
-              <label for="tipoSangre">Tipo de Sangre</label>
-              <select id="tipoSangre" name="tipoSangre" [(ngModel)]="salud().tipoSangre" required>
-                <option value="" disabled selected>Seleccione una opción</option>
-                <option value="O+">O Positivo</option>
-                <option value="O-">O Negativo</option>
-                <option value="A+">A Positivo</option>
-                <option value="A-">A Negativo</option>
-                <option value="B+">B Positivo</option>
-                <option value="B-">B Negativo</option>
-                <option value="AB+">AB Positivo</option>
-                <option value="AB-">AB Negativo</option>
-                <option value="D">Desconocido</option>
-              </select>
-            </div>
-            
+            @if (alumno().salud) {
+              <div class="form-group">
+                <label for="tipoSangre">Tipo de Sangre</label>
+                <select id="tipoSangre" name="tipoSangre" [(ngModel)]="alumno().salud.tipoSangre" required>
+                  <option value="" disabled selected>Seleccione una opción</option>
+                  <option value="O+">O Positivo</option>
+                  <option value="O-">O Negativo</option>
+                  <option value="A+">A Positivo</option>
+                  <option value="A-">A Negativo</option>
+                  <option value="B+">B Positivo</option>
+                  <option value="B-">B Negativo</option>
+                  <option value="AB+">AB Positivo</option>
+                  <option value="AB-">AB Negativo</option>
+                  <option value="D">Desconocido</option>
+                </select>
+              </div>
+            }
             <div class="form-group">
               <label for="alergias">Alergias</label>
-              <textarea id="alergias" name="alergias" rows="3" [(ngModel)]="salud().alergias" placeholder="Medicamentos, polen, alimentos, etc."></textarea>
+              <textarea id="alergias" name="alergias" rows="3" [(ngModel)]="alumno().salud.alergias" placeholder="Medicamentos, polen, alimentos, etc."></textarea>
             </div>
           </div>
 
           <div class="grid-2" style="margin-top: 1rem;">
             <div class="form-group">
               <label for="discapacidades">Discapacidades</label>
-              <textarea id="discapacidades" name="discapacidades" rows="3" [(ngModel)]="salud().discapacidades" placeholder="Físicas, visuales, auditivas, etc. (Opcional)"></textarea>
+              <textarea id="discapacidades" name="discapacidades" rows="3" [(ngModel)]="alumno().salud.discapacidades" placeholder="Físicas, visuales, auditivas, etc. (Opcional)"></textarea>
             </div>
             
             <div class="form-group">
               <label for="necesidadesEspeciales">Necesidades Especiales</label>
-              <textarea id="necesidadesEspeciales" name="necesidadesEspeciales" rows="3" [(ngModel)]="salud().necesidadesEspeciales" placeholder="Requerimientos en el aula, dieta, etc. (Opcional)"></textarea>
+              <textarea id="necesidadesEspeciales" name="necesidadesEspeciales" rows="3" [(ngModel)]="alumno().salud.necesidadesEspeciales" placeholder="Requerimientos en el aula, dieta, etc. (Opcional)"></textarea>
             </div>
           </div>
 
           <div class="form-group" style="margin-top: 1rem;">
             <label for="notasMedicas">Notas Médicas Adicionales</label>
-            <textarea id="notasMedicas" name="notasMedicas" rows="3" [(ngModel)]="salud().notasMedicas" placeholder="Tratamientos vigentes, cirugías previas u otra información médica relevante..."></textarea>
+            <textarea id="notasMedicas" name="notasMedicas" rows="3" [(ngModel)]="alumno().salud.notasMedicas" placeholder="Tratamientos vigentes, cirugías previas u otra información médica relevante..."></textarea>
           </div>
 
           <!--<h4 style="margin-top: 2rem; margin-bottom: 1rem; color: #0f172a;">Contactos Directos de Emergencia</h4>
@@ -174,16 +175,166 @@
 
       @case (3) {
         <div class="form-section">
-          <h3>👥 Vinculación Familiar</h3>
-          <div class="search-tutor">
-            <input type="text" placeholder="Buscar tutor por CURP o Nombre..." class="search-input">
-            <button class="btn-search">🔍 Buscar</button>
+  <div class="section-header">
+    <h3>👥 Vinculación Familiar (Tutor Principal)</h3>
+    
+    <label class="toggle-checkbox">
+      <input type="checkbox" 
+             [ngModel]="esFamiliaExistente()" 
+             (ngModelChange)="toggleFamiliaExistente()">
+      <span class="toggle-text">La familia ya tiene hijos en la institución (Buscar Tutor)</span>
+    </label>
+  </div>
+
+  @if (esFamiliaExistente()) {
+    <div class="search-container">
+      <p class="helper-text">Busque al tutor para vincular este nuevo alumno a su cuenta familiar.</p>
+      <div class="search-tutor">
+        <input type="text" 
+               [ngModel]="terminoBusqueda()" 
+               (ngModelChange)="terminoBusqueda.set($event)"
+               (keyup.enter)="buscarTutor()"
+               placeholder="Ingrese CURP o Apellidos..." 
+               class="search-input">
+        <button class="btn-search" (click)="buscarTutor()" [disabled]="buscando()">
+          {{ buscando() ? 'Buscando...' : '🔍 Buscar' }}
+        </button>
+      </div>
+      
+      @if (mensajeBusqueda()) {
+        <p class="search-message" [class.success]="tutorActual().id">{{ mensajeBusqueda() }}</p>
+      }
+    </div>
+  } @else {
+    <div class="alert-info">
+      <p>Modo de captura manual: Registrando una nueva familia en la institución.</p>
+    </div>
+  }
+
+  <div class="tutor-data-card" [class.locked-data]="esFamiliaExistente() && tutorActual().id">
+    
+    @if (esFamiliaExistente() && tutorActual().id) {
+      <div class="badge-vinculado">✅ Tutor Vinculado</div>
+    }
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Nombre(s)</label>
+        <input type="text" 
+               [ngModel]="tutorActual().nombre" 
+               (ngModelChange)="actualizarCampoTutor('nombre', $event)"
+               [readonly]="esFamiliaExistente() && tutorActual().id"
+               required>
+      </div>
+      <div class="form-group">
+        <label>Apellidos</label>
+        <input type="text" 
+               [ngModel]="tutorActual().apellidos" 
+               (ngModelChange)="actualizarCampoTutor('apellidos', $event)"
+               [readonly]="esFamiliaExistente() && tutorActual().id"
+               required>
+      </div>
+      
+      <div class="form-group">
+        <label>CURP</label>
+        <input type="text" 
+               [ngModel]="tutorActual().curp" 
+               (ngModelChange)="actualizarCampoTutor('curp', $event)"
+               [readonly]="esFamiliaExistente() && tutorActual().id">
+      </div>
+      <div class="form-group">
+        <label>Parentesco</label>
+        <select [ngModel]="tutorActual().parentesco" 
+                (ngModelChange)="actualizarCampoTutor('parentesco', $event)"
+                [disabled]="esFamiliaExistente() && !!tutorActual().id">
+          <option value="">Seleccione...</option>
+          <option value="Padre">Padre</option>
+          <option value="Madre">Madre</option>
+          <option value="Abuelo/a">Abuelo(a)</option>
+          <option value="Tio/a">Tío(a)</option>
+          <option value="Legal">Tutor Legal</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Teléfono Celular</label>
+        <input type="tel" 
+               [ngModel]="tutorActual().telefono" 
+               (ngModelChange)="actualizarCampoTutor('telefono', $event)"
+               [readonly]="esFamiliaExistente() && tutorActual().id">
+      </div>
+      <div class="form-group">
+        <label>Correo Electrónico</label>
+        <input type="email" 
+               [ngModel]="tutorActual().correo" 
+               (ngModelChange)="actualizarCampoTutor('correo', $event)"
+               [readonly]="esFamiliaExistente() && tutorActual().id">
+      </div>
+    </div>
+  </div>
+
+  <div class="authorized-section">
+  <div class="authorized-header">
+    <h4>🛡️ Personas autorizadas para retirada</h4>
+    <button type="button" class="btn-add-small" (click)="agregarPersonaAutorizada()">+ Agregar Persona</button>
+  </div>
+  <p class="helper-text-small">El tutor principal está autorizado por defecto. Agregue abuelos, tíos o transporte escolar.</p>
+  
+  <div class="authorized-list">
+    @for (persona of personasAutorizadas(); track $index) {
+      <div class="authorized-card">
+        <div class="card-header">
+          <span class="card-title">Autorizado #{{ $index + 1 }}</span>
+          <button type="button" class="btn-delete-small" (click)="eliminarPersonaAutorizada($index)">
+            🗑️ Eliminar
+          </button>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Nombre(s)</label>
+            <input type="text" 
+                   [ngModel]="persona.nombre" 
+                   (ngModelChange)="actualizarPersonaAutorizada($index, 'nombre', $event)"
+                   placeholder="Ej. María">
           </div>
-          <div class="authorized-list">
-            <h4>Personas autorizadas para retirada</h4>
-            <button class="btn-add-small">+ Agregar Persona</button>
+          <div class="form-group">
+            <label>Apellidos</label>
+            <input type="text" 
+                   [ngModel]="persona.apellidos" 
+                   (ngModelChange)="actualizarPersonaAutorizada($index, 'apellidos', $event)"
+                   placeholder="Ej. Pérez">
+          </div>
+          <div class="form-group">
+            <label>Parentesco</label>
+            <select [ngModel]="persona.parentesco" 
+                    (ngModelChange)="actualizarPersonaAutorizada($index, 'parentesco', $event)">
+              <option value="">Seleccione...</option>
+              <option value="Abuelo/a">Abuelo(a)</option>
+              <option value="Tio/a">Tío(a)</option>
+              <option value="Hermano/a Mayor">Hermano(a) Mayor</option>
+              <option value="Transporte">Transporte Escolar</option>
+              <option value="Otro">Otro familiar/amigo</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Teléfono (Obligatorio)</label>
+            <input type="tel" 
+                   [ngModel]="persona.telefono" 
+                   (ngModelChange)="actualizarPersonaAutorizada($index, 'telefono', $event)"
+                   placeholder="10 dígitos">
           </div>
         </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <p>No se han agregado personas adicionales.</p>
+        <p style="font-size: 0.8rem; color: #94a3b8;">Solo el tutor principal podrá retirar al alumno.</p>
+      </div>
+    }
+  </div>
+</div>
+</div>
       }
 
       @case (4) {
