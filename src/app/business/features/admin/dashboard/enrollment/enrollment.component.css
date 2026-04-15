@@ -1163,3 +1163,116 @@
 .empty-state p {
   margin: 0.2rem 0;
 }
+
+/* Acomodar el label y el botón de ayuda en la misma línea */
+.label-with-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.btn-link:hover {
+  color: #1e40af;
+}
+
+/* Modal Overlay */
+.modal-overlay-curp {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Por encima de todo */
+}
+
+.modal-content-curp {
+  background-color: #ffffff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.modal-header-curp {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header-curp h4 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.btn-close-curp {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.modal-body-curp {
+  padding: 1.5rem;
+}
+
+.modal-footer-curp {
+  padding: 1rem 1.5rem;
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+/* Botones del Modal */
+.btn-secondary {
+  padding: 0.5rem 1rem;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-primary-curp {
+  padding: 0.5rem 1rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-primary-curp:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error-message-curp {
+  color: #dc2626;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+  background-color: #fef2f2;
+  padding: 0.5rem;
+  border-radius: 4px;
+}

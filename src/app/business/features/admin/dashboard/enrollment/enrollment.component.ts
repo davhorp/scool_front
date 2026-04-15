@@ -29,6 +29,61 @@ interface EnrollmentDoc {
 })
 export class EnrollmentComponent {
 
+   // ###### Buscar CURP######
+  // --- Estado del Modal CURP ---
+  mostrarModalCurp = signal<boolean>(false);
+  buscandoCurp = signal<boolean>(false);
+  errorBusquedaCurp = signal<string>('');
+
+
+  // Datos requeridos por el gobierno para calcular la CURP
+  datosBusquedaCurp = signal({
+    nombre: '',
+    apellidoPaterno: '',
+    apellidoMaterno: '',
+    fechaNacimiento: '',
+    sexo: 'H',
+    estado: 'DF'
+  });
+
+  abrirModalCurp() {
+    // Pre-llenamos con lo que el usuario ya haya escrito en el formulario principal para ahorrarle tiempo
+    const tutorActual = this.alumno().tutor;
+    this.datosBusquedaCurp.update(d => ({
+      ...d,
+      nombre: tutorActual.nombre || '',
+      apellidoPaterno: tutorActual.apellidoPaterno || '',
+      apellidoMaterno: tutorActual.apellidoMaterno || ''
+    }));
+    
+    this.errorBusquedaCurp.set('');
+    this.mostrarModalCurp.set(true);
+  }
+
+  cerrarModalCurp() {
+    this.mostrarModalCurp.set(false);
+  }
+
+  buscarCurpBackend() {
+    this.buscandoCurp.set(true);
+    this.errorBusquedaCurp.set('');
+
+    this.http.post<{ curp: string }>('/api/tutor/buscar-curp', this.datosBusquedaCurp())
+      .subscribe({
+        next: (response) => {
+          // Usamos tu método existente para actualizar el campo central
+          this.actualizarCampoTutor('curp', response.curp);
+          this.buscandoCurp.set(false);
+          this.cerrarModalCurp();
+        },
+        error: (err) => {
+          this.errorBusquedaCurp.set('No se encontró la CURP. Verifique los datos e intente nuevamente.');
+          this.buscandoCurp.set(false);
+        }
+      });
+  }
+ // ###### Buscar CURP######
+
 
   // ###### TUTOR ALUMNO ######
   // 1. Signal para el control principal (El Checkbox)
