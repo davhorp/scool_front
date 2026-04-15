@@ -398,7 +398,7 @@ export class EnrollmentComponent {
     // Aquí enviarías el objeto actual al backend con status = 'PENDIENTE'
   }
 
-  onFileSelected(event: any, docClave: string) {
+  /*onFileSelected(event: any, docClave: string) {
     const file = event.target.files[0];
     if (file) {
       // Crear URL local temporal para previsualización
@@ -415,7 +415,41 @@ export class EnrollmentComponent {
         } : d)
       );
     }
-  }
+  }*/
+
+    onFileSelected(event: any, docClave: string) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Crear URL local temporal para previsualización
+      const localUrl = URL.createObjectURL(file);
+      const fileType = file.type;
+
+      this.alumno.update(estadoActual => {
+        // 1. Mapeamos la lista de documentos actual
+        const documentosActualizados = estadoActual.documentos.map(doc => {
+          if (doc.clave === docClave) {
+            // Antes de crear una nueva, podrías revocar la anterior para ahorrar memoria
+            if (doc.previewUrl) URL.revokeObjectURL(doc.previewUrl);
+
+            return { 
+              ...doc, 
+              cargado: true, 
+              file: file,
+              previewUrl: localUrl, 
+              type: fileType 
+            };
+          }
+          return doc;
+        });
+
+        // 2. Retornamos el objeto Alumno completo con la lista de documentos nueva
+        return {
+          ...estadoActual,
+          documentos: documentosActualizados
+        };
+      });
+    }
 
   openPreview(doc: any) {
     if (doc.previewUrl) {

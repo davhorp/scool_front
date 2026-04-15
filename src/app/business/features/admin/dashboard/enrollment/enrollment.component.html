@@ -351,8 +351,8 @@
                 (ngModelChange)="actualizarCampoTutor('parentesco', $event)"
                 [disabled]="esFamiliaExistente() && !!tutorActual().id">
           <option value="">Seleccione...</option>
-          <option value="Padre">Padre</option>
-          <option value="Madre">Madre</option>
+          <option value="Papa">Papá</option>
+          <option value="Mama">Mamá</option>
           <option value="Abuelo/a">Abuelo(a)</option>
           <option value="Tio/a">Tío(a)</option>
           <option value="Legal">Tutor Legal</option>
@@ -420,6 +420,7 @@
             <select [ngModel]="persona.parentesco" 
                     (ngModelChange)="actualizarPersonaAutorizada($index, 'parentesco', $event)">
               <option value="">Seleccione...</option>
+              <option value="Papa/Mama">Padre/Madre</option>
               <option value="Abuelo/a">Abuelo(a)</option>
               <option value="Tio/a">Tío(a)</option>
               <option value="Hermano/a Mayor">Hermano(a) Mayor</option>
@@ -453,7 +454,7 @@
     <p class="section-hint">Formatos permitidos: PDF, JPG o PNG. Máximo 5MB por archivo.</p>
 
     <div class="docs-grid">
-      @for (doc of documentos(); track doc.clave) {
+      @for (doc of alumno().documentos; track doc.clave) {
         <div class="doc-item" [class.uploaded]="doc.cargado">
           <div class="doc-info">
             <div class="status-icon" [class.success]="doc.cargado">
@@ -494,11 +495,11 @@
     <div class="docs-progress-container">
       <div class="progress-info">
         <span>Documentos obligatorios</span>
-        <span>{{ (documentos() | filterUploaded).length }} / {{ documentos().length }}</span>
+        <span>{{ (alumno().documentos | filterUploaded).length }} / {{ alumno().documentos.length }}</span>
       </div>
       <div class="progress-bar-bg">
         <div class="progress-bar-fill" 
-             [style.width.%]="((documentos() | filterUploaded).length / documentos().length) * 100">
+             [style.width.%]="((alumno().documentos | filterUploaded).length / alumno().documentos.length) * 100">
         </div>
       </div>
     </div>
