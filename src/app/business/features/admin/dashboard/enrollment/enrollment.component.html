@@ -221,30 +221,40 @@
       <div class="form-group">
         <label>Nombre(s)</label>
         <input type="text" 
-               [ngModel]="tutorActual().nombre" 
-               (ngModelChange)="actualizarCampoTutor('nombre', $event)"
+              id="tutorNombre" 
+              name="tutorNombre"
+              [ngModel]="alumno().tutor.nombre" 
+              placeholder="Ej. Juan Carlos"
+              (ngModelChange)="actualizarCampoTutor('nombre', $event)"
+              [readonly]="esFamiliaExistente() && tutorActual().id"
+              required>
+      </div>
+      <div class="form-group">
+        <label>Apellido Paterno</label>
+        <input type="text" 
+               [ngModel]="alumno().tutor.apellidoPaterno" 
+               (ngModelChange)="actualizarCampoTutor('apellidoPaterno', $event)"
                [readonly]="esFamiliaExistente() && tutorActual().id"
                required>
       </div>
       <div class="form-group">
-        <label>Apellidos</label>
+        <label>Apellido Materno</label>
         <input type="text" 
-               [ngModel]="tutorActual().apellidos" 
-               (ngModelChange)="actualizarCampoTutor('apellidos', $event)"
+               [ngModel]="alumno().tutor.apellidoMaterno" 
+               (ngModelChange)="actualizarCampoTutor('apellidoMaterno', $event)"
                [readonly]="esFamiliaExistente() && tutorActual().id"
                required>
       </div>
-      
       <div class="form-group">
         <label>CURP</label>
         <input type="text" 
-               [ngModel]="tutorActual().curp" 
+               [ngModel]="alumno().tutor.curp" 
                (ngModelChange)="actualizarCampoTutor('curp', $event)"
                [readonly]="esFamiliaExistente() && tutorActual().id">
       </div>
       <div class="form-group">
         <label>Parentesco</label>
-        <select [ngModel]="tutorActual().parentesco" 
+        <select [ngModel]="alumno().tutor.parentesco" 
                 (ngModelChange)="actualizarCampoTutor('parentesco', $event)"
                 [disabled]="esFamiliaExistente() && !!tutorActual().id">
           <option value="">Seleccione...</option>
@@ -259,14 +269,14 @@
       <div class="form-group">
         <label>Teléfono Celular</label>
         <input type="tel" 
-               [ngModel]="tutorActual().telefono" 
+               [ngModel]="alumno().tutor.telefono" 
                (ngModelChange)="actualizarCampoTutor('telefono', $event)"
                [readonly]="esFamiliaExistente() && tutorActual().id">
       </div>
       <div class="form-group">
         <label>Correo Electrónico</label>
         <input type="email" 
-               [ngModel]="tutorActual().correo" 
+               [ngModel]="alumno().tutor.correo" 
                (ngModelChange)="actualizarCampoTutor('correo', $event)"
                [readonly]="esFamiliaExistente() && tutorActual().id">
       </div>
@@ -299,11 +309,18 @@
                    placeholder="Ej. María">
           </div>
           <div class="form-group">
-            <label>Apellidos</label>
+            <label>Apellido Paterno</label>
             <input type="text" 
-                   [ngModel]="persona.apellidos" 
-                   (ngModelChange)="actualizarPersonaAutorizada($index, 'apellidos', $event)"
+                   [ngModel]="persona.apellidoPaterno" 
+                   (ngModelChange)="actualizarPersonaAutorizada($index, 'apellidoPaterno', $event)"
                    placeholder="Ej. Pérez">
+          </div>
+          <div class="form-group">
+            <label>Apellido Materno</label>
+            <input type="text" 
+                   [ngModel]="persona.apellidoMaterno" 
+                   (ngModelChange)="actualizarPersonaAutorizada($index, 'apellidoMaterno', $event)"
+                   placeholder="Ej. García">
           </div>
           <div class="form-group">
             <label>Parentesco</label>
@@ -474,7 +491,7 @@
 
         <div class="summary-section">
           <h4><span class="step-num">2</span> Ficha Médica</h4>
-          <p><strong>Sangre:</strong> {{ salud().tipoSangre }} | <strong>Alergias:</strong> {{ salud().alergias || 'Ninguna' }}</p>
+          <!--<p><strong>Sangre:</strong> {{ salud().tipoSangre }} | <strong>Alergias:</strong> {{ salud().alergias || 'Ninguna' }}</p>-->
           <p><strong>Emergencia:</strong> {{ contactosEmergencia()[0].nombre }} ({{ contactosEmergencia()[0].telefono }})</p>
         </div>
 

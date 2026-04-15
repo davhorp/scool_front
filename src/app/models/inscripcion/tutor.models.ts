@@ -1,7 +1,8 @@
 export class Tutor {
   id = 0;
   nombre = '';
-  apellidos = '';
+  apellidoPaterno = '';
+  apellidoMaterno = '';
   curp = '';
   parentesco = '';
   telefono = '';

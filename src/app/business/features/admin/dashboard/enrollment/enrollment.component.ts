@@ -43,7 +43,8 @@ export class EnrollmentComponent {
   tutorActual = signal<Tutor>({
     id: 0, 
     nombre: '',
-    apellidos: '',
+    apellidoPaterno: '',
+    apellidoMaterno: '',
     curp: '',
     parentesco: '',
     telefono: '',
@@ -73,7 +74,8 @@ export class EnrollmentComponent {
         this.tutorActual.set({
           id: 1,
           nombre: 'Carlos',
-          apellidos: 'López Hernández',
+          apellidoPaterno: 'López',
+          apellidoMaterno: 'Hernández',
           curp: 'LOHC801010HDFRRN09',
           parentesco: 'Padre',
           telefono: '5512345678',
@@ -92,14 +94,21 @@ export class EnrollmentComponent {
   limpiarTutor() {
     this.tutorActual.set({
       id: 0,
-      nombre: '', apellidos: '', curp: '', parentesco: '', telefono: '', correo: '', autorizadoRetiro: true
+      nombre: '', apellidoPaterno: '', apellidoMaterno: '', curp: '', parentesco: '', telefono: '', correo: '', autorizadoRetiro: true
     });
   }
 
   // Actualizador genérico para los inputs
-  actualizarCampoTutor(campo: keyof Tutor, valor: any) {
-    this.tutorActual.update(t => ({ ...t, [campo]: valor }));
-  }
+ actualizarCampoTutor(campo: keyof Tutor, valor: any) {
+  this.alumno.update(estadoActual => ({
+    ...estadoActual,
+    tutor: {
+      ...estadoActual.tutor,    // 1. Conservamos todo lo que ya tenía el tutor
+      [campo]: valor,           // 2. Actualizamos el campo específico
+      autorizadoRetiro: true    // 3. Forzamos este valor a true (no necesitas comillas en la key)
+    }
+  }));
+}
 
   agregarPersonaAutorizada() {
     if(this.personasAutorizadas().length >= 2) {
@@ -111,7 +120,8 @@ export class EnrollmentComponent {
       const nuevaPersona: Tutor = {
       id: 0,
       nombre: '',
-      apellidos: '',
+      apellidoPaterno: '',
+      apellidoMaterno: '',
       curp: '', // Opcional para secundarios
       parentesco: '',
       telefono: '',
@@ -146,13 +156,13 @@ export class EnrollmentComponent {
   alumno = signal(new Alumno());
 
 
-   salud = signal<Salud>({
+   /*salud = signal<Salud>({
     tipoSangre: '',
     alergias: '',
     discapacidades: '',
     necesidadesEspeciales: '',
     notasMedicas: ''
-  });
+  });*/
 
   private userSettings = JSON.parse(localStorage.getItem('user_session') || '{}');
   private headers = new HttpHeaders({
@@ -279,7 +289,6 @@ export class EnrollmentComponent {
 
   nextStep() {
     console.log('Datos alumno:', this.alumno());
-    console.log('Datos alumno salud:', this.salud());
     if (this.currentStep() < 6) this.currentStep.update(s => s + 1);
   }
 
@@ -401,7 +410,7 @@ export class EnrollmentComponent {
   resumeEnrollment(draft: any) {
     // 1. Cargamos todos los datos en los signals del formulario
     this.alumno.set(draft.alumno);
-    this.salud.set(draft.salud);
+    //this.salud.set(draft.salud);
     // Nota: Aquí también cargarías los documentos y contactos de emergencia
     
     // 2. Cambiamos el estatus
@@ -435,9 +444,11 @@ export class EnrollmentComponent {
         error: () => this.cargandoSugerencias.set(false)
       });
   }
+
   // Método para cuando el usuario hace clic en un "chip"
   elegirSugerencia(opcion: string) {
-    this.alumno.set({ ...this.alumno(), username: opcion }); // Actualizamos el alumno con el username seleccionado
+    //this.alumno.set({ ...this.alumno(), username: opcion });
+    this.usuarioSeleccionado.set(opcion); // Actualizamos el alumno con el username seleccionado
   }
 
 }
