@@ -166,38 +166,57 @@ export class EnrollmentComponent {
 }
 
   agregarPersonaAutorizada() {
-    if(this.personasAutorizadas().length >= 2) {
-      this.toastService.show(
-        'Límite alcanzado', 
-        'Solo puedes agregar hasta 2 personas autorizadas, adicionales al Tutor Principal', 
-        'warning');
-    } else {
-      const nuevaPersona: Tutor = {
-      id: 0,
-      nombre: '',
-      apellidoPaterno: '',
-      apellidoMaterno: '',
-      curp: '', // Opcional para secundarios
-      parentesco: '',
-      telefono: '',
-      correo: '',
-      autorizadoRetiro: true // Verdadero por defecto al estar en esta lista
-    };
-    // Usamos .update() para clonar el arreglo actual y añadir el nuevo objeto al final
-    this.personasAutorizadas.update(listaActual => [...listaActual, nuevaPersona]);
-    }
-  }
+  // Leemos la longitud directamente desde el estado actual del alumno
+  if (this.alumno().personasAutorizadas.length >= 2) {
+    this.toastService.show(
+      'Límite alcanzado', 
+      'Solo puedes agregar hasta 2 personas autorizadas, adicionales al Tutor Principal', 
+      'warning'
+    );
+    return; // Agregamos un return para detener la ejecución y no necesitar un 'else'
+  } 
 
-  // 2. Método para actualizar un campo específico de una persona en el arreglo
+  // Definimos la nueva persona
+  const nuevaPersona: Tutor = {
+    id: 0,
+    nombre: '',
+    apellidoPaterno: '',
+    apellidoMaterno: '',
+    curp: '', 
+    parentesco: '',
+    telefono: '',
+    correo: '',
+    autorizadoRetiro: true 
+  };
+
+  // Actualizamos el Signal del alumno inyectando la 'nuevaPersona'
+  this.alumno.update(estadoActual => ({
+    ...estadoActual,
+    personasAutorizadas: [...estadoActual.personasAutorizadas, nuevaPersona] // ✅ Corregido
+  }));
+}
+
+  // Método para actualizar un campo específico de una persona autorizada
   actualizarPersonaAutorizada(index: number, campo: keyof Tutor, valor: any) {
-    this.personasAutorizadas.update(lista => {
-      // Creamos una copia del arreglo
-      const nuevaLista = [...lista];
-      // Actualizamos solo la persona en el índice modificado
-      nuevaLista[index] = { ...nuevaLista[index], [campo]: valor };
-      return nuevaLista;
-    });
-  }
+  this.alumno.update(estadoActual => {
+    
+    // 1. Extraemos y copiamos el arreglo actual de personas autorizadas
+    const nuevasPersonas = [...estadoActual.personasAutorizadas];
+    
+    // 2. Modificamos únicamente la persona en la posición (index) indicada
+    nuevasPersonas[index] = { 
+      ...nuevasPersonas[index], 
+      [campo]: valor 
+    };
+
+    // 3. Retornamos una copia de TODO el alumno, pero con la lista actualizada
+    return {
+      ...estadoActual,
+      personasAutorizadas: nuevasPersonas
+    };
+    
+  });
+}
 
   // 3. Método para remover a la persona si el usuario se arrepiente
   eliminarPersonaAutorizada(index: number) {

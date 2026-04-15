@@ -384,7 +384,7 @@
   <p class="helper-text-small">El tutor principal está autorizado por defecto. Agregue abuelos, tíos o transporte escolar.</p>
   
   <div class="authorized-list">
-    @for (persona of personasAutorizadas(); track $index) {
+    @for (persona of alumno().personasAutorizadas; track $index) {
       <div class="authorized-card">
         <div class="card-header">
           <span class="card-title">Autorizado #{{ $index + 1 }}</span>

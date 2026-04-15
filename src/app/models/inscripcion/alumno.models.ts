@@ -12,4 +12,5 @@ export class Alumno {
   telefono = '';
   salud = new Salud();
   tutor = new Tutor();
+  personasAutorizadas: Tutor[] = [];
 }
